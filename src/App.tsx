@@ -108,7 +108,7 @@ export default function App() {
               <PageTransition><AppointmentPage onBack={goBack} /></PageTransition>
             </Route>
             <Route path="/register">
-              <PageTransition><RegisterPage onBack={goBack} onTerms={() => navigate("/terms")} onSubmitSuccess={() => setModal(true)} /></PageTransition>
+              <PageTransition><RegisterPage onBack={goBack} onTerms={() => navigate("/terms")} onSubmitSuccess={() => handleLogin("newMember")} /></PageTransition>
             </Route>
             <Route path="/terms">
               <PageTransition><TermsPage onBack={goBack} /></PageTransition>

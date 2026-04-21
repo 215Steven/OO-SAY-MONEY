@@ -1,19 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Ic } from "@/src/components/Icons";
 
 export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () => void, onTerms: () => void, onSubmitSuccess: () => void }) => {
-  const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    identity: '',
-    name: '',
-    phone: '',
-    birthday: '',
-    email: '',
-    newsletter: false,
-    terms: false
+  // Use session storage to persist data during redirects (like LINE login)
+  const [step, setStep] = useState(() => {
+    const saved = sessionStorage.getItem('registerStep');
+    return saved ? parseInt(saved) : 1;
   });
+  
+  const [formData, setFormData] = useState(() => {
+    const saved = sessionStorage.getItem('registerData');
+    return saved ? JSON.parse(saved) : {
+      identity: '',
+      name: '',
+      phone: '',
+      birthday: '',
+      email: '',
+      newsletter: false,
+      terms: false,
+      lineUserId: '',
+      lineDisplayName: '',
+      linePictureUrl: ''
+    };
+  });
+  
   const [submitting, setSubmitting] = useState(false);
+  const [isLineLoading, setIsLineLoading] = useState(false);
+
+  // Auto-save form data to prevent loss during accidental refresh or OAuth redirect
+  useEffect(() => {
+    sessionStorage.setItem('registerData', JSON.stringify(formData));
+    sessionStorage.setItem('registerStep', step.toString());
+  }, [formData, step]);
 
   const handleNext = () => {
     if (step === 1 && !formData.identity) return alert('請先選擇您的身份');
@@ -31,9 +50,29 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
     }
   };
 
+  const clearSession = () => {
+    sessionStorage.removeItem('registerData');
+    sessionStorage.removeItem('registerStep');
+  };
+
+  const mockLineLogin = () => {
+    setIsLineLoading(true);
+    // Simulate LINE API OAuth redirect delay
+    setTimeout(() => {
+      setFormData(prev => ({
+        ...prev,
+        lineUserId: `mock_line_uid_${Math.random().toString(36).substr(2, 9)}`,
+        lineDisplayName: `${formData.name || '理財好朋友'}`,
+        linePictureUrl: 'https://api.dicebear.com/7.x/notionists/svg?seed=Felix&backgroundColor=b15f48'
+      }));
+      setIsLineLoading(false);
+    }, 1500);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.terms) return alert('請先閱讀並同意服務條款與隱私權政策');
+    if (!formData.lineUserId) return alert('請先點擊上方按鈕進行 LINE 綁定，以便開通專屬圖文選單。');
+    if (!formData.terms) return alert('請確認服務條款與隱私權政策');
 
     setSubmitting(true);
     try {
@@ -43,7 +82,8 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
         body: JSON.stringify(formData)
       });
       if (res.ok) {
-        alert('註冊成功！');
+        alert('註冊成功！為您啟動專屬會員面板。');
+        clearSession();
         onSubmitSuccess();
       } else {
         alert('提交失敗，請檢查網路連線或稍後再試。');
@@ -136,23 +176,72 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
 
           {step === 3 && (
             <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }} className="flex flex-col h-full">
-               <h2 className="text-[22px] font-black text-slate-800 mb-2">最後一步：條款與確認</h2>
-               <p className="text-[14px] text-slate-500 font-medium mb-8">在送出資料之前，請確認我們的服務條款與隱私權規定，並可選擇訂閱最新理財動態。</p>
+               <h2 className="text-[22px] font-black text-slate-800 mb-2">最後一步：資料確認與綁定</h2>
+               <p className="text-[14px] text-slate-500 font-medium mb-6">請確認您的報名資訊，並點擊下方按鈕進行 LINE 帳號綁定以開通六格專屬選單。</p>
                
-               {/* Mock LINE Login Block */}
-               <div className="bg-white border border-slate-200 shadow-sm rounded-[16px] p-4 flex items-center justify-between mb-8">
-                 <div className="flex items-center gap-3">
-                   <div className="w-11 h-11 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 shrink-0">
-                      <Ic n="user" size={20} color="#94a3b8" />
+               {/* Data Confirmation Summary */}
+               <div className="bg-slate-100 rounded-[16px] p-5 mb-6 border border-slate-200">
+                 <h3 className="text-[14px] font-black text-slate-800 mb-4 flex items-center justify-between">
+                   <span>已填寫資訊</span>
+                   <button type="button" onClick={() => setStep(1)} className="text-[#b15f48] text-[13px] hover:underline bg-transparent border-none p-0 cursor-pointer">修改</button>
+                 </h3>
+                 <div className="space-y-3">
+                   <div className="flex justify-between text-[14px]">
+                     <span className="text-slate-500">身份</span>
+                     <span className="font-bold text-slate-800">{formData.identity}</span>
                    </div>
-                   <div>
-                      <div className="text-[15px] font-extrabold text-slate-800 tracking-[-0.01em]">訪客 (預覽模式)</div>
-                      <div className="text-[12.5px] text-slate-500 mt-0.5 font-medium">預覽模式 (未登入)</div>
+                   <div className="flex justify-between text-[14px]">
+                     <span className="text-slate-500">姓名</span>
+                     <span className="font-bold text-slate-800">{formData.name}</span>
+                   </div>
+                   <div className="flex justify-between text-[14px]">
+                     <span className="text-slate-500">手機</span>
+                     <span className="font-bold text-slate-800">{formData.phone}</span>
+                   </div>
+                   <div className="flex justify-between text-[14px]">
+                     <span className="text-slate-500">信箱</span>
+                     <span className="font-bold text-slate-800">{formData.email}</span>
                    </div>
                  </div>
-                 <button type="button" className="bg-[#b15f48] text-white text-[13px] font-bold px-4 py-2 rounded-full border border-[#9b513d] hover:bg-[#a1543d] transition-colors shadow-sm cursor-pointer">
-                   強制 LINE 登入
-                 </button>
+               </div>
+
+               {/* REAL LINE Login Block */}
+               <div className={`bg-white border ${formData.lineUserId ? 'border-[#b15f48] ring-1 ring-[#b15f48]/10' : 'border-[#00B900]'} shadow-sm rounded-[16px] p-4 flex items-center justify-between mb-8 transition-all`}>
+                 <div className="flex items-center gap-3">
+                   {formData.linePictureUrl ? (
+                     <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-white shadow-sm shrink-0">
+                       <img src={formData.linePictureUrl} alt="LINE Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                     </div>
+                   ) : (
+                     <div className="w-11 h-11 bg-[#00B900]/10 rounded-full flex items-center justify-center text-[#00B900] shrink-0">
+                        <Ic n="user" size={20} color="#00B900" />
+                     </div>
+                   )}
+                   
+                   <div>
+                     {formData.lineUserId ? (
+                       <>
+                         <div className="text-[15px] font-extrabold text-slate-800 tracking-[-0.01em]">{formData.lineDisplayName}</div>
+                         <div className="text-[12.5px] text-[#00B900] mt-0.5 font-bold flex items-center gap-1"><span className="w-1.5 h-1.5 bg-[#00B900] rounded-full inline-block" /> 已成功綁定</div>
+                       </>
+                     ) : (
+                       <>
+                         <div className="text-[15px] font-extrabold text-slate-800 tracking-[-0.01em]">尚未綁定 LINE</div>
+                         <div className="text-[12.5px] text-slate-500 mt-0.5 font-medium">請點擊右邊按鈕授權</div>
+                       </>
+                     )}
+                   </div>
+                 </div>
+                 
+                 {!formData.lineUserId ? (
+                   <button type="button" onClick={mockLineLogin} disabled={isLineLoading} className="bg-[#00B900] text-white text-[13px] font-bold px-4 py-2 rounded-full border border-[#009900] hover:bg-[#00A000] active:scale-95 transition-all shadow-sm cursor-pointer disabled:opacity-70 disabled:cursor-wait">
+                     {isLineLoading ? '連線中...' : 'LINE 綁定'}
+                   </button>
+                 ) : (
+                   <div className="text-[#b15f48] text-[13px] font-bold px-3 py-1 bg-[#b15f48]/10 rounded-full">
+                     ✓ 完成
+                   </div>
+                 )}
                </div>
 
                <div className="flex flex-col gap-4 mb-10 bg-white p-5 rounded-[16px] border border-slate-200 shadow-sm">
@@ -186,8 +275,17 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                </div>
 
                <div className="mt-auto">
-                 <button type="button" onClick={handleSubmit} disabled={submitting} className="w-full bg-[#b15f48] hover:bg-[#a1543d] active:scale-[0.98] text-white font-extrabold text-[16px] py-4 rounded-[12px] shadow-sm transition-all disabled:opacity-50 disabled:active:scale-100 flex justify-center items-center cursor-pointer border border-[#9b513d]">
-                    {submitting ? '載入中...' : '確認送出並綁定'}
+                 <button 
+                  type="button" 
+                  onClick={handleSubmit} 
+                  disabled={submitting || !formData.lineUserId} 
+                  className={`w-full font-extrabold text-[16px] py-4 rounded-[12px] shadow-sm transition-all flex justify-center items-center ${
+                    formData.lineUserId 
+                      ? 'bg-[#b15f48] hover:bg-[#a1543d] active:scale-[0.98] text-white cursor-pointer border border-[#9b513d]' 
+                      : 'bg-slate-200 text-slate-400 cursor-not-allowed border border-slate-200'
+                  }`}
+                 >
+                    {submitting ? '載入中...' : (!formData.lineUserId ? '請先完成上方 LINE 綁定' : '確認無誤，送出資料')}
                  </button>
                </div>
             </motion.div>
