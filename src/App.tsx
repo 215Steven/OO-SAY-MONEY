@@ -14,6 +14,8 @@ import { TemplatePage } from "@/src/pages/TemplatePage";
 import { QuizPage } from "@/src/pages/QuizPage";
 import { DefensePage } from "@/src/pages/DefensePage";
 import { BlueprintPage } from "@/src/pages/BlueprintPage";
+import { RegisterPage } from "@/src/pages/RegisterPage";
+import { TermsPage } from "@/src/pages/TermsPage";
 
 const PageTransition = ({ children }: { children: ReactNode }) => (
   <motion.div
@@ -43,7 +45,7 @@ export default function App() {
   }, [location, navigate]);
 
   const handlePublic = (key: string) => {
-    if (key === "login") { setModal(true); return; }
+    if (key === "login") { navigate("/register"); return; } // or we can keep login modal, but new users go to register
     navigate(`/${key}`);
   };
 
@@ -91,19 +93,25 @@ export default function App() {
               <PageTransition><PublicGrid onSelect={handlePublic} /></PageTransition>
             </Route>
             <Route path="/about">
-              <PageTransition><AboutPage onBack={goBack} onJoin={() => setModal(true)} /></PageTransition>
+              <PageTransition><AboutPage onBack={goBack} onJoin={() => navigate("/register")} /></PageTransition>
             </Route>
             <Route path="/money">
-              <PageTransition><MoneyLanding onBack={goBack} onLogin={() => setModal(true)} /></PageTransition>
+              <PageTransition><MoneyLanding onBack={goBack} onLogin={() => navigate("/register")} /></PageTransition>
             </Route>
             <Route path="/quiz">
               <PageTransition><QuizPage onBack={goBack} onComplete={() => navigate("/appointment")} /></PageTransition>
             </Route>
             <Route path="/unlock">
-              <PageTransition><UnlockPage onBack={goBack} onJoin={() => setModal(true)} /></PageTransition>
+              <PageTransition><UnlockPage onBack={goBack} onJoin={() => navigate("/register")} /></PageTransition>
             </Route>
             <Route path="/appointment">
               <PageTransition><AppointmentPage onBack={goBack} /></PageTransition>
+            </Route>
+            <Route path="/register">
+              <PageTransition><RegisterPage onBack={goBack} onTerms={() => navigate("/terms")} onSubmitSuccess={() => setModal(true)} /></PageTransition>
+            </Route>
+            <Route path="/terms">
+              <PageTransition><TermsPage onBack={goBack} /></PageTransition>
             </Route>
             <Route path="/dashboard">
               <PageTransition>
