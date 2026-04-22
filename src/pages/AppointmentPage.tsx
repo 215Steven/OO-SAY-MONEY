@@ -1,6 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { Ic } from "@/src/components/Icons";
 import { motion, AnimatePresence } from "motion/react";
+import { useLiff } from "@/src/hooks/useLiff";
+
+// ── 設定區（部署前填入）──────────────────────────────
+const TG_BOT_TOKEN  = import.meta.env.VITE_TG_BOT_TOKEN  ?? "";
+const TG_CHAT_ID    = import.meta.env.VITE_TG_CHAT_ID    ?? "";
+const MAKE_WEBHOOK  = import.meta.env.VITE_MAKE_WEBHOOK  ?? "";
+// ────────────────────────────────────────────────────
 
 // --- Constants ---
 const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
@@ -14,12 +21,12 @@ const SLOTS_LIST = [
 ];
 
 export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
+  // --- LIFF Profile ---
+  const { profile: liffProfile, loading: liffLoading } = useLiff();
+
   // --- States ---
   const [step, setStep] = useState(1);
   const [toastMsg, setToastMsg] = useState('');
-  
-  // Profile (mock LIFF)
-  const [profile, setProfile] = useState({ name: '載入中…', avatar: null });
 
   // Booking Data
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -27,7 +34,7 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
   const [phone, setPhone] = useState('');
   const [topics, setTopics] = useState<string[]>([]);
   const [note, setNote] = useState('');
-  
+
   // Calendar View State
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -37,15 +44,10 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
   const [calYear, setCalYear] = useState(today.getFullYear());
   const [calMonth, setCalMonth] = useState(today.getMonth());
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const noteRef = useRef<HTMLTextAreaElement>(null);
 
-  // --- Effects ---
-  useEffect(() => {
-    // Simulate fetching LINE profile
-    const timer = setTimeout(() => setProfile({ name: 'LINE 使用者', avatar: null }), 600);
-    return () => clearTimeout(timer);
-  }, []);
+  const displayName = liffProfile?.displayName ?? (liffLoading ? '載入中…' : '訪客');
 
   const showToast = (msg: string) => {
     setToastMsg(msg);
@@ -72,13 +74,67 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
     setStep(3);
   };
 
-  const submitBooking = () => {
+  const submitBooking = async () => {
+    if (isSubmitting) return;       // 防重複送出
     setIsSubmitting(true);
-    // Dummy async task
-    setTimeout(() => {
-      setIsSubmitting(false);
+
+    const payload = {
+      line_name:   displayName,
+      line_userid: liffProfile?.userId ?? "unknown",
+      phone,
+      date:        selectedDate?.toISOString() ?? "",
+      slot:        selectedSlot ?? "",
+      topics,
+      note,
+      status:      "待確認",
+    };
+
+    try {
+      // ① Telegram 通知
+      if (TG_BOT_TOKEN && TG_CHAT_ID) {
+        const tgText =
+          `📅 新預約申請\n👤 ${payload.line_name}\n📱 ${payload.phone}\n` +
+          `🗓 ${formatDate(selectedDate!)} ${payload.slot}\n` +
+          `📌 主題：${topics.join("、") || "未選擇"}\n` +
+          `📝 備註：${note || "無"}`;
+        await fetch(
+          `https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chat_id: TG_CHAT_ID, text: tgText }),
+          }
+        ).catch(() => {}); // TG 失敗不中斷主流程
+      }
+
+      // ② Make.com → Notion
+      if (MAKE_WEBHOOK) {
+        await fetch(MAKE_WEBHOOK, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }).catch(() => {});
+      }
+
+      // ③ LINE sendMessages（若在 LINE 環境內）
+      const liff = (window as any).liff;
+      if (liff?.isInClient?.()) {
+        await liff.sendMessages([{
+          type: "text",
+          text:
+            `✅ 預約申請已送出！\n` +
+            `日期：${formatDate(selectedDate!)} ${payload.slot}\n` +
+            `顧問將盡快與您確認，感謝！`,
+        }]).catch(() => {});
+      }
+
       setStep(4);
-    }, 1200);
+    } catch (err) {
+      console.error("submitBooking error:", err);
+      showToast("送出失敗，請稍後再試");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetAll = () => {
@@ -275,10 +331,10 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
                 
                 <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 flex items-center gap-3 mb-5">
                   <div className="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-extrabold text-[16px] shrink-0">
-                    {profile.name === '載入中…' ? <Ic n="trend" size={16} /> : profile.name.charAt(0)}
+                    {displayName === '載入中…' ? <Ic n="trend" size={16} /> : displayName.charAt(0)}
                   </div>
                   <div>
-                    <div className="text-[14px] font-extrabold text-emerald-800">{profile.name}</div>
+                    <div className="text-[14px] font-extrabold text-emerald-800">{displayName}</div>
                     <div className="text-[11px] text-emerald-600/80 font-bold mt-0.5">已綁定 LINE 帳號</div>
                   </div>
                 </div>
@@ -343,7 +399,7 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
                   <div className="h-px bg-slate-200/60 my-0.5" />
                   <div className="flex justify-between items-start">
                     <span className="text-[13px] font-bold text-slate-500 shrink-0">申請人</span>
-                    <span className="text-[14px] font-extrabold text-slate-900 text-right">{profile.name}</span>
+                    <span className="text-[14px] font-extrabold text-slate-900 text-right">{displayName}</span>
                   </div>
                   <div className="flex justify-between items-start">
                     <span className="text-[13px] font-bold text-slate-500 shrink-0">聯絡手機</span>
@@ -388,12 +444,12 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
                 </div>
                 <h2 className="text-[22px] font-extrabold mb-2 tracking-[-0.02em] relative z-10">預約申請已送出！</h2>
                 <div className="text-[14px] font-medium text-slate-500 leading-relaxed mb-6">
-                  <strong className="text-emerald-700">{profile.name}</strong>，感謝您的預約！<br/>預約摘要已傳送到您的 LINE 聊天室<br/>顧問將盡快與您確認通知。
+                  <strong className="text-emerald-700">{displayName}</strong>，感謝您的預約！<br/>預約摘要已傳送到您的 LINE 聊天室<br/>顧問將盡快與您確認通知。
                 </div>
 
                 <div className="bg-emerald-50/50 border border-emerald-100 rounded-[16px] p-4 text-left flex flex-col gap-2 relative z-10">
                   <div className="text-[13px] flex justify-between">
-                    <span className="font-bold text-emerald-800/60">LINE 名稱</span><span className="font-extrabold text-emerald-900">{profile.name}</span>
+                    <span className="font-bold text-emerald-800/60">LINE 名稱</span><span className="font-extrabold text-emerald-900">{displayName}</span>
                   </div>
                   <div className="text-[13px] flex justify-between">
                     <span className="font-bold text-emerald-800/60">預約日期</span><span className="font-extrabold text-emerald-900">{selectedDate ? formatDate(selectedDate) : ''}</span>
