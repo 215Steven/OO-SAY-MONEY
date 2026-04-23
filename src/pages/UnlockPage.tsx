@@ -1,118 +1,61 @@
-import { motion } from "motion/react";
 import { Ic } from "@/src/components/Icons";
+import { motion } from "motion/react";
 
-const FEATURES = [
-  { key: "defense",     label: "財務防線", sub: "保障缺口分析",  icon: "shield",   color: "#f59e0b", bg: "#fffbeb" },
-  { key: "money-flow",  label: "錢的流向", sub: "收支財務管家",  icon: "money",    color: "#10b981", bg: "#f0fdf4" },
-  { key: "appointment", label: "預約聊聊", sub: "顧問面談預約",  icon: "calendar", color: "#0ea5e9", bg: "#f0f9ff" },
-  { key: "about",       label: "認識我們", sub: "服務說明",      icon: "info",     color: "#64748b", bg: "#f8fafc" },
-  { key: "inspiration", label: "理財靈感", sub: "精選文章",      icon: "book",     color: "#8b5cf6", bg: "#faf5ff" },
-  { key: "blueprint",   label: "起富藍圖", sub: "月配息策略",    icon: "map",      color: "#f59e0b", bg: "#fffbeb" },
-];
-
-const BENEFITS = [
-  "完全免費，無隱藏費用",
-  "個人化財務分析報告",
-  "顧問一對一諮詢支援",
-  "保障缺口即時計算",
-];
-
-export const UnlockPage = ({ onJoin }: { onJoin: () => void }) => {
-  return (
-    <div className="min-h-[100dvh] bg-slate-50 font-sans pb-28">
-
-      {/* ── 頂部標題帶（全寬、無圓角） ── */}
-      <div className="bg-sky-50 border-b border-sky-100 px-5 pt-12 pb-6">
-        <div className="text-[10px] font-bold text-sky-600 uppercase tracking-[0.14em] mb-1">
-          會員專區
-        </div>
-        <h1 className="text-[26px] font-extrabold text-slate-900 leading-[1.2] tracking-[-0.025em]">
-          解鎖你的<br />財務中心
-        </h1>
-        <p className="text-[13px] text-slate-500 mt-2">
-          加入會員，六大工具全開放。
-        </p>
-      </div>
-
-      <div className="px-5 pt-6 flex flex-col gap-5">
-
-        {/* 六格功能預覽 */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">
-            六大專屬功能
-          </div>
-          <div className="grid grid-cols-2 gap-2.5">
-            {FEATURES.map((f, i) => (
-              <motion.div
-                key={f.key}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25, delay: 0.05 + i * 0.05 }}
-                className="bg-white border border-slate-100 rounded-xl p-4 shadow-sm"
-              >
-                <div
-                  className="w-9 h-9 rounded-lg flex items-center justify-center mb-3"
-                  style={{ background: f.bg }}
-                >
-                  <Ic n={f.icon} size={18} color={f.color} />
-                </div>
-                <div className="text-[13px] font-extrabold text-slate-900 mb-0.5">{f.label}</div>
-                <div className="text-[11px] text-slate-400">{f.sub}</div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Benefits */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.35 }}
-          className="bg-white border border-slate-100 rounded-xl p-5 shadow-sm"
-        >
-          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4">
-            加入後你將獲得
-          </div>
-          {BENEFITS.map((b, i) => (
-            <div key={i} className="flex items-center gap-3 mb-3 last:mb-0">
-              <div className="w-5 h-5 rounded-md bg-amber-50 flex items-center justify-center flex-shrink-0 border border-amber-200">
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                  <path d="M2 5l2 2 4-4" stroke="#d97706" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <span className="text-[13px] text-slate-700 font-medium">{b}</span>
-            </div>
-          ))}
-        </motion.div>
-
-        {/* 切換說明 */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.42 }}
-          className="border border-dashed border-slate-200 rounded-xl p-4 text-center"
-        >
-          <div className="text-[12px] text-slate-400 leading-relaxed">
-            加入後 LINE 圖文選單<br />
-            將自動切換為 <span className="font-bold text-slate-600">六格會員選單</span>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* ── 底部固定 CTA ── */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-5 py-4 z-50">
-        <button
-          onClick={onJoin}
-          className="w-full bg-amber-400 text-slate-900 border-0 rounded-xl py-4 text-[15px] font-extrabold cursor-pointer active:scale-[0.98] transition-transform"
-        >
-          立即加入會員（免費）
+export const UnlockPage = ({ onBack, onJoin }: any) => (
+  <div className="min-h-[100dvh] pb-12 flex flex-col relative bg-[#F8F8F6] items-center">
+    
+    <div className="pt-8 px-6 pb-6 flex flex-col items-center w-full max-w-sm">
+      
+      <div className="flex items-center justify-start w-full mb-8">
+        <button onClick={onBack} className="bg-[#FFFFFF] border border-[#EAEAE6] w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-[#F2F2F0] transition-colors">
+          <Ic n="back" color="#2D2D2A" size={20} />
         </button>
-        <div className="text-[10px] text-slate-400 text-center mt-1.5">免費 · 3 步驟完成</div>
       </div>
+      
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="text-center w-full">
+        <div className="inline-block text-[10px] font-medium text-[#8B8A88] tracking-[0.2em] mb-4 uppercase border border-[#EAEAE6] px-3 py-1 bg-[#FFFFFF]">
+          MEMBERSHIP
+        </div>
+        <div className="text-[28px] font-serif font-bold text-[#2D2D2A] leading-[1.4] tracking-wider mb-4">
+          解鎖更多，<br/>走向財務自由
+        </div>
+        <div className="text-[13px] text-[#2D2D2A] leading-loose font-normal px-5 tracking-widest inline-block border-l px-4 border-[#D6D3D1]">
+          加入會員，獲得專屬工具、知識與一對一諮詢機會
+        </div>
+      </motion.div>
     </div>
-  );
-};
+    
+    <div className="px-5 flex flex-col gap-4 w-full max-w-sm pt-4">
+      {[
+        { icon:"chart",    title:"財管家完整版",  desc:"儲蓄率、保障缺口、財務自由進度——數字化你的財務全貌" },
+        { icon:"book",     title:"理財靈感庫",    desc:"精選文章、知識卡片、定期更新的理財觀點" },
+        { icon:"calendar", title:"預約聊聊",      desc:"一對一免費初談，找到適合你的財務規劃起點" },
+        { icon:"shield",   title:"財務防線健檢",  desc:"保障缺口分析，確認你的風險防護是否足夠" },
+        { icon:"map",      title:"啟富藍圖",      desc:"從現況到目標，規劃你的財務自由路線" },
+        { icon:"star",     title:"最新動態",      desc:"市場資訊、財務規劃建議、即時通知" },
+      ].map((item, i) => (
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.05 + 0.1 }}
+          key={item.title} 
+          className="bg-[#FFFFFF] p-6 flex items-start gap-5 border border-[#EAEAE6] hover:bg-[#F9F9F8] transition-colors"
+        >
+          <div className="w-10 h-10 border border-[#EAEAE6] bg-[#F2F2F0] flex items-center justify-center shrink-0">
+            <Ic n={item.icon} size={20} color="#2D2D2A" />
+          </div>
+          <div className="pt-0.5">
+            <div className="text-[16px] font-serif font-bold text-[#2D2D2A] tracking-wider mb-2">{item.title}</div>
+            <div className="text-[13px] text-[#8B8A88] leading-loose font-normal tracking-wide">{item.desc}</div>
+          </div>
+        </motion.div>
+      ))}
+
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }} className="bg-[#2D2D2A] p-10 mt-6 text-center">
+        <h3 className="text-[18px] font-serif font-bold text-[#FFFFFF] mb-3 tracking-widest">免費加入，馬上體驗</h3>
+        <p className="text-[13px] text-[#AFAEA9] font-normal mb-8 leading-relaxed tracking-wide">透過 LINE 授權註冊，選擇您的身份<br/>即刻解鎖完整會員功能</p>
+        <button onClick={onJoin} className="w-full bg-[#FFFFFF] text-[#2D2D2A] border border-[#FFFFFF] py-4 text-[13px] font-medium tracking-widest uppercase cursor-pointer hover:bg-[#EAEAE6] transition-colors flex justify-center items-center gap-2">
+           登入 / 註冊會員 <Ic n="arrowRight" size={16} color="currentColor" />
+        </button>
+      </motion.div>
+    </div>
+  </div>
+);

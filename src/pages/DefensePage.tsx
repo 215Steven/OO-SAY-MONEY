@@ -126,27 +126,23 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
   const activeMember = MOCK_CLIENT_DATA.members[activeMemberIdx];
 
   return (
-    <div className="min-h-[100dvh] bg-[#f8f5ff] font-sans pb-10">
-      {/* Background Orbs */}
-      <div className="fixed top-[-100px] left-[-50px] w-[300px] h-[300px] bg-[#d8b4fe]/30 rounded-full blur-[80px] z-0 pointer-events-none" />
-      <div className="fixed top-[150px] right-[-100px] w-[250px] h-[250px] bg-[#c084fc]/15 rounded-full blur-[60px] z-0 pointer-events-none" />
-
-      {/* Header and Hero - Soft Purple Glassmorphism Style */}
-      <div className="pt-12 pb-10 px-6 relative z-10 w-full max-w-sm mx-auto">
+    <div className="min-h-[100dvh] bg-[#F8F8F6] font-sans pb-10">
+      
+      <div className="pt-12 pb-10 px-6 relative z-10 w-full max-w-sm mx-auto border-b border-[#EAEAE6] mb-8 shrink-0">
         <div className="flex items-center justify-between mb-8">
-          <button onClick={onBack} className="bg-white/60 backdrop-blur-md rounded-full w-11 h-11 flex items-center justify-center border border-white shadow-sm cursor-pointer transition-transform hover:scale-105 active:scale-95">
-            <Ic n="back" color="#64748b" size={20} />
+          <button onClick={onBack} className="bg-[#FFFFFF] border border-[#EAEAE6] rounded-none w-8 h-8 flex items-center justify-center cursor-pointer transition-colors hover:bg-[#F9F9F8]">
+            <Ic n="back" color="#2D2D2A" size={16} />
           </button>
-          <div className="text-[12px] font-black text-[#9333ea] tracking-[0.14em] uppercase">OO SAY MONEY</div>
-          <div className="w-11" />
+          <div className="text-[10px] font-medium text-[#8B8A88] tracking-[0.2em] uppercase">OO SAY MONEY</div>
+          <div className="w-8" />
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#c084fc] to-[#9333ea] text-white shadow-[0_8px_20px_rgba(147,51,234,0.3)] mb-4">
-             <Ic n="shield" size={32} color="#fff" />
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-[#F2F2F0] border border-[#EAEAE6] text-[#2D2D2A] mb-6">
+             <Ic n="shield" size={24} color="currentColor" />
           </div>
-          <h1 className="text-[28px] font-black text-slate-800 tracking-tight mb-3">財務防線</h1>
-          <p className="text-[15px] text-slate-600 font-semibold leading-relaxed max-w-[280px] mx-auto">用對的保險，守住你最重要的東西，避免突發事件拖垮財務。</p>
+          <h1 className="text-[28px] font-serif font-bold text-[#2D2D2A] tracking-widest mb-4">財務防線</h1>
+          <p className="text-[13px] text-[#555] font-normal leading-loose max-w-[280px] mx-auto tracking-wide">用對的保險，守住你最重要的東西，避免突發事件拖垮財務。</p>
         </motion.div>
       </div>
 
@@ -154,69 +150,67 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
         
         {isClient && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-            <div className="bg-gradient-to-br from-[#9333ea] to-[#7e22ce] rounded-[32px] p-6 shadow-[0_15px_40px_rgba(147,51,234,0.3)] text-white mb-8 border border-[#e9d5ff] relative overflow-hidden">
-               <div className="absolute top-[-20%] right-[-10%] w-[150px] h-[150px] bg-white/20 rounded-full blur-[40px] pointer-events-none" />
+            <div className="bg-[#2D2D2A] p-6 text-[#FFFFFF] mb-8 border border-transparent relative overflow-hidden shrink-0">
                <div className="flex items-center gap-5 relative z-10">
-                 <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white font-black text-[24px] shadow-sm shrink-0 border border-white/30">
+                 <div className="w-14 h-14 bg-[#FFFFFF] text-[#2D2D2A] flex items-center justify-center font-serif font-bold text-[24px] shrink-0 border border-[#EAEAE6]">
                    {MOCK_CLIENT_DATA.name.charAt(0)}
                  </div>
                  <div>
-                   <div className="font-black text-[18px] tracking-tight">{MOCK_CLIENT_DATA.name}，你好 👋</div>
-                   <div className="text-[14px] text-[#e9d5ff] mt-1 font-semibold">家庭共 {MOCK_CLIENT_DATA.members.length} 位成員的保障狀況</div>
+                   <div className="font-serif font-bold text-[18px] tracking-wider">{MOCK_CLIENT_DATA.name}，你好 👋</div>
+                   <div className="text-[12px] text-[#D6D3D1] mt-2 font-normal tracking-widest">家庭共 {MOCK_CLIENT_DATA.members.length} 位成員的保障狀況</div>
                  </div>
                </div>
             </div>
 
-            <div className="text-[12px] font-black text-[#9333ea] tracking-widest mb-4 flex items-center justify-center gap-2 uppercase">
-               <span className="w-1.5 h-1.5 bg-[#9333ea] rounded-full" />
+            <div className="text-[10px] font-medium text-[#2D2D2A] tracking-[0.2em] mb-6 flex items-center justify-center gap-2 uppercase">
+               <span className="w-1.5 h-1.5 bg-[#2D2D2A] rounded-full" />
                家庭保障總覽
-               <span className="w-1.5 h-1.5 bg-[#9333ea] rounded-full" />
+               <span className="w-1.5 h-1.5 bg-[#2D2D2A] rounded-full" />
             </div>
 
-            <div className="flex gap-3 overflow-x-auto pb-4 mb-4 scrollbar-hide snap-x">
+            <div className="flex gap-3 overflow-x-auto pb-4 mb-6 scrollbar-hide snap-x">
               {MOCK_CLIENT_DATA.members.map((m, i) => (
                  <button key={i} onClick={() => setActiveMemberIdx(i)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-full whitespace-nowrap transition-all border snap-center ${activeMemberIdx === i ? 'border-[#c084fc] bg-white/80 backdrop-blur-md text-[#9333ea] font-black shadow-[0_8px_20px_rgba(147,51,234,0.15)] scale-[1.02]' : 'border-white bg-white/40 backdrop-blur-md text-slate-500 font-bold hover:bg-white/60 active:scale-95'}`}
+                    className={`flex items-center gap-3 px-4 py-3 whitespace-nowrap transition-colors border snap-center cursor-pointer ${activeMemberIdx === i ? 'border-[#2D2D2A] bg-[#2D2D2A] text-[#FFFFFF]' : 'border-[#EAEAE6] bg-[#FFFFFF] text-[#8B8A88] hover:bg-[#F9F9F8]'}`}
                  >
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-black transition-colors ${activeMemberIdx === i ? 'bg-gradient-to-br from-[#c084fc] to-[#9333ea] text-white shadow-sm' : 'bg-white text-slate-400'}`}>
+                    <div className={`w-6 h-6 flex items-center justify-center text-[12px] font-serif font-bold transition-colors ${activeMemberIdx === i ? 'bg-[#FFFFFF] text-[#2D2D2A]' : 'bg-[#F2F2F0] text-[#2D2D2A]'}`}>
                        {m.name.charAt(0)}
                     </div>
-                    <span className="text-[14px] tracking-tight">{m.label}</span>
+                    <span className="text-[13px] tracking-widest">{m.label}</span>
                     {m.type === 'child' && (
-                       <span className={`text-[11px] px-2 py-0.5 rounded-md font-black ml-1 ${activeMemberIdx === i ? 'bg-[#f3e8ff] text-[#9333ea]' : 'bg-white text-slate-400'}`}>{m.age}歲</span>
+                       <span className={`text-[11px] px-2 py-0.5 font-medium ml-1 ${activeMemberIdx === i ? 'bg-[#49405E] text-[#FFFFFF]' : 'bg-[#EAEAE6] text-[#555]'}`}>{m.age}歲</span>
                     )}
                  </button>
               ))}
             </div>
 
-            <div className="bg-white/60 backdrop-blur-md rounded-[32px] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-white relative overflow-hidden">
-              <div className="grid grid-cols-2 gap-4 mb-5">
+            <div className="bg-[#FFFFFF] p-6 border border-[#EAEAE6] relative overflow-hidden">
+              <div className="grid grid-cols-2 gap-4 mb-8">
                  {activeMember.coverage.map((item, i) => {
                     const statusMap: Record<string, { icon: string, textColor: string, bgClass: string, borderClass: string }> = {
-                        ok: { icon: "✓", textColor: "text-[#10b981]", bgClass: "bg-[#d1fae5]", borderClass: "border-[#34d399]" },
-                        gap: { icon: "!", textColor: "text-[#f59e0b]", bgClass: "bg-[#fef3c7]", borderClass: "border-[#fbbf24]" },
-                        none: { icon: "✕", textColor: "text-[#f43f5e]", bgClass: "bg-[#ffe4e6]", borderClass: "border-[#fb7185]" },
-                        unknown: { icon: "?", textColor: "text-slate-400", bgClass: "bg-slate-100", borderClass: "border-slate-300" }
+                        ok: { icon: "✓", textColor: "text-[#2D2D2A]", bgClass: "bg-[#F2F2F0]", borderClass: "border-[#2D2D2A]" },
+                        gap: { icon: "!", textColor: "text-[#8B8A88]", bgClass: "bg-[#F9F9F8]", borderClass: "border-[#8B8A88]" },
+                        none: { icon: "✕", textColor: "text-[#555]", bgClass: "bg-[#EAEAE6]", borderClass: "border-[#555]" },
+                        unknown: { icon: "?", textColor: "text-[#AFAEA9]", bgClass: "bg-[#FFFFFF]", borderClass: "border-[#EAEAE6]" }
                     };
                     const status = statusMap[item.status] || statusMap.unknown;
                     return (
-                       <div key={i} className={`rounded-2xl p-4 border-l-[4px] bg-white/80 shadow-sm ${status.borderClass}`}>
-                          <div className="text-[12px] font-black text-slate-400/90 mb-2 tracking-wide uppercase">{item.label}</div>
-                          <div className={`text-[15px] font-black flex items-center gap-2 mb-2 ${status.textColor}`}>
-                            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[12px] font-black leading-none ${status.bgClass} ${status.textColor}`}>{status.icon}</span>
+                       <div key={i} className={`p-4 border-l-[3px] bg-[#F9F9F8] ${status.borderClass}`}>
+                          <div className="text-[10px] font-medium text-[#8B8A88] mb-3 tracking-[0.2em] uppercase">{item.label}</div>
+                          <div className={`text-[13px] font-medium flex items-center gap-2 mb-3 tracking-wider ${status.textColor}`}>
                             {item.detail}
                           </div>
-                          {item.note && <div className="text-[12.5px] text-slate-500 font-semibold leading-snug line-clamp-2">{item.note}</div>}
+                          {item.note && <div className="text-[12px] text-[#555] font-normal leading-loose tracking-wide">{item.note}</div>}
                        </div>
                     )
                  })}
               </div>
               
-              <div className="flex flex-col gap-3 mt-2">
-                 <div className="flex items-center justify-between text-[13px] font-bold text-slate-500 bg-white/80 px-4 py-3 rounded-[16px] border border-white shadow-sm">
-                    <div className="flex items-center gap-2">負責顧問: <span className="text-[#9333ea] font-black">{MOCK_CLIENT_DATA.advisor}</span></div>
+              <div className="flex flex-col gap-4 mt-2 border-t border-[#EAEAE6] pt-6">
+                 <div className="flex items-center justify-between text-[12px] font-normal text-[#8B8A88] tracking-widest uppercase">
+                    <div className="flex items-center gap-2">負責顧問: <span className="text-[#2D2D2A] font-medium">{MOCK_CLIENT_DATA.advisor}</span></div>
                  </div>
-                 <div className="text-center text-[11px] text-slate-400 font-black tracking-widest uppercase">
+                 <div className="text-[10px] text-[#AFAEA9] font-normal tracking-widest uppercase mt-2">
                    最後更新: {MOCK_CLIENT_DATA.updated}
                  </div>
               </div>
@@ -227,12 +221,12 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
         {/* Guest View Notice */}
         {!isClient && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
-             <div className="bg-white/60 backdrop-blur-md border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] rounded-[32px] p-8 text-center relative overflow-hidden">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#f3e8ff] to-[#e9d5ff] rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner border border-white">
-                   <Ic n="user" size={24} color="#9333ea" />
+             <div className="bg-[#FFFFFF] border border-[#EAEAE6] p-10 text-center relative overflow-hidden">
+                <div className="w-16 h-16 bg-[#F2F2F0] flex items-center justify-center mx-auto mb-6 border border-[#EAEAE6]">
+                   <Ic n="user" size={24} color="#2D2D2A" />
                 </div>
-                <div className="text-[20px] font-black text-slate-800 mb-3 tracking-tight">了解你的保障缺口</div>
-                <div className="text-[15px] text-slate-600 font-semibold leading-relaxed max-w-[240px] mx-auto">
+                <div className="text-[20px] font-serif font-bold text-[#2D2D2A] mb-4 tracking-widest">了解你的保障缺口</div>
+                <div className="text-[13px] text-[#555] font-normal leading-loose max-w-[240px] mx-auto tracking-wide">
                   透過下方保險說明了解你可能缺少什麼，<br/>再預約免費諮詢讓我們幫你分析。
                 </div>
              </div>
@@ -241,27 +235,27 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
 
         {/* Why matters section */}
         <div className="mb-12">
-          <div className="text-[12px] font-black text-[#9333ea] tracking-widest mb-6 flex items-center justify-center gap-2 uppercase">
-             <span className="w-1.5 h-1.5 bg-[#9333ea] rounded-full" />
+          <div className="text-[10px] font-medium text-[#2D2D2A] tracking-[0.2em] mb-8 flex items-center justify-center gap-2 uppercase">
+             <span className="w-1.5 h-1.5 bg-[#2D2D2A] rounded-full" />
              為什麼需要保險
-             <span className="w-1.5 h-1.5 bg-[#9333ea] rounded-full" />
+             <span className="w-1.5 h-1.5 bg-[#2D2D2A] rounded-full" />
           </div>
-          <div className="bg-white/60 backdrop-blur-md border border-white rounded-[32px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+          <div className="bg-[#FFFFFF] border border-[#EAEAE6] p-6">
             {WHY_STATS.map((stat, i) => (
-              <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} key={i} className={`flex items-start gap-5 py-5 ${i !== WHY_STATS.length - 1 ? 'border-b border-white' : ''}`}>
-                <div className="text-[28px] font-black text-[#c084fc] tracking-[-0.04em] shrink-0 w-[60px] leading-none pt-0.5 drop-shadow-sm">{stat.num}</div>
-                <div className="text-[14px] text-slate-600 leading-relaxed font-semibold">{stat.text}</div>
+              <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} key={i} className={`flex items-start gap-6 py-6 ${i !== WHY_STATS.length - 1 ? 'border-b border-[#EAEAE6]' : ''}`}>
+                <div className="text-[24px] font-serif font-bold text-[#2D2D2A] tracking-widest shrink-0 w-[60px] leading-none pt-1">{stat.num}</div>
+                <div className="text-[13px] text-[#555] leading-loose font-normal tracking-wide">{stat.text}</div>
               </motion.div>
             ))}
           </div>
         </div>
 
         {/* Insurance Map */}
-        <div className="mb-12">
-          <div className="text-[12px] font-black text-[#9333ea] tracking-widest mb-6 flex items-center justify-center gap-2 uppercase">
-            <span className="w-1.5 h-1.5 bg-[#9333ea] rounded-full" />
+        <div className="mb-14">
+          <div className="text-[10px] font-medium text-[#2D2D2A] tracking-[0.2em] mb-8 flex items-center justify-center gap-2 uppercase">
+            <span className="w-1.5 h-1.5 bg-[#2D2D2A] rounded-full" />
             保險地圖
-            <span className="w-1.5 h-1.5 bg-[#9333ea] rounded-full" />
+            <span className="w-1.5 h-1.5 bg-[#2D2D2A] rounded-full" />
           </div>
           
           <div className="flex flex-col gap-4">
@@ -269,22 +263,22 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
               const isOpen = openSection === section.id;
               return (
                 <motion.div 
-                  initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
                   key={section.id} 
-                  className={`bg-white/60 backdrop-blur-md rounded-[28px] transition-all duration-300 overflow-hidden border ${isOpen ? 'border-[#e9d5ff] shadow-[0_10px_40px_rgba(147,51,234,0.1)]' : 'border-white hover:border-[#f3e8ff] shadow-[0_8px_30px_rgba(0,0,0,0.03)]'}`}
+                  className={`bg-[#FFFFFF] transition-colors duration-300 overflow-hidden border ${isOpen ? 'border-[#2D2D2A]' : 'border-[#EAEAE6] hover:border-[#D6D3D1]'}`}
                 >
-                  <div onClick={() => toggleSection(section.id)} className={`p-5 flex items-center justify-between cursor-pointer transition-colors ${isOpen ? 'bg-white/40' : 'hover:bg-white/40'}`}>
-                    <div className="flex items-center gap-4">
-                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-colors border border-white ${isOpen ? 'bg-gradient-to-br from-[#f3e8ff] to-[#e9d5ff] shadow-inner' : 'bg-white shadow-sm group-hover:bg-[#f8f5ff]'}`}>
-                        <Ic n={section.icon} size={24} color={isOpen ? "#9333ea" : "#94a3b8"} />
+                  <div onClick={() => toggleSection(section.id)} className={`p-5 flex items-center justify-between cursor-pointer transition-colors ${isOpen ? 'bg-[#F9F9F8]' : 'hover:bg-[#F9F9F8]'}`}>
+                    <div className="flex items-center gap-5">
+                      <div className={`w-12 h-12 flex items-center justify-center shrink-0 transition-colors border ${isOpen ? 'bg-[#2D2D2A] text-[#FFFFFF] border-transparent' : 'bg-[#F2F2F0] text-[#2D2D2A] border-[#EAEAE6]'}`}>
+                        <Ic n={section.icon} size={20} color="currentColor" />
                       </div>
                       <div>
-                        <div className={`text-[16px] font-black tracking-tight transition-colors ${isOpen ? 'text-[#9333ea]' : 'text-slate-800'}`}>{section.title}</div>
-                        <div className="text-[13px] text-slate-500 font-semibold mt-1">{section.desc}</div>
+                        <div className={`text-[14px] font-medium tracking-widest transition-colors ${isOpen ? 'text-[#2D2D2A]' : 'text-[#2D2D2A]'}`}>{section.title}</div>
+                        <div className="text-[12px] text-[#8B8A88] font-normal mt-1.5 tracking-wide">{section.desc}</div>
                       </div>
                     </div>
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-transform duration-300 border border-white ${isOpen ? 'rotate-180 bg-white/80 shadow-sm' : 'bg-white shadow-sm'}`}>
-                       <Ic n="arrowRight" size={16} color={isOpen ? "#9333ea" : "#cbd5e1"} />
+                    <div className={`w-8 h-8 flex items-center justify-center transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#2D2D2A]' : 'text-[#8B8A88]'}`}>
+                       <Ic n="arrowRight" size={16} color="currentColor" />
                     </div>
                   </div>
                   
@@ -292,24 +286,24 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
                     {isOpen && (
                       <motion.div 
                         initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden bg-white/30"
+                        className="overflow-hidden bg-[#F9F9F8]"
                       >
-                        <div className="p-6 pt-2 border-t border-white/50">
-                           <div className="flex flex-col gap-4 mb-6">
+                        <div className="p-6 pt-0 border-t border-[#EAEAE6] mt-2">
+                           <div className="flex flex-col gap-4 mb-8 pt-6">
                              {section.points.map((pt, j) => (
-                               <div key={j} className="flex gap-3 items-start text-[14px] text-slate-600 leading-relaxed font-semibold">
-                                 <div className="w-2 h-2 rounded-full bg-[#c084fc] shrink-0 mt-2 shadow-sm" />
+                               <div key={j} className="flex gap-4 items-start text-[13px] text-[#555] leading-loose font-normal tracking-wide">
+                                 <div className="w-1.5 h-1.5 bg-[#AFAEA9] shrink-0 mt-2.5" />
                                  <span>{pt}</span>
                                </div>
                              ))}
                            </div>
                            
-                           <div className="bg-gradient-to-br from-[#f8f5ff] to-white border border-[#e9d5ff] rounded-[20px] p-5 relative overflow-hidden shadow-sm">
-                             <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#9333ea]" />
-                             <div className="text-[12px] font-black text-[#9333ea] mb-2 pl-2 tracking-widest uppercase flex items-center gap-1.5">
-                                <span className="text-[14px]">💡</span> {section.highlightLabel}
+                           <div className="bg-[#FFFFFF] border border-[#EAEAE6] p-5 relative overflow-hidden">
+                             <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#2D2D2A]" />
+                             <div className="text-[10px] font-medium text-[#2D2D2A] mb-3 pl-3 tracking-widest uppercase flex items-center gap-2">
+                                <span className="text-[12px]">💡</span> {section.highlightLabel}
                              </div>
-                             <div className="text-[14px] text-slate-700 leading-relaxed pl-2 font-black tracking-tight">{section.highlight}</div>
+                             <div className="text-[13px] text-[#555] leading-loose pl-3 font-medium tracking-wider italic">{section.highlight}</div>
                            </div>
                         </div>
                       </motion.div>
@@ -322,21 +316,20 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
         </div>
 
         {/* CTA */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="w-full max-w-sm mx-auto bg-gradient-to-br from-[#c084fc] to-[#9333ea] rounded-[32px] p-8 text-center border border-[#e9d5ff] relative overflow-hidden shadow-[0_15px_40px_rgba(147,51,234,0.3)] mb-10">
-          <div className="absolute top-[-20%] right-[-10%] w-[150px] h-[150px] bg-white/30 rounded-full blur-[40px] pointer-events-none" />
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="w-full max-w-sm mx-auto bg-[#F9F9F8] p-10 text-center border border-[#EAEAE6] relative overflow-hidden mb-10 shrink-0">
           <div className="relative z-10">
-             <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-4 border border-white/30 shadow-inner">
-                <Ic n="user" size={32} color="#fff" />
+             <div className="w-16 h-16 bg-[#FFFFFF] flex items-center justify-center mx-auto mb-6 border border-[#EAEAE6]">
+                <Ic n="user" size={24} color="#2D2D2A" />
              </div>
-             <div className="text-[24px] font-black text-white mb-3 tracking-tight drop-shadow-sm">免費保障健診</div>
-             <div className="text-[15px] text-[#f3e8ff] font-semibold mb-8 leading-relaxed">
+             <div className="text-[20px] font-serif font-bold text-[#2D2D2A] mb-4 tracking-widest">免費保障健診</div>
+             <div className="text-[13px] text-[#555] font-normal mb-8 leading-loose tracking-wide">
                不確定自己保了什麼、缺了什麼？<br/>與我們預約，20分鐘幫你看清楚
              </div>
              
-             <a href="https://line.me/R/ti/p/@oosaymoney" target="_blank" rel="noopener noreferrer" className="no-underline flex items-center justify-center gap-2 bg-[#06C755] hover:bg-[#05b34c] text-white w-full py-4.5 rounded-[20px] text-[16px] font-black shadow-[0_8px_20px_rgba(6,199,85,0.3)] transition-transform active:scale-95 hover:scale-[1.02] mb-3">
-               <Ic n="star" size={20} color="#fff" /> 加入 LINE 聯繫顧問
-             </a>
-             <div className="text-[12px] text-[#e9d5ff] font-black tracking-widest uppercase">✨ 免費諮詢 · 無任何推銷壓力</div>
+             <button onClick={() => window.open('https://line.me/R/ti/p/@oosaymoney', '_blank')} className="no-underline flex items-center justify-center gap-3 bg-[#2D2D2A] text-[#FFFFFF] w-full py-4 text-[13px] font-medium tracking-widest transition-colors hover:bg-[#49405E] cursor-pointer border border-transparent uppercase mb-6">
+               <Ic n="star" size={16} color="currentColor" /> 加入 LINE 聯繫顧問
+             </button>
+             <div className="text-[10px] text-[#8B8A88] font-normal tracking-[0.2em] uppercase">✨ 免費諮詢 · 無推銷壓力</div>
           </div>
         </motion.div>
         

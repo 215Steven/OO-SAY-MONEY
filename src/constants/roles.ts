@@ -1,136 +1,49 @@
-// ── 色彩系統 ────────────────────────────────────────────────────
-// Accent : Amber  #f59e0b
-// Light bg: Slate-50  #f8fafc  ← 全站淺色主體
-// Dark txt: Slate-900 #0f172a
-// 完整移除 indigo / violet / purple
-// ────────────────────────────────────────────────────────────────
-
-// 公開三格選單：每格對應一個獨立路由
-export const PUBLIC_GRID = [
-  {
-    key: "story",
-    label: "故事起點",
-    sub: "顧問背景與理念",
-    icon: "user",
-    accent: "#f59e0b",
-    route: "/story",
-  },
-  {
-    key: "quiz",
-    label: "錢去哪了",
-    sub: "8 題財務心理測驗",
-    icon: "trend",
-    accent: "#10b981",
-    route: "/quiz",
-  },
-  {
-    key: "unlock",
-    label: "解鎖更多",
-    sub: "會員六大功能預覽",
-    icon: "star",
-    accent: "#0ea5e9",
-    route: "/unlock",
-  },
-];
-
-// 會員六格選單：每格對應一個獨立路由
-export const MEMBER_GRID = [
-  {
-    key: "defense",
-    label: "財務防線",
-    sub: "保障缺口分析",
-    icon: "shield",
-    accent: "#f59e0b",
-    route: "/defense",
-  },
-  {
-    key: "money-flow",
-    label: "錢的流向",
-    sub: "收支與財務管家",
-    icon: "money",
-    accent: "#10b981",
-    route: "/money-flow",
-  },
-  {
-    key: "appointment",
-    label: "預約聊聊",
-    sub: "顧問面談預約",
-    icon: "calendar",
-    accent: "#0ea5e9",
-    route: "/appointment",
-  },
-  {
-    key: "about",
-    label: "認識我們",
-    sub: "我們能幫你什麼",
-    icon: "info",
-    accent: "#64748b",
-    route: "/about",
-  },
-  {
-    key: "inspiration",
-    label: "理財靈感",
-    sub: "精選財務文章",
-    icon: "book",
-    accent: "#8b5cf6",
-    route: "/inspiration",
-  },
-  {
-    key: "blueprint",
-    label: "起富藍圖",
-    sub: "月配息策略說明",
-    icon: "map",
-    accent: "#f59e0b",
-    route: "/blueprint",
-  },
-];
-
-// 舊有 THEMES / ROLE_META / GRIDS 保留以向下相容
 export const THEMES: Record<string, any> = {
-  public:    { bg: "#f8fafc", card: "#ffffff", accent: "#f59e0b", text: "#0f172a", muted: "#64748b", surface: "#ffffff" },
-  newMember: { bg: "#f8fafc", card: "#ffffff", accent: "#f59e0b", text: "#0f172a", muted: "#64748b", surface: "#ffffff" },
-  peer:      { bg: "#f8fafc", card: "#ffffff", accent: "#0ea5e9", text: "#0f172a", muted: "#64748b", surface: "#ffffff" },
-  client:    { bg: "#f8fafc", card: "#ffffff", accent: "#f59e0b", text: "#0f172a", muted: "#64748b", surface: "#ffffff" },
+  public:    { bg:"#F8F8F6", card:"#FFFFFF", accent:"#2D2D2A", text:"#2D2D2A", muted:"#8B8A88", surface:"#F2F2F0" },
+  newMember: { bg:"#F8F8F6", card:"#FFFFFF", accent:"#3E4E42", text:"#2D2D2A", muted:"#8B8A88", surface:"#F2F2F0" },
+  peer:      { bg:"#FFFFFF", card:"#F8F8F6", accent:"#49405E", text:"#2D2D2A", muted:"#8B8A88", surface:"#F9F9F8" },
+  client:    { bg:"#F2F0EA", card:"#FFFFFF", accent:"#5B4133", text:"#2D2D2A", muted:"#8B8A88", surface:"#EAE8E3" },
 };
 
 export const ROLE_META: Record<string, any> = {
-  newMember: { label: "新會員",  theme: "newMember" },
-  peer:      { label: "同業",    theme: "peer"      },
-  client:    { label: "客戶",    theme: "client"    },
+  newMember: { label:"新會員",   theme:"newMember" },
+  peer:      { label:"同業夥伴", theme:"peer"      },
+  client:    { label:"尊爵客戶", theme:"client"    },
 };
 
 export const GRIDS: Record<string, any> = {
   newMember: {
-    title: "你的財務探索旅程",
-    bg: "#f8fafc",
+    title: "你的理財空間", bg: "transparent",
     items: [
-      { key: "money_tool",  label: "理財工具",   icon: "money",    bg: "#ffffff", accent: "#f59e0b", sub: "財務分析工具",  span: 1 },
-      { key: "defense",     label: "財務防線",   icon: "shield",   bg: "#ffffff", accent: "#10b981", sub: "保障缺口分析",  span: 1 },
-      { key: "blueprint",   label: "財務藍圖",   icon: "map",      bg: "#ffffff", accent: "#0ea5e9", sub: "財務規劃路徑",  span: 1 },
-      { key: "inspire",     label: "理財靈感",   icon: "star",     bg: "#ffffff", accent: "#64748b", sub: "案例與文章",    span: 1 },
-      { key: "book",        label: "預約免費諮詢", icon: "calendar", bg: "#0f172a", accent: "#f59e0b", sub: "30 分鐘，一對一深度對談", span: 2 },
-    ],
+      { key:"money_tool", label:"錢都去哪了", icon:"money",    bg:"#F8F8F6", accent:"#3E4E42", sub:"財務診斷工具" },
+      { key:"defense",    label:"財務防線",   icon:"shield",   bg:"#F8F8F6", accent:"#3E4E42", sub:"保障缺口分析" },
+      { key:"blueprint",  label:"啟富藍圖",   icon:"map",      bg:"#F8F8F6", accent:"#3E4E42", sub:"理財規劃路徑" },
+      { key:"inspire",    label:"理財靈感",   icon:"star",     bg:"#F8F8F6", accent:"#3E4E42", sub:"知識與文章" },
+      { key:"book",       label:"預約聊聊",   icon:"calendar", bg:"#F8F8F6", accent:"#3E4E42", sub:"免費初次諮詢" },
+      { key:"story",      label:"故事起點",   icon:"book",     bg:"#F8F8F6", accent:"#3E4E42", sub:"認識我們" },
+    ]
   },
   client: {
-    title: "我的財務中心",
-    bg: "#f8fafc",
+    title: "我的財務中心", bg: "transparent",
     items: [
-      { key: "protection",  label: "我的保障",   icon: "shield",   bg: "#ffffff", accent: "#f59e0b", sub: "保障 · 缺口 · 已有保障", span: 2 },
-      { key: "plan",        label: "財務規劃",   icon: "trend",    bg: "#ffffff", accent: "#10b981", sub: "我的財務路徑",  span: 1 },
-      { key: "notes",       label: "財務筆記",   icon: "book",     bg: "#ffffff", accent: "#94a3b8", sub: "顧問建議紀錄",  span: 1 },
-      { key: "news",        label: "最新消息",   icon: "info",     bg: "#ffffff", accent: "#94a3b8", sub: "最新資訊",      span: 1 },
-      { key: "chat",        label: "預約諮詢",   icon: "mail",     bg: "#ffffff", accent: "#0ea5e9", sub: "即時顧問服務",  span: 1 },
-    ],
+      { key:"news",       label:"最新動態",   icon:"info",     bg:"#FFFFFF", accent:"#5B4133", sub:"最新消息" },
+      { key:"plan",       label:"啟富計劃",   icon:"trend",    bg:"#FFFFFF", accent:"#5B4133", sub:"我的財務規劃" },
+      { key:"notes",      label:"理財筆記",   icon:"book",     bg:"#FFFFFF", accent:"#5B4133", sub:"文章與資源" },
+      { key:"value",      label:"核心價值",   icon:"diamond",  bg:"#FFFFFF", accent:"#5B4133", sub:"服務理念" },
+      { key:"chat",       label:"理財對談",   icon:"mail",     bg:"#FFFFFF", accent:"#5B4133", sub:"預約諮詢" },
+      { key:"protection", label:"我的保障",   icon:"shield",   bg:"#FFFFFF", accent:"#5B4133", sub:"保單管理" },
+    ]
   },
   peer: {
-    title: "同業夥伴中心",
-    bg: "#f8fafc",
+    title: "同業資源中心", bg: "transparent",
     items: [
-      { key: "demo",        label: "示範工具",   icon: "gear",     bg: "#ffffff", accent: "#0ea5e9", sub: "客製展示素材",  span: 1 },
-      { key: "config",      label: "客製方案",   icon: "map",      bg: "#ffffff", accent: "#0ea5e9", sub: "方案配置模板",  span: 1 },
-      { key: "news",        label: "最新資訊",   icon: "info",     bg: "#ffffff", accent: "#94a3b8", sub: "市場動態",      span: 1 },
-      { key: "about-us",    label: "認識我方",   icon: "user",     bg: "#ffffff", accent: "#94a3b8", sub: "公司介紹",      span: 1 },
-      { key: "book",        label: "預約諮詢",   icon: "calendar", bg: "#0ea5e9", accent: "#ffffff", sub: "快速合作",      span: 2 },
-    ],
+      { key:"demo",  label:"範例操作",   icon:"gear",     bg:"#F8F8F6", accent:"#49405E", sub:"示範流程" },
+      { key:"news",  label:"最新資訊",   icon:"info",     bg:"#F8F8F6", accent:"#49405E", sub:"市場動態" },
+      { key:"config",label:"多重配置",   icon:"map",      bg:"#F8F8F6", accent:"#49405E", sub:"資產配置方案" },
+      { key:"about-us", label:"認識我們",   icon:"user",     bg:"#F8F8F6", accent:"#49405E", sub:"品牌介紹" },
+      { key:"book",  label:"預約諮詢",   icon:"calendar", bg:"#F8F8F6", accent:"#49405E", sub:"合作洽談" },
+      { key:"email", label:"訂閱電子報", icon:"mail",     bg:"#F8F8F6", accent:"#49405E", sub:"定期資訊" },
+    ]
   },
 };
+

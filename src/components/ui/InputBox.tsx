@@ -1,13 +1,13 @@
 import React from 'react';
 
 export const InputBox = ({ id, label, hint, unit="萬", onChange }: any) => (
-  <div className="bg-white/80 backdrop-blur-md border border-white rounded-[20px] p-3.5 shadow-[0_4px_15px_rgba(0,0,0,0.02)] focus-within:border-[#c084fc] focus-within:shadow-[0_4px_15px_rgba(168,85,247,0.15)] transition-all">
-    <div className="text-[11px] font-black text-slate-700 tracking-tight mb-0.5">{label}</div>
-    {hint && <div className="text-[10px] text-slate-400 font-medium mb-1.5">{hint}</div>}
-    <div className="flex items-center gap-1.5 mt-2">
+  <div className="bg-[#F9F9F8] border border-[#EAEAE6] p-4 transition-colors focus-within:border-[#2D2D2A] focus-within:bg-[#FFFFFF]">
+    <div className="text-[11px] font-medium text-[#2D2D2A] tracking-widest uppercase mb-1">{label}</div>
+    {hint && <div className="text-[10px] text-[#8B8A88] font-normal tracking-wide">{hint}</div>}
+    <div className="flex items-center gap-2 mt-3 border-b border-[#EAEAE6] pb-1">
       <input type="number" min="0" placeholder="0" onChange={onChange} 
-        className="no-spinner w-full border-0 outline-none font-inherit text-[20px] font-black text-slate-900 bg-transparent placeholder:text-slate-300" />
-      <span className="text-[12px] text-slate-500 font-bold shrink-0">{unit}</span>
+        className="no-spinner w-full border-0 outline-none font-serif text-[18px] font-bold text-[#2D2D2A] bg-transparent placeholder:text-[#D6D3D1] tracking-wider" />
+      <span className="text-[11px] text-[#AFAEA9] font-normal shrink-0 tracking-widest uppercase">{unit}</span>
     </div>
   </div>
 );

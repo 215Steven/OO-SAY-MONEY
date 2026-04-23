@@ -1,11 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Serif+TC:wght@400;500;600;700;900&display=swap');
 @import "tailwindcss";
 
 @layer base {
   body {
-    background-color: #f8fafc;
-    font-family: 'Poppins', 'PingFang TC', 'Noto Sans TC', system-ui, sans-serif;
+    background-color: #F8F8F6;
+    font-family: 'Inter', 'PingFang TC', 'Noto Sans TC', system-ui, sans-serif;
+    color: #2D2D2A;
   }
+}
+
+@theme {
+  --font-serif: "Noto Serif TC", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
 @layer utilities {
@@ -21,4 +26,4 @@
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #d8b4fe; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
