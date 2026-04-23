@@ -1,48 +1,59 @@
+// ── 全站色彩系統 ─────────────────────────────────────────────
+// 主色調：Amber（#f59e0b）· 底色：Slate-50（#f8fafc）
+// 文字：Slate-900（#0f172a）· 移除所有 indigo / violet / purple
+// ──────────────────────────────────────────────────────────────
+
 export const THEMES: Record<string, any> = {
-  public:    { bg:"#f8f5ff", card:"rgba(255,255,255,0.6)", accent:"#9333ea", text:"#1e293b", muted:"#64748b", surface:"rgba(255,255,255,0.6)" },
-  newMember: { bg:"#f8f5ff", card:"rgba(255,255,255,0.6)", accent:"#9333ea", text:"#1e293b", muted:"#64748b", surface:"rgba(255,255,255,0.6)" },
-  peer:      { bg:"#f8f5ff", card:"rgba(255,255,255,0.6)", accent:"#7e22ce", text:"#1e293b", muted:"#64748b", surface:"rgba(255,255,255,0.6)" },
-  client:    { bg:"#f8f5ff", card:"rgba(255,255,255,0.6)", accent:"#a855f7", text:"#1e293b", muted:"#64748b", surface:"rgba(255,255,255,0.6)" },
+  public:    { bg: "#f8fafc", card: "#0f172a", accent: "#f59e0b", text: "#ffffff", muted: "#94a3b8", surface: "#ffffff" },
+  newMember: { bg: "#f8fafc", card: "#ffffff", accent: "#f59e0b", text: "#0f172a", muted: "#64748b", surface: "#ffffff" },
+  peer:      { bg: "#0f172a", card: "#1e293b", accent: "#0ea5e9", text: "#f8fafc", muted: "#94a3b8", surface: "#1e293b" },
+  client:    { bg: "#0f172a", card: "#1e293b", accent: "#f59e0b", text: "#f8fafc", muted: "#94a3b8", surface: "#1e293b" },
 };
 
 export const ROLE_META: Record<string, any> = {
-  newMember: { label:"新會員",   theme:"newMember" },
-  peer:      { label:"同業",     theme:"peer"      },
-  client:    { label:"客戶",     theme:"client"    },
+  newMember: { label: "新會員",  theme: "newMember" },
+  peer:      { label: "同業",    theme: "peer"      },
+  client:    { label: "客戶",    theme: "client"    },
 };
 
+// span: 1 = 半格, 2 = 全格（Bento 不對稱排版用）
 export const GRIDS: Record<string, any> = {
   newMember: {
-    title: "你的理財空間", bg: "transparent",
+    title: "你的理財空間",
+    bg: "#f8fafc",
     items: [
-      { key:"money_tool", label:"錢都去哪了", icon:"money",    bg:"rgba(255,255,255,0.7)", accent:"#9333ea", sub:"財務診斷工具" },
-      { key:"defense",    label:"財務防線",   icon:"shield",   bg:"rgba(255,255,255,0.7)", accent:"#10b981", sub:"保障缺口分析" },
-      { key:"blueprint",  label:"啟富藍圖",   icon:"map",      bg:"rgba(255,255,255,0.7)", accent:"#f59e0b", sub:"理財規劃路徑" },
-      { key:"inspire",    label:"理財靈感",   icon:"star",     bg:"rgba(255,255,255,0.7)", accent:"#8b5cf6", sub:"知識與文章" },
-      { key:"book",       label:"預約聊聊",   icon:"calendar", bg:"rgba(255,255,255,0.7)", accent:"#3b82f6", sub:"免費初次諮詢" },
-      { key:"story",      label:"故事起點",   icon:"book",     bg:"rgba(255,255,255,0.7)", accent:"#64748b", sub:"認識我們" },
-    ]
+      { key: "money_tool",  label: "錢都去哪了", icon: "money",    bg: "#ffffff", accent: "#f59e0b", sub: "財務診斷工具", span: 1 },
+      { key: "defense",     label: "財務防線",   icon: "shield",   bg: "#ffffff", accent: "#10b981", sub: "保障缺口分析", span: 1 },
+      { key: "blueprint",   label: "啟富藍圖",   icon: "map",      bg: "#ffffff", accent: "#0ea5e9", sub: "理財規劃路徑", span: 1 },
+      { key: "inspire",     label: "理財靈感",   icon: "star",     bg: "#ffffff", accent: "#64748b", sub: "知識與文章",   span: 1 },
+      // Hero CTA — 全寬暗色卡
+      { key: "book",        label: "預約免費諮詢", icon: "calendar", bg: "#0f172a", accent: "#f59e0b", sub: "30 分鐘，一次說清楚", span: 2 },
+    ],
   },
+
   client: {
-    title: "我的財務中心", bg: "transparent",
+    title: "我的財務中心",
+    bg: "#0f172a",
     items: [
-      { key:"news",       label:"最新動態",   icon:"info",     bg:"rgba(255,255,255,0.7)", accent:"#a855f7", sub:"最新消息" },
-      { key:"plan",       label:"啟富計劃",   icon:"trend",    bg:"rgba(255,255,255,0.7)", accent:"#a855f7", sub:"我的財務規劃" },
-      { key:"notes",      label:"理財筆記",   icon:"book",     bg:"rgba(255,255,255,0.7)", accent:"#a855f7", sub:"文章與資源" },
-      { key:"value",      label:"核心價值",   icon:"diamond",  bg:"rgba(255,255,255,0.7)", accent:"#a855f7", sub:"服務理念" },
-      { key:"chat",       label:"理財對談",   icon:"mail",     bg:"rgba(255,255,255,0.7)", accent:"#a855f7", sub:"預約諮詢" },
-      { key:"protection", label:"我的保障",   icon:"shield",   bg:"rgba(255,255,255,0.7)", accent:"#a855f7", sub:"保單管理" },
-    ]
+      // Hero — 全寬，客戶最重要的功能
+      { key: "protection",  label: "我的保障",   icon: "shield",   bg: "#1e293b", accent: "#f59e0b", sub: "保單 · 缺口 · 即時狀態", span: 2 },
+      { key: "plan",        label: "啟富計劃",   icon: "trend",    bg: "#1e293b", accent: "#10b981", sub: "我的財務規劃", span: 1 },
+      { key: "notes",       label: "理財筆記",   icon: "book",     bg: "#1e293b", accent: "#94a3b8", sub: "文章與資源",   span: 1 },
+      { key: "news",        label: "最新動態",   icon: "info",     bg: "#1e293b", accent: "#94a3b8", sub: "最新消息",     span: 1 },
+      { key: "chat",        label: "預約對談",   icon: "mail",     bg: "#1e293b", accent: "#0ea5e9", sub: "與顧問諮詢",   span: 1 },
+    ],
   },
+
   peer: {
-    title: "同業資源中心", bg: "transparent",
+    title: "同業資源中心",
+    bg: "#0f172a",
     items: [
-      { key:"demo",  label:"範例操作",   icon:"gear",     bg:"rgba(255,255,255,0.7)", accent:"#7e22ce", sub:"示範流程" },
-      { key:"news",  label:"最新資訊",   icon:"info",     bg:"rgba(255,255,255,0.7)", accent:"#3b82f6", sub:"市場動態" },
-      { key:"config",label:"多重配置",   icon:"map",      bg:"rgba(255,255,255,0.7)", accent:"#7e22ce", sub:"資產配置方案" },
-      { key:"about-us", label:"認識我們",   icon:"user",     bg:"rgba(255,255,255,0.7)", accent:"#3b82f6", sub:"品牌介紹" },
-      { key:"book",  label:"預約諮詢",   icon:"calendar", bg:"rgba(255,255,255,0.7)", accent:"#7e22ce", sub:"合作洽談" },
-      { key:"email", label:"訂閱電子報", icon:"mail",     bg:"rgba(255,255,255,0.7)", accent:"#3b82f6", sub:"定期資訊" },
-    ]
+      { key: "demo",        label: "範例操作",   icon: "gear",     bg: "#1e293b", accent: "#0ea5e9", sub: "示範流程",    span: 1 },
+      { key: "config",      label: "多槅配置",   icon: "map",      bg: "#1e293b", accent: "#0ea5e9", sub: "資產配置方楈", span: 1 },
+      { key: "news",        label: "最新戳誊",   icon: "info",     bg: "#1e293b", accent: "#94a3b8", sub: "市場動態",     span: 1 },
+      { key: "about-us",    label: "認識我們",   icon: "user",     bg: "#1e293b", accent: "#94a3b8", sub: "品牌介紹",     span: 1 },
+      // Hero CTA
+      { key: "book",        label: "預約諮詢",   icon: "calendar", bg: "#0ea5e9", accent: "#ffffff", sub: "合作洽談",     span: 2 },
+    ],
   },
 };
