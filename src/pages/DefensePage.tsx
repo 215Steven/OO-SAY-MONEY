@@ -1,6 +1,7 @@
 import { Ic, IconName } from "@/src/components/Icons";
 import { motion, AnimatePresence } from "motion/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLiff } from "@/src/hooks/useLiff";
 
 const DEFENSE_SECTIONS = [
 
@@ -68,44 +69,10 @@ const WHY_STATS = [
   { num: "20年", text: "一張買錯的保單，二十年後可能讓你多花數十萬、卻什麼都沒保到" }
 ];
 
-const MOCK_CLIENT_DATA = {
-  name: "林小華",
-  advisor: "Steven & Annie",
-  updated: "2026/04/15",
-  members: [
-    {
-      name: "林小華",
-      label: "本人",
-      type: "adult",
-      coverage: [
-        { label: "壽險保障", detail: "足夠", status: "ok", note: "保額 1,000 萬" },
-        { label: "實支實付", detail: "缺口", status: "gap", note: "額度偏低，建議補強第二家" },
-        { label: "重大疾病", detail: "極缺", status: "none", note: "完全無保障，風險極高" },
-        { label: "車險/產險", detail: "未知", status: "unknown", note: "尚未匯入保單" }
-      ]
-    },
-    {
-      name: "王大明",
-      label: "配偶",
-      type: "adult",
-      coverage: [
-        { label: "壽險保障", detail: "需補足", status: "gap", note: "房貸增長，建議補強定期壽險" },
-        { label: "實支實付", detail: "足夠", status: "ok", note: "雙實支保障完整" },
-        { label: "重大疾病", detail: "足夠", status: "ok", note: "保額 200 萬" },
-      ]
-    },
-    {
-      name: "林小寶",
-      label: "子女",
-      type: "child",
-      age: 3,
-      coverage: [
-        { label: "實支實付", detail: "足夠", status: "ok", note: "新生兒保單完整" },
-        { label: "意外保障", detail: "足夠", status: "ok", note: "意外醫療完整" },
-      ]
-    }
-  ]
-};
+// 覆蓋資料型別
+interface CoverageItem { label: string; detail: string; status: string; note?: string; }
+interface Member { name: string; label: string; type: string; age?: number; coverage: CoverageItem[]; }
+interface ClientData { name: string; advisor: string; updated: string; members: Member[]; }
 
 const STATUS_MAP: Record<string, { icon: string, textColor: string, bgClass: string, borderClass: string }> = {
   ok: { icon: "✓", textColor: "text-emerald-600", bgClass: "bg-emerald-100", borderClass: "border-emerald-500" },
@@ -115,15 +82,38 @@ const STATUS_MAP: Record<string, { icon: string, textColor: string, bgClass: str
 };
 
 export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: string | null }) => {
+  const { profile: liffProfile, loading: liffLoading } = useLiff();
   const [openSection, setOpenSection] = useState<string | null>("life");
   const [activeMemberIdx, setActiveMemberIdx] = useState(0);
+  const [clientData, setClientData] = useState<ClientData | null>(null);
+  const [coverageLoading, setCoverageLoading] = useState(false);
 
   const toggleSection = (id: string) => {
     setOpenSection(prev => prev === id ? null : id);
   };
-  
-  const isClient = role === "client";
-  const activeMember = MOCK_CLIENT_DATA.members[activeMemberIdx];
+
+  // 有 userId 才查 Notion
+  useEffect(() => {
+    if (!liffProfile?.userId) return;
+    setCoverageLoading(true);
+    fetch(`/.netlify/functions/get-coverage?userId=${encodeURIComponent(liffProfile.userId)}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.found && data.members?.length) {
+          setClientData({
+            name:    data.members[0].name ?? liffProfile.displayName,
+            advisor: data.advisor ?? "",
+            updated: data.updated ?? "",
+            members: data.members,
+          });
+        }
+      })
+      .catch(() => {})
+      .finally(() => setCoverageLoading(false));
+  }, [liffProfile?.userId]);
+
+  const isClient = role === "client" || !!clientData;
+  const activeMember = clientData?.members[activeMemberIdx];
 
   return (
     <div className="min-h-[100dvh] bg-slate-50 font-sans pb-10">
@@ -153,16 +143,40 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
 
       <div className="px-5">
         
-        {isClient && (
+        {/* Loading skeleton */}
+        {(liffLoading || coverageLoading) && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-8">
+            <div className="bg-white rounded-[20px] p-5 border border-slate-100 shadow-sm mb-4 animate-pulse">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-slate-200 shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-slate-200 rounded-full w-2/3" />
+                  <div className="h-3 bg-slate-100 rounded-full w-1/2" />
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="bg-white rounded-xl p-4 border border-slate-100 animate-pulse space-y-2">
+                  <div className="h-3 bg-slate-200 rounded-full w-1/2" />
+                  <div className="h-4 bg-slate-100 rounded-full w-3/4" />
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Client coverage view */}
+        {isClient && !coverageLoading && !liffLoading && clientData && activeMember && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
             <div className="bg-gradient-to-br from-indigo-900 to-slate-900 rounded-[20px] p-5 shadow-lg shadow-indigo-900/10 text-white mb-6 border border-indigo-800">
                <div className="flex items-center gap-4">
                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-300 to-amber-500 flex items-center justify-center text-indigo-950 font-extrabold text-[20px] shadow-sm shrink-0">
-                   {MOCK_CLIENT_DATA.name.charAt(0)}
+                   {clientData.name.charAt(0)}
                  </div>
                  <div>
-                   <div className="font-extrabold text-[17px] tracking-[-0.01em]">{MOCK_CLIENT_DATA.name}，你好 👋</div>
-                   <div className="text-[13px] text-indigo-200/80 mt-0.5 font-medium">家庭共 {MOCK_CLIENT_DATA.members.length} 位成員的保障狀況</div>
+                   <div className="font-extrabold text-[17px] tracking-[-0.01em]">{clientData.name}，你好 👋</div>
+                   <div className="text-[13px] text-indigo-200/80 mt-0.5 font-medium">家庭共 {clientData.members.length} �成員的保障狀況</div>
                  </div>
                </div>
             </div>
@@ -173,7 +187,7 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
             </div>
 
             <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
-              {MOCK_CLIENT_DATA.members.map((m, i) => (
+              {clientData.members.map((m, i) => (
                  <button key={i} onClick={() => setActiveMemberIdx(i)}
                     className={`flex items-center gap-2 px-3.5 py-2.5 rounded-full whitespace-nowrap transition-all border ${activeMemberIdx === i ? 'border-indigo-600 bg-indigo-50 text-indigo-700 font-bold shadow-sm shadow-indigo-500/10 scale-[1.02]' : 'border-slate-200 bg-white text-slate-500 font-medium hover:bg-slate-50 active:scale-95'}`}
                  >
@@ -191,7 +205,7 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
             <div className="bg-white rounded-[24px] p-4 shadow-sm shadow-slate-200/50 border border-slate-100">
               <div className="grid grid-cols-2 gap-3 mb-4">
                  {activeMember.coverage.map((item, i) => {
-                    const status = STATUS_MAP[item.status];
+                    const status = STATUS_MAP[item.status] ?? STATUS_MAP.unknown;
                     return (
                        <div key={i} className={`rounded-xl p-3 border-l-[3px] bg-slate-50/50 ${status.borderClass}`}>
                           <div className="text-[11px] font-bold text-slate-400/80 mb-1.5 tracking-wide">{item.label}</div>
@@ -204,13 +218,13 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
                     )
                  })}
               </div>
-              
+
               <div className="flex flex-col gap-2 mt-4">
                  <div className="flex items-center justify-between text-[11.5px] font-medium text-slate-500 bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-100/50">
-                    <div className="flex items-center gap-1.5">負責顧問: <span className="text-amber-600 font-extrabold">{MOCK_CLIENT_DATA.advisor}</span></div>
+                    <div className="flex items-center gap-1.5">負責顧問: <span className="text-amber-600 font-extrabold">{clientData.advisor}</span></div>
                  </div>
                  <div className="text-right text-[10px] text-slate-300 font-medium tracking-wider uppercase">
-                   最後更新: {MOCK_CLIENT_DATA.updated}
+                   最後更新: {clientData.updated}
                  </div>
               </div>
             </div>
