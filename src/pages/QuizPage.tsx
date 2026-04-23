@@ -88,7 +88,7 @@ const QUESTIONS = [
 
 const TYPES: Record<string, any> = {
   guard: {
-    name: '穩健累積型', icon: 'shield', color: 'text-blue-600', bg: 'bg-blue-50', bar: 'bg-blue-500', border: 'border-blue-200',
+    name: '穩健累積型', icon: 'shield', color: 'text-[#10b981]', bg: 'bg-[#dcfce7]', bar: 'bg-[#10b981]', border: 'border-white',
     tagline: '重視安全感，其實這是優勢',
     desc: '你重視本金安全，不喜歡不確定性。很多人以為這是缺點，但其實穩健才是長期走得下去的基礎。你缺的不是勇氣，是一個「夠穩、還能慢慢長大」的方式。',
     insight: '太保守的問題不是賺不到，而是錢一直在縮水。通貨膨脹每年吃掉 2%，存在帳戶裡的錢其實在虧損。找到一個「本金不減、還有配息」的設計，安全感和成長可以同時兼顧。',
@@ -101,7 +101,7 @@ const TYPES: Record<string, any> = {
     },
   },
   enjoy: {
-    name: '成長放大型', icon: 'trend', color: 'text-orange-500', bg: 'bg-orange-50', bar: 'bg-orange-500', border: 'border-orange-200',
+    name: '成長放大型', icon: 'trend', color: 'text-[#f59e0b]', bg: 'bg-[#fef3c7]', bar: 'bg-[#f59e0b]', border: 'border-white',
     tagline: '你有機會走得比別人快',
     desc: '你有行動力，不怕嘗試，也願意承擔一定風險。這是做財務規劃最好的性格之一。你需要的不是「被說服要開始」，而是一個方向清楚、有爆發力的配置方式。',
     insight: '進攻型的人最常見的問題是追高殺低，不是因為判斷差，而是缺一個系統。有策略的進攻，和衝動的進攻，結果差很多。風險控制做好，成長才會很明顯。',
@@ -114,7 +114,7 @@ const TYPES: Record<string, any> = {
     },
   },
   anxiety: {
-    name: '起步探索型', icon: 'info', color: 'text-purple-600', bg: 'bg-purple-50', bar: 'bg-purple-500', border: 'border-purple-200',
+    name: '起步探索型', icon: 'info', color: 'text-[#c084fc]', bg: 'bg-[#f3e8ff]', bar: 'bg-[#c084fc]', border: 'border-white',
     tagline: '你不是做不到，只是少了一個開始的方式',
     desc: '你知道應該要做，心裡也有一點焦慮，但一直找不到一個清楚的起點。這不是懶，也不是沒能力，是從來沒有人幫你把第一步講清楚。其實大多數人都在這個階段。',
     insight: '起步探索型的人，行動後改變往往是最大的。因為你在意，才會焦慮。在意的人，一旦方向清楚了，執行力反而很強。你只差一個「簡單可執行的第一步」。',
@@ -127,7 +127,7 @@ const TYPES: Record<string, any> = {
     },
   },
   plan: {
-    name: '策略進化型', icon: 'map', color: 'text-emerald-600', bg: 'bg-emerald-50', bar: 'bg-emerald-500', border: 'border-emerald-200',
+    name: '策略進化型', icon: 'map', color: 'text-[#3b82f6]', bg: 'bg-[#dbeafe]', bar: 'bg-[#3b82f6]', border: 'border-white',
     tagline: '你已經在正確路上，差的是一個整合策略',
     desc: '你有清晰的財務意識，也有實際在執行記帳或投資。你不需要被說服要規劃，你需要的是讓現有的努力發揮最大效益的方式。',
     insight: '有在執行的人，最常見的問題不是努力不夠，而是策略有沒有放在最有效率的位置。同樣的資金，不同的配置方式，10 年後的結果可以差非常多。',
@@ -147,9 +147,9 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
   const [loadMsg, setLoadMsg] = useState(0);
 
   const MSGS = [
-    { t: "正在分析你的財務性格…", s: "根據你的 8 個選擇，我們正在比對最適合的類型" },
-    { t: "分析完成", s: "正在為你準備個人化洞察…" },
-    { t: "即將揭曉！", s: "你的財務性格結果出爐了" }
+    { t: "正在分析您的財務性格…", s: "根據您的選擇，我們正在比對適合的方向" },
+    { t: "準備專屬洞察", s: "屬於您的理財解析即將完成…" },
+    { t: "即將揭曉！", s: "您的專屬財務圖譜" }
   ];
 
   // Auto-progress loading screen
@@ -205,32 +205,37 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
   };
 
   const renderWelcome = () => (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -50 }} className="p-5 pt-8">
-      <div className="w-[72px] h-[72px] bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/20">
-        <Ic n="user" size={34} color="#059669" />
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -50 }} className="p-6 relative z-10 flex flex-col items-center justify-center min-h-[100dvh]">
+      <div className="absolute top-4 left-4 z-20">
+        <button onClick={onBack} className="bg-white/60 backdrop-blur-md border border-white rounded-[16px] w-12 h-12 flex items-center justify-center cursor-pointer shadow-[0_4px_10px_rgba(0,0,0,0.03)] transition-all hover:bg-white active:scale-95">
+          <Ic n="back" color="#9333ea" size={24} />
+        </button>
       </div>
-      <h1 className="text-[30px] font-extrabold text-slate-900 leading-tight mb-4 text-center tracking-[-0.02em]">
-        你的<span className="text-emerald-600 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-emerald-600/30">財務性格</span><br/>是哪一型？
+
+      <div className="w-[100px] h-[100px] bg-white/60 backdrop-blur-md rounded-[28px] flex items-center justify-center mb-8 shadow-[0_8px_30px_rgba(147,51,234,0.15)] border border-white mt-8 transform rotate-3">
+        <Ic n="money" size={48} color="#9333ea" />
+      </div>
+      <h1 className="text-[36px] font-black text-slate-800 leading-tight mb-4 text-center tracking-tight">
+        探索您的<br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9333ea] to-[#c084fc] drop-shadow-sm">客製化理財性格</span>
       </h1>
-      <p className="text-[15px] text-slate-500 leading-relaxed text-center mb-8">
-        很多人不是不努力，是用錯方式在理財。<br/>用直覺選就好，不用想太多。
-      </p>
-
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
-        <span className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-600/10 px-3 py-1.5 rounded-md font-semibold flex items-center gap-1.5">
-          <Ic n="check" size={14} /> 約 90 秒
-        </span>
-        <span className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-600/10 px-3 py-1.5 rounded-md font-semibold flex items-center gap-1.5">
-          <Ic n="shield" size={14} /> 僅供您查看
-        </span>
-        <span className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-600/10 px-3 py-1.5 rounded-md font-semibold flex items-center gap-1.5">
-          <Ic n="chart" size={14} /> 主副類型分析
-        </span>
+      <div className="text-[15px] text-slate-500 font-bold leading-relaxed text-center mb-10 px-5 py-3 bg-white/40 backdrop-blur-md rounded-2xl border border-white shadow-sm inline-block">
+        每個人適合的節奏不同。<br/>透過 8 個簡單情境，快速看清你的財務輪廓。
       </div>
 
-      <button onClick={() => setStep(1)} className="w-full bg-gradient-to-br from-emerald-600 to-emerald-500 text-white rounded-xl py-4 text-[16px] font-extrabold shadow-xl shadow-emerald-600/30 transition-transform active:scale-95 flex justify-center items-center gap-2">
-        <Ic n="trend" size={20} /> 開始測驗
-      </button>
+      <div className="flex flex-col gap-3 mb-10 w-full max-w-[340px]">
+        <div className="bg-white/60 backdrop-blur-md border border-white px-5 py-4 rounded-[20px] font-black text-slate-700 flex items-center justify-center gap-2 shadow-sm">
+          <div className="bg-[#f3e8ff] p-1.5 rounded-full"><Ic n="check" size={16} color="#9333ea" /></div> 約 90 秒完成
+        </div>
+        <div className="bg-white/60 backdrop-blur-md border border-white px-5 py-4 rounded-[20px] font-black text-slate-700 flex items-center justify-center gap-2 shadow-sm">
+          <div className="bg-[#f3e8ff] p-1.5 rounded-full"><Ic n="shield" size={16} color="#9333ea" /></div> 結果皆為隱私，請安心填寫
+        </div>
+      </div>
+
+      <div className="w-full max-w-[340px] pb-4">
+        <button onClick={() => setStep(1)} className="w-full bg-gradient-to-r from-[#c084fc] to-[#9333ea] text-white rounded-[24px] py-4.5 text-[17px] font-black shadow-[0_8px_25px_rgba(147,51,234,0.3)] transition-all hover:scale-[1.02] active:scale-95 flex justify-center items-center gap-2 cursor-pointer border-0">
+          <Ic n="trend" size={20} color="currentColor" /> 開始測驗
+        </button>
+      </div>
     </motion.div>
   );
 
@@ -238,44 +243,44 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
     const qIdx = step - 1;
     const q = QUESTIONS[qIdx];
     return (
-      <div className="flex-1 flex flex-col bg-white">
-        <div className="bg-gradient-to-br from-emerald-700 to-emerald-600 px-6 pt-6 pb-5 relative">
-          <div className="flex justify-between items-center mb-4">
-            <div className="text-[12px] font-bold text-white/70 tracking-widest flex items-center gap-2">
-              <button onClick={onBack} className="p-0 bg-transparent border-0 opacity-70 hover:opacity-100 cursor-pointer"><Ic n="back" size={16} color="white"/></button>
-              財務性格測驗
-            </div>
-            <div className="text-[12px] font-bold text-white"><span className="opacity-70">第 {step} 題 /</span> 8</div>
-          </div>
-          <div className="flex gap-1.5">
-            {QUESTIONS.map((_, i) => (
-              <div key={i} className={`h-1 flex-1 rounded-full bg-white/20 overflow-hidden relative`}>
-                {i < qIdx && <div className="absolute inset-0 bg-white" />}
-                {i === qIdx && <motion.div initial={{ width: 0 }} animate={{ width: "100%" }} className="absolute inset-0 bg-white/90" />}
-              </div>
-            ))}
+      <div className="flex-1 flex flex-col pt-10 px-5 relative z-10 pb-8 min-h-[100dvh]">
+        
+        <div className="flex justify-between items-center mb-8 relative z-20">
+          <button onClick={onBack} className="bg-white/60 backdrop-blur-md border border-white rounded-[16px] w-10 h-10 flex items-center justify-center cursor-pointer shadow-[0_4px_10px_rgba(0,0,0,0.03)] transition-all hover:bg-white active:scale-95">
+            <Ic n="back" color="#9333ea" size={20} />
+          </button>
+          <div className="text-[13px] font-black text-[#9333ea] bg-white/80 backdrop-blur-md px-4 py-2 rounded-full shadow-sm border border-white">
+             第 {step} 題 <span className="opacity-50 font-bold">/ 8</span>
           </div>
         </div>
+        
+        <div className="flex gap-2 mb-10">
+          {QUESTIONS.map((_, i) => (
+            <div key={i} className={`h-2 flex-1 rounded-full ${i < qIdx ? 'bg-[#c084fc]' : 'bg-white/50'} overflow-hidden relative shadow-inner`}>
+              {i === qIdx && <motion.div initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: 0.5 }} className="absolute inset-0 bg-[#d8b4fe] shadow-[0_0_8px_rgba(216,180,254,0.8)]" />}
+            </div>
+          ))}
+        </div>
 
-        <div className="p-6 flex-1 overflow-y-auto">
+        <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full">
           {q.hint && (
-             <div className="text-[13px] font-bold text-emerald-600/80 mb-3 flex items-center gap-2">
-                <span className="w-4 h-0.5 bg-emerald-600/50 rounded-full" />{q.hint}
-             </div>
+            <div className="text-[13px] font-black text-[#9333ea] mb-4 flex items-center justify-center gap-2 bg-[#fdf4ff]/80 backdrop-blur-md self-start px-4 py-2 rounded-full shadow-sm border border-[#f5d0fe]">
+              <span className="w-2 h-2 bg-[#d946ef] rounded-full shadow-[0_0_5px_rgba(217,70,239,0.8)]" />{q.hint}
+            </div>
           )}
-          <h2 className="text-[20px] font-extrabold text-slate-900 leading-[1.4] mb-6 tracking-[-0.02em]">
+          <h2 className="text-[28px] font-black text-slate-800 leading-[1.3] mb-8 tracking-tight">
             {q.q}
           </h2>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4 pb-8">
             <AnimatePresence mode="wait">
               <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }} className="flex flex-col gap-3">
                 {q.opts.map((o, i) => {
                   const isSelected = answers[qIdx] === o.type;
                   return (
                     <button key={i} onClick={() => handleSelect(qIdx, o.type)}
-                      className={`text-left p-4 rounded-xl border-2 transition-all duration-200 text-[14.5px] leading-relaxed cursor-pointer font-sans
-                        ${isSelected ? 'border-emerald-500 bg-emerald-50 text-emerald-800 font-bold shadow-[inset_4px_0_0_#10b981]' : 'border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/50 hover:shadow-[inset_4px_0_0_#6ee7b7]'}
+                      className={`text-left px-6 py-5 rounded-[24px] transition-all duration-300 text-[16px] cursor-pointer font-sans shadow-[0_4px_15px_rgba(0,0,0,0.02)] border-2
+                        ${isSelected ? 'border-[#c084fc] bg-[#faf5ff]/90 text-[#9333ea] font-black transform scale-[1.02] shadow-[0_8px_20px_rgba(192,132,252,0.15)]' : 'border-white bg-white/60 backdrop-blur-md text-slate-700 font-bold hover:border-[#e9d5ff] hover:bg-white'}
                       `}
                     >
                       {o.text}
@@ -291,79 +296,96 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
   };
 
   const renderLoading = () => (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50 text-center min-h-[100dvh]">
-      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2, ease: "linear" }} className="w-16 h-16 rounded-full border-4 border-slate-200 border-t-emerald-500 mb-6" />
-      <motion.h2 key={"t"+loadMsg} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-[20px] font-extrabold text-slate-900 mb-2">{MSGS[loadMsg].t}</motion.h2>
-      <motion.p key={"s"+loadMsg} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[14px] text-slate-500">{MSGS[loadMsg].s}</motion.p>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 text-center min-h-[100dvh] relative z-10">
+      <div className="relative mb-8">
+         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 3, ease: "linear" }} className="w-24 h-24 rounded-[32px] border-[6px] border-white/60 border-t-[#c084fc] shadow-[0_0_40px_rgba(192,132,252,0.3)] rotate-12" />
+         <div className="absolute inset-0 flex items-center justify-center text-[#9333ea]">
+            <Ic n="star" size={32} color="currentColor" />
+         </div>
+      </div>
+      <motion.h2 key={"t"+loadMsg} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-[26px] font-black text-slate-800 mb-3 tracking-tight drop-shadow-sm">{MSGS[loadMsg].t}</motion.h2>
+      <motion.p key={"s"+loadMsg} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[16px] font-bold text-slate-500 bg-white/60 backdrop-blur-md px-5 py-2 rounded-2xl border border-white shadow-sm inline-block">{MSGS[loadMsg].s}</motion.p>
     </motion.div>
   );
 
   const renderResult = () => {
-    const { winner, subType, counts } = calculateResult();
+    const { winner, subType } = calculateResult();
     const main = TYPES[winner];
     const sub = subType ? TYPES[subType] : null;
 
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`min-h-full pb-8 ${main.bg}`}>
-        <div className="pt-10 px-6 text-center">
-          <div className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider mb-5 ${main.color} ${main.border} border bg-white/50`}>
-            <Ic n="trend" size={14} /> 你的財務性格
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-[100dvh] pb-10 relative z-10 flex flex-col items-center">
+        <div className={`pt-10 px-5 text-center mb-6 w-full max-w-sm`}>
+          <div className={`inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-[13px] font-black tracking-widest mb-6 ${main.color} bg-white/60 backdrop-blur-md border border-white shadow-sm`}>
+            <Ic n="trend" size={18} /> 您的財務性格
           </div>
-          <div className="relative mb-3">
-             <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", bounce: 0.5 }} className={`w-20 h-20 rounded-2xl mx-auto flex items-center justify-center bg-white shadow-xl ${main.color}`}>
-               <Ic n={main.icon} size={36} color="currentColor" />
-             </motion.div>
+          
+          <div className={`w-[100px] h-[100px] rounded-[32px] mx-auto flex items-center justify-center shadow-[0_15px_40px_rgba(0,0,0,0.08)] bg-white/80 backdrop-blur-md border border-white mb-6 ${main.color} transform rotate-3`}>
+             <Ic n={main.icon} size={48} color="currentColor" />
           </div>
-          <div className={`text-[28px] font-extrabold tracking-[-0.04em] mb-1.5 ${main.color.replace('text-', 'text-gray-900 ')} text-slate-900`}>
+          
+          <div className={`text-[36px] font-black tracking-tight mb-2 ${main.color} drop-shadow-sm`}>
             {main.name}
           </div>
           {sub && (
-            <div className={`text-[13px] font-bold ${main.color} opacity-85 mb-1.5`}>
-              （副：{sub.name}）
+            <div className={`text-[15px] font-black text-slate-500 opacity-80 mb-4`}>
+              ( 副標籤：{sub.name} )
             </div>
           )}
-          <div className="text-[14px] text-slate-500 mb-4">{main.tagline}</div>
+          <div className="text-[16px] font-bold text-slate-600 mb-6 bg-white/60 backdrop-blur-md border border-white px-5 py-2.5 rounded-[20px] shadow-sm inline-block">{main.tagline}</div>
           
           {sub && main.subDescs[subType!] && (
-            <div className="bg-white/60 border border-slate-200/50 rounded-xl p-3.5 mx-auto max-w-[320px] text-[13px] text-slate-600 text-left leading-relaxed">
+            <div className="bg-white/60 backdrop-blur-md border border-white rounded-[24px] p-5 mx-auto text-[15px] text-slate-600 text-left font-semibold leading-relaxed shadow-[0_8px_30px_rgba(0,0,0,0.03)]">
               {main.subDescs[subType!]}
             </div>
           )}
         </div>
 
-        <div className="p-5 flex flex-col gap-3">
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-            <div className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-3">你是這樣的人</div>
-            <div className="text-[14.5px] text-slate-700 leading-[1.75]">{main.desc}</div>
-          </div>
-
-          <div className="bg-amber-50 border-l-4 border-amber-500 rounded-r-2xl p-4 shadow-sm shadow-amber-500/10">
-            <div className="text-[11px] font-extrabold text-amber-700 uppercase tracking-widest mb-2 flex items-center gap-1.5">
-              <Ic n="info" size={14} /> 你可能不知道
+        <div className="px-5 flex flex-col gap-4 w-full max-w-sm">
+          <div className={`bg-white/60 backdrop-blur-md rounded-[32px] p-8 shadow-[0_8px_30px_rgba(0,0,0,0.03)] border border-white`}>
+            <div className={`text-[14px] font-black tracking-widest mb-4 flex items-center gap-2 ${main.color}`}>
+              <span className={`w-2 h-2 rounded-full shadow-sm ${main.bar}`} /> 您是這樣的人
             </div>
-            <div className="text-[14px] text-amber-900 leading-[1.75] opacity-90">{main.insight}</div>
+            <div className="text-[16px] text-slate-700 leading-relaxed font-semibold">{main.desc}</div>
           </div>
 
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-            <div className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-3">你可以從這裡開始</div>
-            <div className="text-[14.5px] text-slate-700 leading-[1.75]">{main.nextStep}</div>
+          <div className="bg-[#fffbeb]/80 backdrop-blur-md border border-white rounded-[32px] p-8 shadow-[0_8px_30px_rgba(245,158,11,0.05)]">
+            <div className="text-[14px] font-black text-[#d97706] tracking-widest mb-4 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full shadow-sm bg-[#d97706]" /> 您可能沒發現的盲點
+            </div>
+            <div className="text-[15.5px] text-[#92400e] leading-[1.8] font-bold opacity-90">{main.insight}</div>
           </div>
 
-          <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 mt-2 shadow-xl shadow-slate-900/10 text-white text-center">
-            <div className="text-[16px] font-extrabold mb-2">你的結果，可以變成實際計劃</div>
-            <div className="text-[13px] text-slate-300 leading-relaxed mb-6">{main.ctaNote}</div>
+          <div className={`bg-white/60 backdrop-blur-md rounded-[32px] p-8 shadow-[0_8px_30px_rgba(0,0,0,0.03)] border border-white mb-4`}>
+            <div className={`text-[14px] font-black tracking-widest mb-4 flex items-center gap-2 ${main.color}`}>
+              <span className={`w-2 h-2 rounded-full shadow-sm ${main.bar}`} /> 可以從這裡開始
+            </div>
+            <div className="text-[16px] text-slate-700 leading-relaxed font-semibold">{main.nextStep}</div>
+          </div>
+
+          <div className="bg-gradient-to-br from-[#c084fc] to-[#9333ea] rounded-[32px] p-8 shadow-[0_15px_40px_rgba(147,51,234,0.3)] text-white text-center relative overflow-hidden border border-[#e9d5ff]">
+            <div className="absolute top-[-20%] right-[-10%] w-[150px] h-[150px] bg-white/30 rounded-full blur-[40px] pointer-events-none" />
             
-            <div className="bg-white/10 border border-white/10 rounded-xl p-3.5 flex items-start gap-3 text-left mb-6">
-              <div className="shrink-0 mt-0.5"><Ic n="gift" size={16} /></div>
-              <div className="text-[12.5px] text-slate-200 leading-relaxed">
-                預約諮詢後，我會為你整理一份<strong className="text-white">專屬資產配置方向圖</strong>。
+            <div className="relative z-10">
+              <div className="text-[20px] font-black mb-3 text-shadow-sm tracking-wide">結果化為實際行動</div>
+              <div className="text-[14.5px] text-[#faf5ff] leading-relaxed mb-6 font-semibold">{main.ctaNote}</div>
+              
+              <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-[24px] p-5 flex items-start gap-4 text-left mb-8 shadow-inner">
+                <div className="shrink-0 mt-0.5 text-[#fbbf24] drop-shadow-sm"><Ic n="star" size={24} color="currentColor" /></div>
+                <div className="text-[14px] text-slate-50 leading-relaxed font-semibold">
+                  預約諮詢後，我會為您整理一份<strong className="text-white font-black bg-white/20 px-1 py-0.5 rounded shadow-sm">專屬資產配置藍圖</strong>。
+                </div>
+              </div>
+
+              <button onClick={onComplete} className="w-full bg-white text-[#9333ea] rounded-[20px] py-4.5 text-[16px] font-black shadow-[0_8px_20px_rgba(0,0,0,0.15)] transition-transform active:scale-95 outline-none border-0 cursor-pointer flex justify-center items-center gap-2 hover:scale-[1.02]">
+                領取專屬解析指南 <Ic n="arrowRight" size={18} color="currentColor" />
+              </button>
+              <div className="mt-8">
+                <button onClick={() => setStep(0)} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-5 py-2 text-white font-bold text-[14px] hover:bg-white/30 cursor-pointer active:scale-95 transition-all shadow-sm">
+                  再測一次
+                </button>
               </div>
             </div>
-
-            <button onClick={onComplete} className="w-full bg-emerald-500 text-white rounded-xl py-4 text-[15px] font-extrabold shadow-lg shadow-emerald-500/20 transition-transform active:scale-95 outline-none border-0 cursor-pointer">
-              立即預約免費諮詢
-            </button>
-            <div className="mt-4"><button onClick={() => setStep(0)} className="bg-transparent border-0 text-slate-400 text-[12px] underline cursor-pointer">重新測驗</button></div>
           </div>
         </div>
       </motion.div>
@@ -371,11 +393,20 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-slate-50 flex flex-col font-sans">
-      {step === 0 && renderWelcome()}
-      {step > 0 && step <= 8 && renderQuestion()}
-      {step === 9 && renderLoading()}
-      {step === 10 && renderResult()}
+    <div className="min-h-[100dvh] bg-transparent flex flex-col relative overflow-hidden">
+        {/* Background Orbs */}
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[40%] bg-[#e0e7ff] rounded-full blur-[80px] pointer-events-none opacity-60 mix-blend-multiply" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[50%] bg-[#f3e8ff] rounded-full blur-[100px] pointer-events-none opacity-60 mix-blend-multiply" />
+        <div className="absolute top-[30%] right-[10%] w-[40%] h-[40%] bg-[#dbeafe] rounded-full blur-[80px] pointer-events-none opacity-50 mix-blend-multiply" />
+      
+      <div className="relative z-10 w-full flex-1 flex flex-col items-center">
+        <div className="w-full">
+          {step === 0 && renderWelcome()}
+          {step > 0 && step <= 8 && renderQuestion()}
+          {step === 9 && renderLoading()}
+          {step === 10 && renderResult()}
+        </div>
+      </div>
     </div>
   );
 };

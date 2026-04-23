@@ -1,68 +1,50 @@
 import { useState, useEffect } from "react";
+import liff from "@line/liff";
 
-export interface LiffProfile {
-  userId: string;
-  displayName: string;
-  pictureUrl?: string;
-}
-
-interface UseLiffReturn {
-  profile: LiffProfile | null;
-  loading: boolean;
-  isDemo: boolean;
-}
-
-// ── 設定區 ───────────────────────────────────────────
-const LIFF_ID = import.meta.env.VITE_LIFF_ID ?? "YOUR_LIFF_ID_HERE";
-
-// 本機開發時自動啟用 demo 身分（hostname 是 localhost 才會用）
-const IS_DEV = typeof window !== "undefined" && window.location.hostname === "localhost";
-
-const DEMO_PROFILE: LiffProfile = {
-  userId:      "Udemo_steven_001",
-  displayName: "Steven（測試）",
-  pictureUrl:  undefined,
-};
-// ────────────────────────────────────────────────────
-
-export function useLiff(): UseLiffReturn {
-  const [profile, setProfile] = useState<LiffProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+export const useLiff = () => {
+  const [error, setError] = useState<string | null>(null);
+  const [isReady, setIsReady] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
-    // 本機開發 → 直接用 demo 身分，跳過 LIFF
-    if (IS_DEV) {
-      setProfile(DEMO_PROFILE);
-      setLoading(false);
+    // 從環境變數讀取 LIFF ID (請確保在 Netlify 和 .env 中都有設定 VITE_LIFF_ID)
+    const liffId = import.meta.env.VITE_LIFF_ID;
+    
+    if (!liffId) {
+      console.warn("VITE_LIFF_ID 尚未設定！無法初始化 LIFF。");
       return;
     }
 
-    // 生產環境 → 用 LIFF SDK
-    const init = async () => {
+    const initializeLiff = async () => {
       try {
-        const liff = (window as any).liff;
-        if (!liff) throw new Error("LIFF SDK not loaded");
-
-        await liff.init({ liffId: LIFF_ID });
-
+        await liff.init({ liffId });
+        setIsReady(true);
+        
         if (liff.isLoggedIn()) {
-          const p = await liff.getProfile();
-          setProfile({
-            userId:      p.userId,
-            displayName: p.displayName,
-            pictureUrl:  p.pictureUrl,
-          });
+          const userProfile = await liff.getProfile();
+          setProfile(userProfile);
         }
-      } catch (err) {
-        console.warn("[useLiff] 初始化失敗，袪客模式：", err);
-        setProfile(null);
-      } finally {
-        setLoading(false);
+      } catch (err: any) {
+        console.error("LIFF 初始化失敗", err);
+        setError(err.message);
       }
     };
 
-    init();
+    initializeLiff();
   }, []);
 
-  return { profile, loading, isDemo: IS_DEV };
-}
+  const login = () => {
+    if (!liff.isLoggedIn()) {
+      liff.login();
+    }
+  };
+
+  const logout = () => {
+    if (liff.isLoggedIn()) {
+      liff.logout();
+      window.location.reload();
+    }
+  };
+
+  return { liff, isReady, error, profile, login, logout };
+};

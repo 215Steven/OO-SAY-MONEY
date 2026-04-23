@@ -69,24 +69,31 @@ export default function App() {
   return (
     <div className="max-w-[430px] mx-auto min-h-[100dvh] font-sans relative overflow-x-hidden flex flex-col"
       style={{
-        background: role ? THEMES[ROLE_META[role]?.theme||"newMember"].bg : "#f8fafc",
+        background: role ? THEMES[ROLE_META[role]?.theme||"newMember"].bg : "#f8f5ff",
       }}
     >
-      <div className="bg-white/90 backdrop-blur-md border-b border-slate-100 py-3 px-5 text-center text-[14px] font-bold text-slate-900 tracking-wide sticky top-0 z-50 shrink-0">
-        OO SAY MONEY
-        {role && (
-          <span className="ml-2 text-[10px] font-bold py-0.5 px-2 rounded-full"
-            style={{
-              background: THEMES[ROLE_META[role].theme].accent + "10",
-              color: THEMES[ROLE_META[role].theme].accent,
-            }}
-          >
-            {ROLE_META[role].label}
-          </span>
-        )}
-      </div>
+      {/* Global Background Orbs - present on all pages for consistency */}
+      <div className="fixed top-[-100px] left-[-50px] w-[300px] h-[300px] bg-[#d8b4fe]/30 rounded-full blur-[80px] z-0 pointer-events-none" />
+      <div className="fixed top-[150px] right-[-100px] w-[250px] h-[250px] bg-[#c084fc]/15 rounded-full blur-[60px] z-0 pointer-events-none" />
 
-      <div className="flex-1 relative">
+      {/* Exclude standard header on RegisterPage to let it entirely construct its own top nav */}
+      {location !== '/register' && (
+        <div className="bg-white/60 backdrop-blur-xl border-b border-white shadow-[0_4px_20px_rgba(0,0,0,0.02)] py-3 px-5 text-center text-[15px] font-bold text-[#4c1d95] tracking-wide sticky top-0 z-50 shrink-0">
+          OO SAY MONEY
+          {role && (
+            <span className="ml-2 text-[10.5px] font-bold py-1 px-2.5 rounded-full"
+              style={{
+                background: THEMES[ROLE_META[role].theme].accent + "15",
+                color: THEMES[ROLE_META[role].theme].accent,
+              }}
+            >
+              {ROLE_META[role].label}
+            </span>
+          )}
+        </div>
+      )}
+
+      <div className="flex-1 relative z-10 w-full">
         <AnimatePresence mode="wait">
           <Switch location={location} key={location}>
             <Route path="/">
@@ -118,7 +125,7 @@ export default function App() {
                 {role ? (
                   <RoleHome role={role} onSelect={handleRoleSelect} onLogout={() => { setRole(null); window.history.replaceState({}, "", "/"); navigate("/"); }} />
                 ) : (
-                  <div className="p-10 text-center text-slate-500">重定向中...</div>
+                  <div className="p-10 text-center text-slate-500 font-medium">重定向中...</div>
                 )}
               </PageTransition>
             </Route>
@@ -141,8 +148,8 @@ export default function App() {
             <Route>
               <PageTransition>
                 <div className="p-10 text-center">
-                  <h2 className="text-[20px] font-extrabold text-slate-900">Page Not Found</h2>
-                  <button onClick={goHome} className="mt-5 py-2 px-4 rounded-full bg-slate-900 text-white cursor-pointer font-bold border-0">回到首頁</button>
+                  <h2 className="text-[20px] font-extrabold text-[#4c1d95]">Page Not Found</h2>
+                  <button onClick={goHome} className="mt-5 py-3 px-6 rounded-[16px] bg-[#9333ea] text-white cursor-pointer font-bold border-0 shadow-[0_8px_20px_rgba(147,51,234,0.3)]">回到首頁</button>
                 </div>
               </PageTransition>
             </Route>

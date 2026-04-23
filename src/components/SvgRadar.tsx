@@ -21,13 +21,17 @@ export function SvgRadar({ data }: { data: {s: string, v: number}[] }) {
       ))}
       <polygon
         points={data.map((d,i) => pt(i, d.v/100).join(",")).join(" ")}
-        className="fill-indigo-600/25 stroke-indigo-600" strokeWidth="2"/>
+        className="fill-[#c084fc]/30 stroke-[#9333ea]" strokeWidth="2.5"/>
       {data.map((d,i) => {
-        const [x,y] = pt(i, 1.22);
+        const [x,y] = pt(i, d.v/100);
+        return <circle key={`dot-${i}`} cx={x} cy={y} r="3" className="fill-[#9333ea]" />;
+      })}
+      {data.map((d,i) => {
+        const [x,y] = pt(i, 1.25);
         return (
           <text key={i} x={x} y={y}
             textAnchor="middle" dominantBaseline="middle"
-            fontSize="9.5" className="fill-slate-500 font-semibold">
+            fontSize="10" className="fill-slate-600 font-bold">
             {d.s}
           </text>
         );
