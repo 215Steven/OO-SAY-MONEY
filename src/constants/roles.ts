@@ -13,14 +13,14 @@ export const ROLE_META: Record<string, any> = {
 
 export const GRIDS: Record<string, any> = {
   newMember: {
-    title: "你的理財空間", bg: "transparent",
+    title: "會員專區", bg: "transparent",
     items: [
-      { key:"money_tool", label:"錢都去哪了", icon:"money",    bg:"#F8F8F6", accent:"#3E4E42", sub:"財務診斷工具" },
-      { key:"defense",    label:"財務防線",   icon:"shield",   bg:"#F8F8F6", accent:"#3E4E42", sub:"保障缺口分析" },
-      { key:"blueprint",  label:"啟富藍圖",   icon:"map",      bg:"#F8F8F6", accent:"#3E4E42", sub:"理財規劃路徑" },
-      { key:"inspire",    label:"理財靈感",   icon:"star",     bg:"#F8F8F6", accent:"#3E4E42", sub:"知識與文章" },
-      { key:"book",       label:"預約聊聊",   icon:"calendar", bg:"#F8F8F6", accent:"#3E4E42", sub:"免費初次諮詢" },
-      { key:"story",      label:"故事起點",   icon:"book",     bg:"#F8F8F6", accent:"#3E4E42", sub:"認識我們" },
+      { key:"defense",    label:"財務防線",   icon:"shield",   bg:"#F8F8F6", accent:"#3E4E42", sub:"保障" },
+      { key:"money_tool", label:"錢的流向",   icon:"money",    bg:"#F8F8F6", accent:"#3E4E42", sub:"財管家" },
+      { key:"appointment",label:"預約聊聊",   icon:"calendar", bg:"#F8F8F6", accent:"#3E4E42", sub:"預約" },
+      { key:"about",      label:"認識我們",   icon:"book",     bg:"#F8F8F6", accent:"#3E4E42", sub:"我們能幫你什麼" },
+      { key:"inspire",    label:"理財靈感",   icon:"star",     bg:"#F8F8F6", accent:"#3E4E42", sub:"理財文章" },
+      { key:"blueprint",  label:"啟富藍圖",   icon:"map",      bg:"#F8F8F6", accent:"#3E4E42", sub:"月配息說明頁" },
     ]
   },
   client: {

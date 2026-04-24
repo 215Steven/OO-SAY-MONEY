@@ -1,24 +1,28 @@
-import React from 'react';
+import {
+  Info, DollarSign, Sparkles, ShieldCheck, Calendar, BookOpen, Map, User, Mail, Settings, Diamond, TrendingUp, Check, ChevronRight, ChevronLeft, X
+} from 'lucide-react';
 
-export const icons: Record<string, React.JSX.Element> = {
-  user:    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>,
-  shield:  <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/>,
-  chart:   <path d="M5 9.2h3V19H5zm5.6-4.2h2.8V19h-2.8zm5.6 8h2.8V19h-2.8z"/>,
-  money:   <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>,
-  calendar:<path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM5 8V6h14v2H5z"/>,
-  info:    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>,
-  star:    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>,
-  book:    <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/>,
-  mail:    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>,
-  map:     <path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5z"/>,
-  gear:    <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.57 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>,
-  diamond: <path d="M19 3H5L2 9l10 12L22 9l-3-6zm-8.5 6L12 6l1.5 3h-3zm5.36 0l-1.5-3h3.29L19.1 9h-3.24zM5.61 6h3.29L7.39 9H4.15L5.61 6zM4.87 11h2.93L10.12 17 4.87 11zm5.32 0h3.62L12 17.08 10.19 11zm5.61 0h2.93L13.88 17l3.92-6z"/>,
-  trend:   <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>,
-  check:   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>,
-  arrow:   <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>,
-  back:    <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/>,
-  close:   <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>,
+const icons: Record<string, any> = {
+  user: User,
+  shield: ShieldCheck,
+  chart: TrendingUp, // Renamed from chart to match usage if needed, but keeping keys for now
+  money: DollarSign,
+  calendar: Calendar,
+  info: Info,
+  star: Sparkles,
+  book: BookOpen,
+  mail: Mail,
+  map: Map,
+  gear: Settings,
+  diamond: Diamond,
+  trend: TrendingUp,
+  check: Check,
+  arrow: ChevronRight,
+  back: ChevronLeft,
+  close: X,
 };
-export const Ic = ({ n, size=22, color="currentColor" }: { n: string, size?: number, color?: string }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill={color}>{icons[n]||icons.info}</svg>
-);
+
+export const Ic = ({ n, size=24, color="currentColor", className="" }: { n: string, size?: number, color?: string, className?: string }) => {
+  const IconComponent = icons[n] || Info;
+  return <IconComponent size={size} color={color} className={className} strokeWidth={1.5} />;
+};

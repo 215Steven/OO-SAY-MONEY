@@ -3,9 +3,9 @@ import { motion } from "motion/react";
 
 export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
   const items = [
-    { key:"about",  label:"認識我們", bg:"bg-[#F9F9F8]", text:"text-[#2D2D2A]", icon:"info",  sub:"財務規劃的起點" },
-    { key:"money",  label:"錢都去哪", bg:"bg-[#F9F9F8]", text:"text-[#2D2D2A]", icon:"money", sub:"2分鐘財務測驗" },
-    { key:"unlock", label:"解鎖更多", bg:"bg-[#F9F9F8]", text:"text-[#2D2D2A]", icon:"star",  sub:"會員專屬資源" },
+    { key:"story",  label:"故事起點", bg:"bg-[#F9F9F8]", text:"text-[#2D2D2A]", icon:"info",  sub:"自我介紹" },
+    { key:"quiz",   label:"錢去哪了", bg:"bg-[#F9F9F8]", text:"text-[#2D2D2A]", icon:"money", sub:"測驗" },
+    { key:"unlock", label:"解鎖更多", bg:"bg-[#F9F9F8]", text:"text-[#2D2D2A]", icon:"star",  sub:"簡述會員頁的六格網頁" },
   ];
   return (
     <div className="min-h-[100dvh] pb-12 flex flex-col relative bg-[#F8F8F6] items-center">
@@ -43,7 +43,7 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
             </div>
             <div className="pt-2">
               <div className="w-6 h-6 flex items-center justify-center text-[#8B8A88] group-hover:text-[#2D2D2A] transition-colors">
-                <Ic n="arrowRight" size={16} color="currentColor" />
+                <Ic n="arrow" size={16} color="currentColor" />
               </div>
             </div>
           </motion.div>
@@ -52,11 +52,11 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
       
       {/* Registration CTA */}
       <div className="px-5 flex flex-col gap-4 w-full max-w-sm">
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }} className="bg-[#2D2D2A] p-10 mt-6 text-center">
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }} className="bg-[#2D2D2A] p-10 mt-8 text-center rounded-sm">
           <h3 className="text-[18px] font-serif font-bold text-[#FFFFFF] mb-3 tracking-widest">開始專屬理財旅程</h3>
           <p className="text-[13px] text-[#AFAEA9] font-normal mb-8 leading-relaxed tracking-wide">紀錄財務、一對一顧問諮詢<br/>與您的客製化理財藍圖。</p>
-          <button onClick={() => onSelect("login")} className="w-full bg-[#FFFFFF] text-[#2D2D2A] border border-[#FFFFFF] py-4 text-[13px] font-medium tracking-widest uppercase cursor-pointer hover:bg-[#EAEAE6] transition-colors flex justify-center items-center gap-2">
-             前往註冊 / 登入 <Ic n="arrowRight" size={16} color="currentColor" />
+          <button onClick={() => onSelect("login")} className="w-full bg-[#FFFFFF] text-[#2D2D2A] border border-[#FFFFFF] py-4 text-[13px] font-bold tracking-widest cursor-pointer hover:bg-[#EAEAE6] transition-colors flex justify-center items-center gap-2">
+             前往註冊 / 登入 <Ic n="arrow" size={16} color="currentColor" />
           </button>
         </motion.div>
       </div>

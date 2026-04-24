@@ -132,7 +132,9 @@ export default function MainApp() {
             <Route path="/defense"><PageTransition><DefensePage onBack={goBack} role={role} /></PageTransition></Route>
             <Route path="/blueprint"><PageTransition><BlueprintPage onBack={goBack} role={role} /></PageTransition></Route>
             <Route path="/inspire"><PageTransition><TemplatePage title="理財靈感" desc="知識與文章" onBack={goBack} /></PageTransition></Route>
-            <Route path="/story"><PageTransition><TemplatePage title="故事起點" desc="認識我們" onBack={goBack} /></PageTransition></Route>
+            <Route path="/story">
+              <PageTransition><AboutPage onBack={goBack} onJoin={() => navigate("/register")} /></PageTransition>
+            </Route>
             <Route path="/news"><PageTransition><TemplatePage title="最新動態" desc="最新消息與市場動態" onBack={goBack} /></PageTransition></Route>
             <Route path="/plan"><PageTransition><TemplatePage title="啟富計劃" desc="我的財務規劃" onBack={goBack} /></PageTransition></Route>
             <Route path="/notes"><PageTransition><TemplatePage title="理財筆記" desc="文章與資源" onBack={goBack} /></PageTransition></Route>
