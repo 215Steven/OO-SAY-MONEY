@@ -84,9 +84,13 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
         body: JSON.stringify(formData)
       });
       if (res.ok) {
-        alert('註冊成功！為您啟動專屬會員面板。');
+        alert('註冊成功！將為您關閉頁面，請回到 LINE 官方帳號查看選單。');
         clearSession();
-        onSubmitSuccess();
+        if (liff && liff.isInClient && liff.isInClient()) {
+            liff.closeWindow();
+        } else {
+            onSubmitSuccess();
+        }
       } else {
         alert('提交失敗，請檢查網路連線或稍後再試。');
       }
