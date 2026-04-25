@@ -1,53 +1,76 @@
 const { Client } = require("@notionhq/client");
 
-exports.handler = async (event, context) => {
+const notion = new Client({ auth: process.env.NOTION_API_KEY });
+const dbId = process.env.NOTION_DATABASE_ID; // 94c20fa3caf142e9a3882f5ec54c8c6c
+
+exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
+
+  let body;
   try {
-    const data = JSON.parse(event.body);
-    const { identity, name, phone, birthday, email, newsletter, lineUserId } = data;
-    const key = process.env.NOTION_API_KEY;
-    const dbId = process.env.NOTION_DATABASE_ID;
-    const lineToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
-    const lineRichMenuId6 = process.env.LINE_RICH_MENU_ID_6;
+    body = JSON.parse(event.body);
+  } catch {
+    return { statusCode: 400, body: "Invalid JSON" };
+  }
 
-    if (!key || !dbId) {
-      console.log("Mocking Notion submission:", data);
-      await new Promise(resolve => setTimeout(resolve, 800));
-    } else {
-      const notion = new Client({ auth: key });
-      await notion.pages.create({
-        parent: { database_id: dbId },
-        properties: {
-          "Name":          { title: [{ text: { content: name || "" } }] },
-          "Phone":         { rich_text: [{ text: { content: phone || "" } }] },
-          "Birthday":      { rich_text: [{ text: { content: birthday || "" } }] },
-          "Email":         { email: email || null },
-          "Identity":      { select: { name: identity || "其他" } },
-          "Newsletter":    { checkbox: !!newsletter },
-          "LINE User ID":  { rich_text: [{ text: { content: lineUserId || "" } }] },
-          "Is Member":     { checkbox: true },
-          "Registered At": { date: { start: new Date().toISOString().split("T")[0] } }
-        }
-      });
+  const { name, phone, lineUserId } = body;
+
+  if (!lineUserId) {
+    return { statusCode: 400, body: JSON.stringify({ error: "lineUserId is required" }) };
+  }
+
+  try {
+    // Check if user already exists
+    const existing = await notion.databases.query({
+      database_id: dbId,
+      filter: {
+        property: "LINE UserID",
+        rich_text: { equals: lineUserId },
+      },
+    });
+
+    if (existing.results.length > 0) {
+      return {
+        statusCode: 200,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ success: true, alreadyExists: true }),
+      };
     }
 
-    if (lineUserId && lineToken && lineRichMenuId6) {
-      try {
-        const url = "https://api.line.me/v2/bot/user/" + lineUserId + "/richmenu/" + lineRichMenuId6;
-        const lineRes = await fetch(url, {
-          method: "POST",
-          headers: { "Authorization": "Bearer " + lineToken, "Content-Type": "application/json" }
-        });
-        if (!lineRes.ok) console.error("LINE API Error:", await lineRes.text());
-        else console.log("Rich Menu switched for:", lineUserId);
-      } catch (e) { console.error("LINE connect failed", e); }
-    }
+    // Create new member record
+    await notion.pages.create({
+      parent: { database_id: dbId },
+      properties: {
+        "LINE 名稱": {
+          title: [{ text: { content: name || "" } }],
+        },
+        "LINE UserID": {
+          rich_text: [{ text: { content: lineUserId } }],
+        },
+        "手機號碼": {
+          phone_number: phone || null,
+        },
+        "加入日期": {
+          date: { start: new Date().toISOString().split("T")[0] },
+        },
+        "客戶狀態": {
+          select: { name: "現有客戶" },
+        },
+      },
+    });
 
-    return { statusCode: 200, body: JSON.stringify({ status: "ok" }) };
-  } catch (error) {
-    console.error("Register Error:", error);
-    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ success: true }),
+    };
+  } catch (err) {
+    console.error("Notion error:", err);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: err.message }),
+    };
   }
 };
