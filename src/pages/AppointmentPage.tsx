@@ -145,32 +145,32 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
   );
 
   return (
-    <div className="min-h-[100dvh] bg-[#F8F8F6] font-sans pb-10 relative overflow-hidden flex flex-col">
+    <div className="min-h-screen bg-warm-gray-50 font-sans pb-10 relative overflow-hidden flex flex-col">
 
       {/* Toast */}
       <AnimatePresence>
         {toastMsg && (
           <motion.div initial={{ opacity:0, y:20, x:'-50%' }} animate={{ opacity:1, y:0, x:'-50%' }} exit={{ opacity:0, y:20, x:'-50%' }}
-            className="fixed bottom-8 left-1/2 bg-[#2D2D2A] text-[#FFFFFF] px-5 py-3 text-[13px] font-medium tracking-wide whitespace-nowrap z-50">
+            className="fixed bottom-8 left-1/2 bg-warm-gray-800 text-white px-5 py-3 text-[13px] font-medium tracking-wide whitespace-nowrap z-50 rounded-lg shadow-lg">
             {toastMsg}
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="relative pt-10 px-5 pb-6 shrink-0 border-b border-[#EAEAE6] bg-[#FFFFFF]">
-        <div className="flex items-center justify-between mb-6 relative z-10">
-           <button onClick={onBack} className="bg-[#FFFFFF] border border-[#EAEAE6] w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-[#F2F2F0] transition-colors relative z-10 shrink-0">
-             <Ic n="back" color="#2D2D2A" size={20} />
+      <div className="relative pt-12 px-6 pb-6 shrink-0 border-b border-warm-gray-200 bg-white">
+        <div className="flex items-center justify-between mb-8 relative z-10 w-full max-w-sm mx-auto">
+           <button onClick={onBack} className="bg-white border border-warm-gray-200 w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-warm-gray-100 transition-colors rounded-full shadow-sm">
+             <Ic n="back" color="var(--color-warm-gray-800)" size={20} />
            </button>
-           <div className="text-[11px] font-medium text-[#2D2D2A] tracking-[0.2em] uppercase px-3 py-1 flex-1 text-center">
+           <div className="text-[11px] font-medium text-warm-gray-800 tracking-[0.2em] uppercase px-3 py-1 text-center">
              OO SAY MONEY
            </div>
            <div className="w-10 h-10 shrink-0" />
         </div>
         
-        <div className="text-center relative z-10 pt-2 pb-4">
-          <h1 className="text-[24px] font-serif font-bold text-[#2D2D2A] tracking-wider mb-3">預約免費諮詢</h1>
-          <p className="text-[12px] text-[#555] font-normal tracking-widest">專屬財務顧問 · 為您量身打造規劃</p>
+        <div className="text-center relative z-10 pt-2 pb-4 w-full max-w-sm mx-auto">
+          <h1 className="text-[24px] font-serif font-bold text-warm-gray-800 tracking-wide mb-3">預約免費諮詢</h1>
+          <p className="text-[12px] text-warm-gray-800/70 font-normal tracking-widest">專屬財務顧問 · 為您量身打造規劃</p>
         </div>
         
         {step < 4 && renderStepIndicator()}

@@ -1,16 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Serif+TC:wght@400;500;600;700;900&display=swap');
 @import "tailwindcss";
 
-@layer base {
-  body {
-    background-color: #F8F8F6;
-    font-family: 'Inter', 'PingFang TC', 'Noto Sans TC', system-ui, sans-serif;
-    color: #2D2D2A;
-  }
-}
-
 @theme {
   --font-serif: "Noto Serif TC", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --color-warm-gray-50: #F9F9F8;
+  --color-warm-gray-100: #F2F0ED;
+  --color-warm-gray-200: #E6E2DE;
+  --color-warm-gray-800: #2D2D2A;
+  --color-warm-gold: #B8966E;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-warm-gray-50);
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--color-warm-gray-800);
+  }
 }
 
 @layer utilities {
