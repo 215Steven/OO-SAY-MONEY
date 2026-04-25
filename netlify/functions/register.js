@@ -1,9 +1,9 @@
-const { Client } = require("@notionhq/client");
+import { Client } from "@notionhq/client";
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
 const dbId = process.env.NOTION_DATABASE_ID; // 94c20fa3caf142e9a3882f5ec54c8c6c
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
@@ -18,7 +18,10 @@ exports.handler = async (event) => {
   const { name, phone, lineUserId } = body;
 
   if (!lineUserId) {
-    return { statusCode: 400, body: JSON.stringify({ error: "lineUserId is required" }) };
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "lineUserId is required" }),
+    };
   }
 
   try {
