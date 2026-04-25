@@ -1,16 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import { Ic } from "@/src/components/Icons";
 import { motion, AnimatePresence } from "motion/react";
+import liff from '@line/liff';
 
 // --- Constants ---
-const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
-const TOPICS_LIST = ['🏥 醫療保險', '📈 投資規劃', '📋 理賠服務', '🔄 保險變更', '🚗 汽機車險', '✈️ 旅遊保險'];
+const WEEKDAYS = ['æ¥', 'ä¸', 'äº', 'ä¸', 'å', 'äº', 'å­'];
+const TOPICS_LIST = ['ð¥ é«çä¿éª', 'ð æè³è¦å', 'ð çè³ æå', 'ð ä¿éªè®æ´', 'ð æ±½æ©è»éª', 'âï¸ æéä¿éª'];
 const SLOTS_LIST = [
-  { time: '10:30 – 11:30', label: '上午場' },
-  { time: '12:00 – 13:30', label: '午間場' },
-  { time: '14:00 – 15:30', label: '下午場' },
-  { time: '19:00 – 20:30', label: '晚間場' },
-  { time: '🤝 其他時段', label: '請在備註說明方便時間', isOther: true }
+  { time: '10:30 â 11:30', label: 'ä¸åå ´' },
+  { time: '12:00 â 13:30', label: 'åéå ´' },
+  { time: '14:00 â 15:30', label: 'ä¸åå ´' },
+  { time: '19:00 â 20:30', label: 'æéå ´' },
+  { time: 'ð¤ å¶ä»ææ®µ', label: 'è«å¨åè¨»èªªææ¹ä¾¿æé', isOther: true }
 ];
 
 export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
@@ -19,7 +20,27 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
   const [toastMsg, setToastMsg] = useState('');
   
   // Profile (mock LIFF)
-  const [profile, setProfile] = useState({ name: '載入中…', avatar: null });
+  const [profile, setProfile] = useState({ name: 'è¼å¥ä¸­â¦', avatar: null });
+  const [lineUserId, setLineUserId] = useState('');
+
+  // Init LIFF and get real userId
+  useEffect(() => {
+    const initLiff = async () => {
+      try {
+        const liffId = import.meta.env.VITE_LIFF_ID || '';
+        if (!liffId) return;
+        await liff.init({ liffId });
+        if (liff.isLoggedIn()) {
+          const p = await liff.getProfile();
+          setLineUserId(p.userId || '');
+          setProfile(prev => ({ ...prev, name: p.displayName || prev.name }));
+        }
+      } catch (e) {
+        console.warn('LIFF init skipped:', e.message);
+      }
+    };
+    initLiff();
+  }, []);
 
   // Booking Data
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -43,7 +64,7 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
   // --- Effects ---
   useEffect(() => {
     // Simulate fetching LINE profile
-    const timer = setTimeout(() => setProfile({ name: 'LINE 使用者', avatar: null }), 600);
+    const timer = setTimeout(() => setProfile({ name: 'LINE ä½¿ç¨è', avatar: null }), 600);
     return () => clearTimeout(timer);
   }, []);
 
@@ -56,7 +77,7 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
   const goStep2 = () => {
     if (!selectedDate || !selectedSlot) return;
     setStep(2);
-    if (selectedSlot.includes('其他時段')) {
+    if (selectedSlot.includes('å¶ä»ææ®µ')) {
       setTimeout(() => {
         noteRef.current?.focus();
         noteRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -66,19 +87,36 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
 
   const goStep3 = () => {
     const trimmedPhone = phone.trim();
-    if (!trimmedPhone) return showToast('請填寫手機號碼');
-    if (!/^09\d{8}$/.test(trimmedPhone)) return showToast('手機格式不正確，需 09 開頭共 10 碼');
+    if (!trimmedPhone) return showToast('è«å¡«å¯«ææ©èç¢¼');
+    if (!/^09\d{8}$/.test(trimmedPhone)) return showToast('ææ©æ ¼å¼ä¸æ­£ç¢ºï¼é 09 éé ­å± 10 ç¢¼');
     setPhone(trimmedPhone);
     setStep(3);
   };
 
-  const submitBooking = () => {
+  const submitBooking = async () => {
     setIsSubmitting(true);
-    // Dummy async task
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const topicStr = Array.isArray(topics) ? topics.join(', ') : (topics || '一般諮詢');
+      const dateStr = selectedDate ? selectedDate.toISOString().split('T')[0] : '';
+      await fetch('/.netlify/functions/book-appointment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lineUserId,
+          date: dateStr,
+          timeSlot: selectedSlot || '',
+          topic: topicStr,
+          contactName: profile?.name || '',
+          phone: phone || '',
+          notes: note || ''
+        })
+      });
       setStep(4);
-    }, 1200);
+    } catch (e) {
+      setToastMsg('預約失敗，請稍後再試');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetAll = () => {
@@ -98,7 +136,7 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
   };
 
   const formatDate = (date: Date) => {
-    return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}（${WEEKDAYS[date.getDay()]}）`;
+    return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}ï¼${WEEKDAYS[date.getDay()]}ï¼`;
   };
 
   // --- Calendar Logistics ---
@@ -137,9 +175,9 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
         })}
       </div>
       <div className="flex justify-between mt-3 px-1">
-        <span className={`text-[10px] font-medium tracking-[0.2em] uppercase ${step >= 1 ? 'text-[#2D2D2A]' : 'text-[#AFAEA9]'}`}>選擇時間</span>
-        <span className={`text-[10px] font-medium tracking-[0.2em] uppercase ${step >= 2 ? 'text-[#2D2D2A]' : 'text-[#AFAEA9]'}`}>填寫資料</span>
-        <span className={`text-[10px] font-medium tracking-[0.2em] uppercase ${step >= 3 ? 'text-[#2D2D2A]' : 'text-[#AFAEA9]'}`}>確認預約</span>
+        <span className={`text-[10px] font-medium tracking-[0.2em] uppercase ${step >= 1 ? 'text-[#2D2D2A]' : 'text-[#AFAEA9]'}`}>é¸ææé</span>
+        <span className={`text-[10px] font-medium tracking-[0.2em] uppercase ${step >= 2 ? 'text-[#2D2D2A]' : 'text-[#AFAEA9]'}`}>å¡«å¯«è³æ</span>
+        <span className={`text-[10px] font-medium tracking-[0.2em] uppercase ${step >= 3 ? 'text-[#2D2D2A]' : 'text-[#AFAEA9]'}`}>ç¢ºèªé ç´</span>
       </div>
     </div>
   );
@@ -169,8 +207,8 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
         </div>
         
         <div className="text-center relative z-10 pt-2 pb-4 w-full max-w-sm mx-auto">
-          <h1 className="text-[24px] font-serif font-bold text-warm-gray-800 tracking-wide mb-3">預約免費諮詢</h1>
-          <p className="text-[12px] text-warm-gray-800/70 font-normal tracking-widest">專屬財務顧問 · 為您量身打造規劃</p>
+          <h1 className="text-[24px] font-serif font-bold text-warm-gray-800 tracking-wide mb-3">é ç´åè²»è«®è©¢</h1>
+          <p className="text-[12px] text-warm-gray-800/70 font-normal tracking-widest">å°å±¬è²¡åé¡§å Â· çºæ¨éèº«æé è¦å</p>
         </div>
         
         {step < 4 && renderStepIndicator()}
@@ -186,15 +224,15 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
               
               <div className="bg-[#FFFFFF] p-6 mb-6 border border-[#EAEAE6] relative overflow-hidden">
                 <div className="text-[15px] font-serif font-bold text-[#2D2D2A] mb-8 tracking-wider flex items-center gap-3">
-                  <div className="w-8 h-8 bg-[#F2F2F0] flex items-center justify-center text-[14px] border border-[#EAEAE6]">📅</div>
-                  選擇日期
+                  <div className="w-8 h-8 bg-[#F2F2F0] flex items-center justify-center text-[14px] border border-[#EAEAE6]">ð</div>
+                  é¸ææ¥æ
                 </div>
                 
                 <div className="flex justify-between items-center mb-8 border-b border-[#EAEAE6] pb-4">
                   <button disabled={prevDisabled} onClick={() => changeMonth(-1)} className="w-8 h-8 flex items-center justify-center border border-[#EAEAE6] bg-[#FFFFFF] text-[#2D2D2A] hover:bg-[#F9F9F8] transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer shrink-0">
                      <Ic n="back" size={14} />
                   </button>
-                  <div className="font-serif font-bold text-[15px] text-[#2D2D2A] tracking-wider">{calYear} 年 {calMonth + 1} 月</div>
+                  <div className="font-serif font-bold text-[15px] text-[#2D2D2A] tracking-wider">{calYear} å¹´ {calMonth + 1} æ</div>
                   <button disabled={nextDisabled} onClick={() => changeMonth(1)} className="w-8 h-8 flex items-center justify-center border border-[#EAEAE6] bg-[#FFFFFF] text-[#2D2D2A] hover:bg-[#F9F9F8] transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer shrink-0">
                      <Ic n="arrowRight" size={14} />
                   </button>
@@ -243,8 +281,8 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
               {selectedDate && (
                 <motion.div initial={{ opacity: 0, y: 10, height: 0 }} animate={{ opacity: 1, y: 0, height: 'auto' }} className="bg-[#FFFFFF] p-6 mb-6 border border-[#EAEAE6] overflow-hidden">
                   <div className="text-[15px] font-serif font-bold text-[#2D2D2A] mb-6 tracking-wide flex items-center gap-3">
-                    <div className="w-8 h-8 bg-[#F2F2F0] flex items-center justify-center text-[14px] border border-[#EAEAE6]">🕐</div>
-                    {selectedDate.getMonth() + 1}/{selectedDate.getDate()} 時段
+                    <div className="w-8 h-8 bg-[#F2F2F0] flex items-center justify-center text-[14px] border border-[#EAEAE6]">ð</div>
+                    {selectedDate.getMonth() + 1}/{selectedDate.getDate()} ææ®µ
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     {SLOTS_LIST.map((slot, i) => {
@@ -265,7 +303,7 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
               )}
 
               <button disabled={!selectedDate || !selectedSlot} onClick={goStep2} className="w-full bg-[#2D2D2A] text-[#FFFFFF] py-4 text-[13px] font-medium uppercase tracking-widest transition-colors hover:bg-[#49405E] disabled:opacity-50 disabled:bg-[#AFAEA9] flex items-center justify-center gap-2 mt-4 cursor-pointer border border-transparent">
-                下一步：填寫資料 <Ic n="arrowRight" size={16} color="currentColor" />
+                ä¸ä¸æ­¥ï¼å¡«å¯«è³æ <Ic n="arrowRight" size={16} color="currentColor" />
               </button>
 
             </motion.div>
@@ -277,28 +315,28 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
               
               <div className="bg-[#FFFFFF] p-6 mb-6 border border-[#EAEAE6] relative overflow-hidden">
                 <div className="text-[15px] font-serif font-bold text-[#2D2D2A] mb-8 tracking-wider flex items-center gap-3">
-                  <div className="w-8 h-8 bg-[#F2F2F0] flex items-center justify-center text-[14px] border border-[#EAEAE6]">📝</div>
-                  填寫聯絡資料
+                  <div className="w-8 h-8 bg-[#F2F2F0] flex items-center justify-center text-[14px] border border-[#EAEAE6]">ð</div>
+                  å¡«å¯«è¯çµ¡è³æ
                 </div>
                 
                 <div className="bg-[#F9F9F8] border border-[#EAEAE6] p-4 flex items-center gap-4 mb-8">
                   <div className="w-12 h-12 bg-[#2D2D2A] text-[#FFFFFF] flex items-center justify-center font-serif font-bold text-[18px] shrink-0">
-                    {profile.name === '載入中…' ? <Ic n="user" size={18} color="currentColor" /> : profile.name.charAt(0)}
+                    {profile.name === 'è¼å¥ä¸­â¦' ? <Ic n="user" size={18} color="currentColor" /> : profile.name.charAt(0)}
                   </div>
                   <div>
                     <div className="text-[14px] font-bold text-[#2D2D2A] tracking-wider">{profile.name}</div>
-                    <div className="text-[11px] text-[#AFAEA9] font-medium mt-1 tracking-widest uppercase">✓ 已綁定 LINE 帳號</div>
+                    <div className="text-[11px] text-[#AFAEA9] font-medium mt-1 tracking-widest uppercase">â å·²ç¶å® LINE å¸³è</div>
                   </div>
                 </div>
 
                 <div className="mb-8">
-                  <label className="block text-[12px] font-medium text-[#2D2D2A] mb-3 tracking-widest uppercase">聯絡手機 <span className="text-[#AFAEA9]">*</span></label>
+                  <label className="block text-[12px] font-medium text-[#2D2D2A] mb-3 tracking-widest uppercase">è¯çµ¡ææ© <span className="text-[#AFAEA9]">*</span></label>
                   <input type="tel" value={phone} onChange={e=>setPhone(e.target.value)} placeholder="09xxxxxxxx" maxLength={10}
                     className="w-full bg-[#FFFFFF] border-b border-[#EAEAE6] px-2 py-3 text-[14px] font-medium text-[#2D2D2A] outline-none focus:border-[#2D2D2A] transition-colors placeholder:font-normal placeholder:text-[#D6D3D1] tracking-wider" />
                 </div>
 
                 <div className="mb-8">
-                  <label className="block text-[12px] font-medium text-[#2D2D2A] mb-4 tracking-widest uppercase">想討論的主題 <span className="font-normal text-[#AFAEA9] ml-2 tracking-wide text-[11px]">（可複選）</span></label>
+                  <label className="block text-[12px] font-medium text-[#2D2D2A] mb-4 tracking-widest uppercase">æ³è¨è«çä¸»é¡ <span className="font-normal text-[#AFAEA9] ml-2 tracking-wide text-[11px]">ï¼å¯è¤é¸ï¼</span></label>
                   <div className="flex flex-wrap gap-2.5">
                     {TOPICS_LIST.map(t => {
                       const active = topics.includes(t);
@@ -314,8 +352,8 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
                 </div>
 
                 <div>
-                  <label className="block text-[12px] font-medium text-[#2D2D2A] mb-3 tracking-widest uppercase">備註與補充</label>
-                  <textarea ref={noteRef} value={note} onChange={e=>setNote(e.target.value)} placeholder="例如：想了解未來退休金準備… 若是其他時段，請告知方便接聽時間。"
+                  <label className="block text-[12px] font-medium text-[#2D2D2A] mb-3 tracking-widest uppercase">åè¨»èè£å</label>
+                  <textarea ref={noteRef} value={note} onChange={e=>setNote(e.target.value)} placeholder="ä¾å¦ï¼æ³äºè§£æªä¾éä¼éæºåâ¦ è¥æ¯å¶ä»ææ®µï¼è«åç¥æ¹ä¾¿æ¥è½æéã"
                     className="w-full bg-[#FFFFFF] border border-[#EAEAE6] p-4 text-[13px] font-normal text-[#2D2D2A] outline-none focus:border-[#2D2D2A] transition-colors placeholder:text-[#AFAEA9] min-h-[120px] resize-none tracking-wide leading-loose" />
                 </div>
 
@@ -323,10 +361,10 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
 
               <div className="flex flex-col gap-3">
                  <button onClick={goStep3} className="w-full bg-[#2D2D2A] text-[#FFFFFF] py-4 text-[13px] font-medium uppercase tracking-widest transition-colors hover:bg-[#49405E] flex items-center justify-center gap-2 border border-transparent cursor-pointer">
-                   確認資料，下一步 <Ic n="arrowRight" size={16} color="currentColor" />
+                   ç¢ºèªè³æï¼ä¸ä¸æ­¥ <Ic n="arrowRight" size={16} color="currentColor" />
                  </button>
                  <button onClick={() => setStep(1)} className="w-full bg-transparent text-[#AFAEA9] py-3 text-[12px] font-normal tracking-widest uppercase transition-colors hover:text-[#2D2D2A] cursor-pointer">
-                   返回修改時間
+                   è¿åä¿®æ¹æé
                  </button>
               </div>
             </motion.div>
@@ -338,54 +376,54 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
               
               <div className="bg-[#FFFFFF] p-6 mb-6 border border-[#EAEAE6]">
                 <div className="text-[15px] font-serif font-bold text-[#2D2D2A] mb-8 tracking-wider flex items-center gap-3 border-b border-[#EAEAE6] pb-4">
-                  <div className="w-8 h-8 bg-[#F8F8F6] flex items-center justify-center text-[14px] border border-[#EAEAE6]">✅</div>
-                  確認預約資訊
+                  <div className="w-8 h-8 bg-[#F8F8F6] flex items-center justify-center text-[14px] border border-[#EAEAE6]">â</div>
+                  ç¢ºèªé ç´è³è¨
                 </div>
 
                 <div className="bg-[#F9F9F8] p-5 flex flex-col gap-5 border border-[#EAEAE6] mb-8">
                   <div className="flex justify-between items-start">
-                    <span className="text-[12px] font-normal text-[#8B8A88] shrink-0 tracking-widest uppercase">預約日期</span>
+                    <span className="text-[12px] font-normal text-[#8B8A88] shrink-0 tracking-widest uppercase">é ç´æ¥æ</span>
                     <span className="text-[13px] font-medium text-[#2D2D2A] text-right tracking-wider">{selectedDate ? formatDate(selectedDate) : ''}</span>
                   </div>
                   <div className="flex justify-between items-start">
-                    <span className="text-[12px] font-normal text-[#8B8A88] shrink-0 tracking-widest uppercase">預約時段</span>
+                    <span className="text-[12px] font-normal text-[#8B8A88] shrink-0 tracking-widest uppercase">é ç´ææ®µ</span>
                     <span className="text-[11px] font-medium text-[#2D2D2A] text-right bg-[#EAEAE6] px-3 py-1 tracking-widest">{selectedSlot}</span>
                   </div>
                   <div className="h-px bg-[#EAEAE6] my-1" />
                   <div className="flex justify-between items-start">
-                    <span className="text-[12px] font-normal text-[#8B8A88] shrink-0 tracking-widest uppercase">申請人</span>
+                    <span className="text-[12px] font-normal text-[#8B8A88] shrink-0 tracking-widest uppercase">ç³è«äºº</span>
                     <span className="text-[13px] font-medium text-[#2D2D2A] text-right tracking-wider">{profile.name}</span>
                   </div>
                   <div className="flex justify-between items-start">
-                    <span className="text-[12px] font-normal text-[#8B8A88] shrink-0 tracking-widest uppercase">聯絡手機</span>
+                    <span className="text-[12px] font-normal text-[#8B8A88] shrink-0 tracking-widest uppercase">è¯çµ¡ææ©</span>
                     <span className="text-[13px] font-medium text-[#2D2D2A] text-right tracking-wider">{phone}</span>
                   </div>
                   {topics.length > 0 && (
                     <div className="flex justify-between items-start">
-                      <span className="text-[12px] font-normal text-[#8B8A88] shrink-0 tracking-widest uppercase">討論主題</span>
-                      <span className="text-[12px] font-normal text-[#555] text-right leading-loose tracking-wide">{topics.join('、')}</span>
+                      <span className="text-[12px] font-normal text-[#8B8A88] shrink-0 tracking-widest uppercase">è¨è«ä¸»é¡</span>
+                      <span className="text-[12px] font-normal text-[#555] text-right leading-loose tracking-wide">{topics.join('ã')}</span>
                     </div>
                   )}
                   {note && (
                     <div className="flex justify-between items-start">
-                      <span className="text-[12px] font-normal text-[#8B8A88] shrink-0 mr-4 tracking-widest uppercase">備註</span>
+                      <span className="text-[12px] font-normal text-[#8B8A88] shrink-0 mr-4 tracking-widest uppercase">åè¨»</span>
                       <span className="text-[12px] font-normal text-[#555] text-right leading-loose tracking-wide max-w-[200px] break-words bg-[#FFFFFF] p-3 border border-[#EAEAE6] italic">{note}</span>
                     </div>
                   )}
                 </div>
 
                 <div className="text-[11px] font-normal text-[#8B8A88] leading-loose text-center tracking-widest border-t border-[#EAEAE6] pt-6">
-                  送出後，系統將自動推播預約摘要至您的 LINE，<br/>顧問會盡快與您確認。
+                  éåºå¾ï¼ç³»çµ±å°èªåæ¨æ­é ç´æè¦è³æ¨ç LINEï¼<br/>é¡§åæç¡å¿«èæ¨ç¢ºèªã
                 </div>
               </div>
 
               <div className="flex flex-col gap-3">
                  <button disabled={isSubmitting} onClick={submitBooking} className="w-full bg-[#2D2D2A] text-[#FFFFFF] py-4 text-[13px] font-medium uppercase tracking-widest transition-colors hover:bg-[#49405E] disabled:opacity-50 disabled:bg-[#AFAEA9] flex items-center justify-center gap-2 border border-transparent cursor-pointer">
                    {isSubmitting ? <span className="w-4 h-4 border-[2px] border-white/30 border-t-white rounded-full animate-spin" /> : null}
-                   {isSubmitting ? '處理中...' : '確認無誤，送出預約'}
+                   {isSubmitting ? 'èçä¸­...' : 'ç¢ºèªç¡èª¤ï¼éåºé ç´'}
                  </button>
                  <button disabled={isSubmitting} onClick={() => setStep(2)} className="w-full bg-transparent text-[#AFAEA9] py-3 text-[12px] font-normal tracking-widest uppercase transition-colors hover:text-[#2D2D2A] cursor-pointer disabled:opacity-50">
-                   返回修改
+                   è¿åä¿®æ¹
                  </button>
               </div>
             </motion.div>
@@ -399,26 +437,26 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
                 <div className="w-20 h-20 bg-[#F2F2F0] mx-auto flex items-center justify-center mb-8 border border-[#EAEAE6] text-[#2D2D2A]">
                   <Ic n="check" size={32} color="currentColor" />
                 </div>
-                <h2 className="text-[20px] font-serif font-bold mb-4 tracking-widest text-[#2D2D2A] relative z-10">預約申請成功</h2>
+                <h2 className="text-[20px] font-serif font-bold mb-4 tracking-widest text-[#2D2D2A] relative z-10">é ç´ç³è«æå</h2>
                 <div className="text-[13px] font-normal text-[#555] leading-loose mb-10 relative z-10 tracking-wide">
-                  <strong className="text-[#2D2D2A] font-medium tracking-widest">{profile.name}</strong>，感謝您的預約<br/>預約摘要已傳送到您的 LINE 聊天室<br/>顧問將盡快與您聯繫。
+                  <strong className="text-[#2D2D2A] font-medium tracking-widest">{profile.name}</strong>ï¼æè¬æ¨çé ç´<br/>é ç´æè¦å·²å³éå°æ¨ç LINE èå¤©å®¤<br/>é¡§åå°ç¡å¿«èæ¨è¯ç¹«ã
                 </div>
 
                 <div className="bg-[#F9F9F8] p-5 text-left flex flex-col gap-4 relative z-10 border border-[#EAEAE6]">
                   <div className="text-[13px] flex justify-between items-center border-b border-[#EAEAE6] pb-3">
-                    <span className="font-normal text-[#8B8A88] tracking-widest uppercase text-[11px]">LINE 名稱</span><span className="font-medium text-[#2D2D2A] tracking-wider">{profile.name}</span>
+                    <span className="font-normal text-[#8B8A88] tracking-widest uppercase text-[11px]">LINE åç¨±</span><span className="font-medium text-[#2D2D2A] tracking-wider">{profile.name}</span>
                   </div>
                   <div className="text-[13px] flex justify-between items-center border-b border-[#EAEAE6] pb-3">
-                    <span className="font-normal text-[#8B8A88] tracking-widest uppercase text-[11px]">預約日期</span><span className="font-medium text-[#2D2D2A] tracking-wider">{selectedDate ? formatDate(selectedDate) : ''}</span>
+                    <span className="font-normal text-[#8B8A88] tracking-widest uppercase text-[11px]">é ç´æ¥æ</span><span className="font-medium text-[#2D2D2A] tracking-wider">{selectedDate ? formatDate(selectedDate) : ''}</span>
                   </div>
                   <div className="text-[13px] flex justify-between items-center">
-                     <span className="font-normal text-[#8B8A88] tracking-widest uppercase text-[11px]">預約時段</span><span className="font-medium text-[#2D2D2A] tracking-widest bg-[#EAEAE6] px-2 py-0.5 text-[11px]">{selectedSlot}</span>
+                     <span className="font-normal text-[#8B8A88] tracking-widest uppercase text-[11px]">é ç´ææ®µ</span><span className="font-medium text-[#2D2D2A] tracking-widest bg-[#EAEAE6] px-2 py-0.5 text-[11px]">{selectedSlot}</span>
                   </div>
                 </div>
               </div>
               
               <button onClick={resetAll} className="w-full bg-transparent border border-[#2D2D2A] text-[#2D2D2A] py-4 text-[13px] font-medium tracking-widest uppercase transition-colors hover:bg-[#2D2D2A] hover:text-[#FFFFFF] cursor-pointer">
-                回首頁
+                åé¦é 
               </button>
             </motion.div>
           )}
