@@ -3,7 +3,7 @@ import {
   ChartLineUp,
   LockOpen,
   ShieldCheckered,
-  CurrencyCircleDollar,
+  Scroll,
   CalendarCheck,
   Handshake,
   BookOpen,
@@ -17,7 +17,7 @@ import {
   Check,
   Gear,
   Diamond,
-  TrendUp,
+  HandCoins,
   EnvelopeSimple,
   MapPin,
 } from '@phosphor-icons/react';
@@ -31,7 +31,7 @@ const iconMap: Record<string, React.ElementType> = {
   chart:       ChartLineUp,
   unlock:      LockOpen,
   shield:      ShieldCheckered,
-  money:       CurrencyCircleDollar,
+  money:       Scroll,           // 錢的流向 → Scroll (帳本/報告書感)
   calendar:    CalendarCheck,
   info:        Handshake,
   book:        BookOpen,
@@ -47,7 +47,7 @@ const iconMap: Record<string, React.ElementType> = {
   check:       Check,
   gear:        Gear,
   diamond:     Diamond,
-  trend:       TrendUp,
+  trend:       HandCoins,        // 錢去哪了 → HandCoins (金錢流動感)
   mail:        EnvelopeSimple,
   pin:         MapPin,
 };
@@ -75,9 +75,10 @@ export {
   ChartLineUp,
   LockOpen,
   ShieldCheckered,
-  CurrencyCircleDollar,
+  Scroll,
   CalendarCheck,
   Handshake,
   BookOpen,
   MapTrifold,
+  HandCoins,
 };
