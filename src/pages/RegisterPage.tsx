@@ -199,15 +199,15 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                </div>
                
                {/* REAL LINE Login Block - Floating UI */}
-               <div className={`relative mb-6 transition-all duration-500 ${formData.lineUserId ? 'bg-[#FFFFFF] border border-[#2D2D2A]' : 'bg-[#FFFFFF] border border-[#EAEAE6]'} p-2 flex flex-col`}>
+               <div className="relative mb-6 transition-all duration-500 bg-[#FFFFFF] border border-[#EAEAE6] p-2 flex flex-col">
                  <div className="flex items-center justify-between p-4">
                    <div className="flex items-center gap-4">
                      {formData.linePictureUrl ? (
-                       <div className="w-12 h-12 overflow-hidden shrink-0 border border-[#EAEAE6]">
-                         <img src={formData.linePictureUrl} alt="LINE Profile" className="w-full h-full object-cover grayscale opacity-90" referrerPolicy="no-referrer" />
+                       <div className="w-12 h-12 overflow-hidden shrink-0 border border-[#EAEAE6] rounded-full">
+                         <img src={formData.linePictureUrl} alt="LINE Profile" className="w-full h-full object-cover " referrerPolicy="no-referrer" />
                        </div>
                      ) : (
-                       <div className="w-12 h-12 bg-[#F2F2F0] flex items-center justify-center text-[#D6D3D1] shrink-0 border border-[#EAEAE6]">
+                       <div className="w-12 h-12 bg-[#F2F2F0] flex items-center justify-center text-[#D6D3D1] shrink-0 border border-[#EAEAE6] rounded-full">
                           <Ic n="user" size={20} color="#8B8A88" />
                        </div>
                      )}

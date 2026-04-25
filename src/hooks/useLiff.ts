@@ -51,7 +51,7 @@ export const useLiff = () => {
     }
 
     if (!liff.isLoggedIn()) {
-      liff.login({ redirectUri: window.location.href });
+      liff.login();
     }
   };
 
