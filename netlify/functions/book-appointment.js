@@ -1,9 +1,9 @@
-const { Client } = require("@notionhq/client");
+import { Client } from "@notionhq/client";
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
 const dbId = process.env.NOTION_APPOINTMENTS_DB_ID; // bce5fceaf85f4152867606e73919dfda
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
@@ -24,7 +24,6 @@ exports.handler = async (event) => {
     };
   }
 
-  // Normalize topic: may arrive as comma-joined string or array
   const topicArray = Array.isArray(topic)
     ? topic
     : (topic || "一般諮詢").split(/[,，、]/).map((s) => s.trim()).filter(Boolean);
