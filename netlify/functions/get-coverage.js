@@ -1,48 +1,73 @@
+const { Client } = require("@notionhq/client");
+
 exports.handler = async (event, context) => {
-  // 模擬從資料庫 (例如 Notion, Firebase) 取回來的保單健檢資料
-  const mockData = {
-    name: "林小華",
-    advisor: "Steven & Annie",
-    updated: "2026/04/15",
-    members: [
-      {
-        name: "林小華",
-        label: "本人",
-        type: "adult",
-        coverage: [
-          { label: "壽險保障", detail: "足夠", status: "ok", note: "保額 1,000 萬" },
-          { label: "實支實付", detail: "缺口", status: "gap", note: "額度偏低，建議補強第二家" },
-          { label: "重大疾病", detail: "極缺", status: "none", note: "完全無保障，風險極高" },
-          { label: "車險/產險", detail: "未知", status: "unknown", note: "尚未匯入保單" }
-        ]
-      },
-      {
-        name: "王大明",
-        label: "配偶",
-        type: "adult",
-        coverage: [
-          { label: "壽險保障", detail: "需補足", status: "gap", note: "房貸增長，建議補強定期壽險" },
-          { label: "實支實付", detail: "足夠", status: "ok", note: "雙實支保障完整" },
-          { label: "重大疾病", detail: "足夠", status: "ok", note: "保額 200 萬" }
-        ]
-      },
-      {
-        name: "林小寶",
-        label: "子女",
-        type: "child",
-        coverage: [
-          { label: "醫療保障", detail: "足夠", status: "ok", note: "基礎醫療齊全" }
-        ]
-      }
-    ]
+  const headers = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*"
   };
 
-  return {
-    statusCode: 200,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*" // 視需要可鎖定特定 Domain
-    },
-    body: JSON.stringify(mockData)
-  };
+  if (event.httpMethod === "OPTIONS") {
+    return { statusCode: 204, headers };
+  }
+
+  const lineUserId = event.queryStringParameters && event.queryStringParameters.lineUserId;
+  const key = process.env.NOTION_API_KEY;
+  const coverageDbId = process.env.NOTION_COVERAGE_DB_ID;
+
+  // Mock fallback (no env vars or no userId)
+  if (!key || !coverageDbId || !lineUserId) {
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({ _mock: true, name: "示範用戶", advisor: "Steven & Annie", updated: "2026/04/15", members: [] })
+    };
+  }
+
+  try {
+    const notion = new Client({ auth: key });
+
+    // Query coverage DB by LINE User ID
+    const res = await notion.databases.query({
+      database_id: coverageDbId,
+      filter: {
+        property: "LINE User ID",
+        rich_text: { equals: lineUserId }
+      },
+      page_size: 1
+    });
+
+    if (res.results.length === 0) {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ _notFound: true, name: "", advisor: "Steven & Annie", updated: "", members: [] })
+      };
+    }
+
+    const page = res.results[0];
+    const props = page.properties;
+
+    const getText = (p) => p && p.rich_text && p.rich_text[0] ? p.rich_text[0].plain_text : "";
+    const getTitle = (p) => p && p.title && p.title[0] ? p.title[0].plain_text : "";
+    const getDate = (p) => p && p.date ? p.date.start : "";
+
+    // Parse coverage JSON stored in Notion
+    let members = [];
+    const rawJson = getText(props["Coverage JSON"]);
+    if (rawJson) {
+      try { members = JSON.parse(rawJson); } catch (e) { members = []; }
+    }
+
+    const data = {
+      name:    getTitle(props["Name"]) || getText(props["Name"]),
+      advisor: getText(props["Advisor"]) || "Steven & Annie",
+      updated: getDate(props["Updated"]) || getText(props["Updated Text"]),
+      members
+    };
+
+    return { statusCode: 200, headers, body: JSON.stringify(data) };
+  } catch (error) {
+    console.error("get-coverage error:", error);
+    return { statusCode: 500, headers, body: JSON.stringify({ error: error.message }) };
+  }
 };
