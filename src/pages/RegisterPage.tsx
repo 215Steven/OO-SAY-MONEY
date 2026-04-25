@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Ic } from "@/src/components/Icons";
+import { useLiff } from "@/src/hooks/useLiff";
 
 export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () => void, onTerms: () => void, onSubmitSuccess: () => void }) => {
   const [step, setStep] = useState(() => {
@@ -25,12 +26,23 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
   });
   
   const [submitting, setSubmitting] = useState(false);
-  const [isLineLoading, setIsLineLoading] = useState(false);
+  const { liff, isReady, profile, login } = useLiff();
 
   useEffect(() => {
     sessionStorage.setItem('registerData', JSON.stringify(formData));
     sessionStorage.setItem('registerStep', step.toString());
   }, [formData, step]);
+
+  useEffect(() => {
+    if (profile && !formData.lineUserId) {
+      setFormData(prev => ({
+        ...prev,
+        lineUserId: profile.userId,
+        lineDisplayName: profile.displayName,
+        linePictureUrl: profile.pictureUrl || ''
+      }));
+    }
+  }, [profile, formData.lineUserId]);
 
   const handleNext = () => {
     if (step === 1 && !formData.identity) return alert('請先選擇您的身份');
@@ -53,17 +65,10 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
     sessionStorage.removeItem('registerStep');
   };
 
-  const mockLineLogin = () => {
-    setIsLineLoading(true);
-    setTimeout(() => {
-      setFormData(prev => ({
-        ...prev,
-        lineUserId: `mock_line_uid_${Math.random().toString(36).substr(2, 9)}`,
-        lineDisplayName: `${formData.name || '理財好朋友'}`,
-        linePictureUrl: 'https://api.dicebear.com/7.x/notionists/svg?seed=Felix&backgroundColor=a855f7'
-      }));
-      setIsLineLoading(false);
-    }, 1500);
+  const handleLineLogin = () => {
+    if (isReady && !profile) {
+      login();
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -224,8 +229,8 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                    
                    <div className="pr-1">
                      {!formData.lineUserId ? (
-                       <button type="button" onClick={mockLineLogin} disabled={isLineLoading} className="bg-[#00B900] text-white text-[12px] font-medium tracking-widest px-4 py-2.5 hover:bg-[#00A000] active:scale-95 transition-all outline-none cursor-pointer disabled:opacity-70 flex border border-transparent">
-                         {isLineLoading ? '連線中' : '授權連動'}
+                       <button type="button" onClick={handleLineLogin} disabled={!isReady} className="bg-[#00B900] text-white text-[12px] font-medium tracking-widest px-4 py-2.5 hover:bg-[#00A000] active:scale-95 transition-all outline-none cursor-pointer disabled:opacity-70 flex border border-transparent">
+                         {!isReady ? '連線中' : '授權連動'}
                        </button>
                      ) : (
                        <div className="flex justify-center items-center h-8 text-[#2D2D2A] pr-2">

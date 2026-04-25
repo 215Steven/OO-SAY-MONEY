@@ -34,13 +34,17 @@ export default function MainApp() {
   const [role, setRole] = useState<string | null>(null);
   const [modal, setModal] = useState(false);
 
-  // MOCK LIFF Init: Read ?role=xxx from URL to simulate deep link from LINE Rich Menu
+  // MOCK LIFF Init: Read ?role=xxx or ?path=xxx from URL to simulate deep link from LINE Rich Menu
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const urlRole = params.get("role");
+    const urlPath = params.get("path");
+    
     if (urlRole && ROLE_META[urlRole]) {
       setRole(urlRole);
       if (location === "/") navigate("/dashboard", { replace: true });
+    } else if (urlPath) {
+       navigate(urlPath, { replace: true });
     }
   }, [location, navigate]);
 
