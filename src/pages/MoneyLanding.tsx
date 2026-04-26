@@ -30,65 +30,66 @@ export const MoneyLanding = ({ onBack, onLogin }: any) => {
     </div>
     
     <div className="px-5 relative z-20 flex flex-col gap-6 w-full max-w-sm pt-4">
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="bg-[#FFFFFF] p-8 border border-[#EAEAE6] group hover:bg-[#F9F9F8] transition-colors">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="bg-white p-8 border border-teal-soft/80 group hover:border-teal-base/30 hover:shadow-md transition-all rounded-2xl">
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-10 h-10 border border-[#EAEAE6] bg-[#F2F2F0] flex items-center justify-center shrink-0">
-            <span className="text-[16px] font-serif font-bold text-[#2D2D2A]">1</span>
+          <div className="w-10 h-10 border border-teal-soft bg-cyan-soft flex items-center justify-center shrink-0 rounded-full">
+            <span className="text-[16px] font-serif font-bold text-teal-base">1</span>
           </div>
-          <div className="text-[18px] font-serif font-bold text-[#2D2D2A] tracking-wider">你的理財類型？</div>
+          <div className="text-[18px] font-serif font-bold text-warm-gray-800 tracking-wider">你的理財類型？</div>
         </div>
-        <div className="text-[13px] text-[#555] leading-loose mb-6 font-normal tracking-wide">
+        <div className="text-[13px] text-warm-gray-800/80 leading-loose mb-6 font-normal tracking-wide">
           8 個問題，找出你對金錢的底層邏輯——穩健累積、成長放大、還是策略進化型？
         </div>
         <div className="flex flex-wrap gap-2.5 mb-8">
           {[
-            { label:"穩健累積型", color:"text-[#2D2D2A]", bg:"bg-[#F9F9F8]", border:"border-[#EAEAE6]" },
-            { label:"成長放大型", color:"text-[#2D2D2A]", bg:"bg-[#F9F9F8]", border:"border-[#EAEAE6]" },
-            { label:"起步探索型", color:"text-[#2D2D2A]", bg:"bg-[#F9F9F8]", border:"border-[#EAEAE6]" },
-            { label:"策略進化型", color:"text-[#2D2D2A]", bg:"bg-[#F9F9F8]", border:"border-[#EAEAE6]" },
+            { label:"穩健累積型", color:"text-cyan-base", bg:"bg-cyan-soft", border:"border-cyan-soft" },
+            { label:"成長放大型", color:"text-teal-base", bg:"bg-teal-soft", border:"border-teal-soft" },
+            { label:"起步探索型", color:"text-warm-gray-800", bg:"bg-warm-gray-50", border:"border-warm-gray-200" },
+            { label:"策略進化型", color:"text-warm-gray-800", bg:"bg-warm-gray-50", border:"border-warm-gray-200" },
           ].map((t, i) => (
-            <span key={i} className={`text-[11px] font-normal tracking-widest ${t.color} ${t.bg} border ${t.border} px-3 py-1.5`}>
+            <span key={i} className={`text-[11px] font-medium tracking-widest ${t.color} ${t.bg} border ${t.border} px-3 py-1.5 rounded-full`}>
               {t.label}
             </span>
           ))}
         </div>
-        <button onClick={() => navigate("/quiz")} className="w-full bg-[#2D2D2A] text-[#FFFFFF] border border-[#2D2D2A] py-4 text-[13px] font-medium tracking-widest uppercase cursor-pointer hover:bg-[#49405E] transition-colors flex items-center justify-center gap-2">
+        <button onClick={() => navigate("/quiz")} className="w-full bg-teal-base text-white border border-teal-base py-4 rounded-xl text-[13px] font-medium tracking-widest uppercase cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2 shadow-sm">
           開始測驗 <Ic n="trend" size={16} color="currentColor" />
         </button>
       </motion.div>
 
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="bg-[#FFFFFF] p-8 border border-[#EAEAE6] group hover:bg-[#F9F9F8] transition-colors">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="bg-white p-8 border border-warm-gray-200 group hover:border-warm-gray-800/20 hover:shadow-md transition-all rounded-2xl relative overflow-hidden">
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-10 h-10 border border-[#EAEAE6] bg-[#FFFFFF] flex items-center justify-center shrink-0">
-            <span className="text-[16px] font-serif font-bold text-[#D6D3D1]">2</span>
+          <div className="w-10 h-10 border border-warm-gray-200 bg-white flex items-center justify-center shrink-0 rounded-full">
+            <span className="text-[16px] font-serif font-bold text-warm-gray-200">2</span>
           </div>
-          <div className="text-[18px] font-serif font-bold text-[#2D2D2A] tracking-wider">看清真實數字</div>
-          <span className="text-[10px] font-medium text-[#8B8A88] border border-[#D6D3D1] px-2 py-1 ml-auto tracking-widest">需登入</span>
+          <div className="text-[18px] font-serif font-bold text-warm-gray-800 tracking-wider">看清真實數字</div>
+          <span className="text-[10px] font-medium text-alert-orange border border-alert-orange/30 bg-alert-orange/5 px-2 py-1 ml-auto tracking-widest rounded-full">需登入</span>
         </div>
         <div className="flex gap-3 mb-6">
           {[
-            { label:"淨資產",   val:"1,600萬", color:"text-[#2D2D2A]", bg:"bg-[#F8F8F6]" },
-            { label:"儲蓄率",   val:"33%",     color:"text-[#2D2D2A]", bg:"bg-[#F8F8F6]" },
-            { label:"財務分數", val:"78分",    color:"text-[#2D2D2A]", bg:"bg-[#F8F8F6]" },
+            { label:"淨資產",   val:"1,600萬", color:"text-warm-gray-800", bg:"bg-warm-gray-50", b:"border-warm-gray-200" },
+            { label:"儲蓄率",   val:"33%",     color:"text-cyan-base", bg:"bg-cyan-soft/50", b:"border-cyan-soft" },
+            { label:"財務分數", val:"78分",    color:"text-teal-base", bg:"bg-teal-soft/50", b:"border-teal-soft" },
           ].map((c, i) => (
-            <div key={i} className={`flex-1 py-5 px-1 text-center border border-[#EAEAE6] ${c.bg} transition-colors`}>
-              <div className="text-[11px] text-[#8B8A88] font-normal tracking-widest mb-2">{c.label}</div>
+            <div key={i} className={`flex-1 py-5 px-1 text-center border ${c.b} rounded-xl ${c.bg} transition-colors`}>
+              <div className="text-[11px] text-warm-gray-800/60 font-medium tracking-widest mb-2">{c.label}</div>
               <div className={`text-[16px] font-serif font-bold tracking-wider ${c.color}`}>{c.val}</div>
             </div>
           ))}
         </div>
-        <div className="text-[13px] text-[#555] font-normal tracking-wide leading-loose bg-[#F9F9F8] p-5 border border-[#EAEAE6]">
+        <div className="text-[13px] text-warm-gray-800/80 font-normal tracking-wide leading-loose bg-warm-gray-50 rounded-xl p-5 border border-warm-gray-200">
           儲蓄率、負債比、緊急金、保障缺口、財務自由進度——一次全看清，並產生優先行動清單。
         </div>
       </motion.div>
 
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="bg-[#2D2D2A] p-10 mt-2 text-center">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="bg-cyan-base p-10 mt-2 text-center rounded-2xl mb-8 relative overflow-hidden shadow-lg">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-teal-base/50 rounded-full blur-2xl -mr-10 -mt-10" />
         <div className="relative z-10 w-full">
-          <div className="text-[18px] font-serif font-bold text-[#FFFFFF] mb-3 tracking-widest">解鎖完整財務工具</div>
-          <div className="text-[13px] text-[#AFAEA9] font-normal mb-8 leading-relaxed tracking-wide">
+          <div className="text-[18px] font-serif font-bold text-white mb-3 tracking-widest">解鎖完整財務工具</div>
+          <div className="text-[13px] text-cyan-soft font-normal mb-8 leading-relaxed tracking-wide">
             加入會員，免費使用財管家所有功能<br/>不再讓記帳變成半途而廢
           </div>
-          <button onClick={onLogin} className="w-full bg-[#FFFFFF] text-[#2D2D2A] border border-[#FFFFFF] py-4 text-[13px] font-medium tracking-widest uppercase cursor-pointer hover:bg-[#EAEAE6] transition-colors flex items-center justify-center gap-2">
+          <button onClick={onLogin} className="w-full bg-white text-cyan-base border border-white py-4 rounded-xl text-[13px] font-bold tracking-widest uppercase cursor-pointer hover:bg-cyan-soft transition-colors flex items-center justify-center gap-2 shadow-sm">
             加入會員，立即開始 <Ic n="arrowRight" size={16} color="currentColor" />
           </button>
         </div>

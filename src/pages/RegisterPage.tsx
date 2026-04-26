@@ -34,15 +34,21 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
   }, [formData, step]);
 
   useEffect(() => {
-    if (profile && !formData.lineUserId) {
-      setFormData(prev => ({
-        ...prev,
-        lineUserId: profile.userId,
-        lineDisplayName: profile.displayName,
-        linePictureUrl: profile.pictureUrl || ''
-      }));
+    if (profile) {
+      setFormData(prev => {
+        // Only update if there's a difference to avoid infinite loops
+        if (prev.lineUserId !== profile.userId || prev.linePictureUrl !== profile.pictureUrl) {
+          return {
+            ...prev,
+            lineUserId: profile.userId,
+            lineDisplayName: profile.displayName,
+            linePictureUrl: profile.pictureUrl || ''
+          };
+        }
+        return prev;
+      });
     }
-  }, [profile, formData.lineUserId]);
+  }, [profile]);
 
   const handleNext = () => {
     if (step === 1 && !formData.identity) return alert('請先選擇您的身份');
@@ -92,7 +98,8 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
             onSubmitSuccess();
         }
       } else {
-        alert('提交失敗，請檢查網路連線或稍後再試。');
+        const errJson = await res.json().catch(() => ({}));
+        alert(`提交失敗: ${errJson.error || '請檢查網路連線或稍後再試。'}\n(請確認 Netlify 是否已設定 NOTION_API_KEY 等變數)`);
       }
     } catch (err) {
       console.error(err);
@@ -135,12 +142,12 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                
                <div className="flex flex-col gap-4 mb-6">
                  {['同儕', '家庭', '社會大眾'].map((opt) => (
-                   <div key={opt} onClick={() => setFormData({...formData, identity: opt})} className={`group flex items-center p-5 border cursor-pointer transition-colors duration-300 ${formData.identity === opt ? 'border-[#2D2D2A] bg-[#FFFFFF]' : 'border-[#EAEAE6] bg-[#FFFFFF] hover:bg-[#F9F9F8]'}`}>
-                     <div className={`w-10 h-10 flex items-center justify-center mr-4 shrink-0 transition-colors ${formData.identity === opt ? 'bg-[#2D2D2A] text-[#FFFFFF]' : 'bg-[#F2F2F0] text-[#8B8A88] border border-[#EAEAE6]'}`}>
+                   <div key={opt} onClick={() => setFormData({...formData, identity: opt})} className={`group flex items-center p-5 border cursor-pointer transition-all duration-300 rounded-2xl shadow-sm ${formData.identity === opt ? 'border-teal-base bg-cyan-soft/30' : 'border-warm-gray-200 bg-white hover:border-teal-soft/80 hover:bg-cyan-soft/10'}`}>
+                     <div className={`w-10 h-10 flex items-center justify-center mr-4 shrink-0 transition-colors rounded-full ${formData.identity === opt ? 'bg-teal-base text-white' : 'bg-warm-gray-50 text-warm-gray-800/60 border border-warm-gray-200 group-hover:bg-cyan-soft group-hover:text-cyan-base group-hover:border-teal-soft'}`}>
                        <Ic n="user" size={20} color="currentColor" />
                      </div>
-                     <span className={`text-[15px] font-medium flex-1 tracking-wider transition-colors ${formData.identity === opt ? 'text-[#2D2D2A]':'text-[#555]'}`}>{opt}</span>
-                     <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-all duration-300 ${formData.identity === opt ? 'bg-[#2D2D2A]' : 'bg-[#fff] border border-[#D6D3D1]'}`}>
+                     <span className={`text-[15px] font-medium flex-1 tracking-wider transition-colors ${formData.identity === opt ? 'text-teal-base':'text-warm-gray-800'}`}>{opt}</span>
+                     <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-all duration-300 ${formData.identity === opt ? 'bg-teal-base' : 'bg-white border border-warm-gray-200'}`}>
                        {formData.identity === opt && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
                      </div>
                    </div>
@@ -162,33 +169,33 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                  <p className="text-[12px] text-[#8B8A88] font-normal tracking-wide">確保未來能收到專屬財務通知。</p>
                </div>
                
-               <div className="flex flex-col gap-0 bg-[#FFFFFF] border border-[#EAEAE6]">
+               <div className="flex flex-col gap-0 bg-white border border-warm-gray-200 rounded-2xl overflow-hidden shadow-sm">
                   <div className="flex items-center px-4 py-1">
-                    <div className="w-10 shrink-0 text-[#2D2D2A] flex justify-center border-r border-[#EAEAE6] mr-2 pr-2 py-3"><Ic n="user" size={18} color="currentColor"/></div>
-                    <input type="text" required placeholder="您的真實姓名" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[14px] font-medium text-[#2D2D2A] placeholder-[#D6D3D1] focus:outline-none focus:ring-0 tracking-wide" />
+                    <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="user" size={18} color="currentColor"/></div>
+                    <input type="text" required placeholder="您的真實姓名" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[14px] font-medium text-warm-gray-800 placeholder-warm-gray-200 focus:outline-none focus:ring-0 tracking-wide" />
                   </div>
-                  <div className="h-px bg-[#EAEAE6] w-full" />
+                  <div className="h-px bg-warm-gray-200 w-full" />
+
+                  <div className="flex items-center px-4 py-1 bg-warm-gray-50/50">
+                    <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="list" size={18} color="currentColor"/></div>
+                    <input type="tel" required placeholder="手機號碼 (09...)" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[14px] font-medium text-warm-gray-800 placeholder-warm-gray-200 focus:outline-none focus:ring-0 tracking-wide" />
+                  </div>
+                  <div className="h-px bg-warm-gray-200 w-full" />
 
                   <div className="flex items-center px-4 py-1">
-                    <div className="w-10 shrink-0 text-[#2D2D2A] flex justify-center border-r border-[#EAEAE6] mr-2 pr-2 py-3"><Ic n="list" size={18} color="currentColor"/></div>
-                    <input type="tel" required placeholder="手機號碼 (09...)" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[14px] font-medium text-[#2D2D2A] placeholder-[#D6D3D1] focus:outline-none focus:ring-0 tracking-wide" />
+                    <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="calendar" size={18} color="currentColor"/></div>
+                    <input type="text" required placeholder="生日 例：820105 (民國)" value={formData.birthday} onChange={e => setFormData({...formData, birthday: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[14px] font-medium text-warm-gray-800 placeholder-warm-gray-200 focus:outline-none focus:ring-0 tracking-wide" />
                   </div>
-                  <div className="h-px bg-[#EAEAE6] w-full" />
+                  <div className="h-px bg-warm-gray-200 w-full" />
 
-                  <div className="flex items-center px-4 py-1">
-                    <div className="w-10 shrink-0 text-[#2D2D2A] flex justify-center border-r border-[#EAEAE6] mr-2 pr-2 py-3"><Ic n="calendar" size={18} color="currentColor"/></div>
-                    <input type="text" required placeholder="生日 例：820105 (民國)" value={formData.birthday} onChange={e => setFormData({...formData, birthday: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[14px] font-medium text-[#2D2D2A] placeholder-[#D6D3D1] focus:outline-none focus:ring-0 tracking-wide" />
-                  </div>
-                  <div className="h-px bg-[#EAEAE6] w-full" />
-
-                  <div className="flex items-center px-4 py-1">
-                    <div className="w-10 shrink-0 text-[#2D2D2A] flex justify-center border-r border-[#EAEAE6] mr-2 pr-2 py-3"><Ic n="mail" size={18} color="currentColor"/></div>
-                    <input type="email" required placeholder="電子郵件" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[14px] font-medium text-[#2D2D2A] placeholder-[#D6D3D1] focus:outline-none focus:ring-0 tracking-wide" />
+                  <div className="flex items-center px-4 py-1 bg-warm-gray-50/50">
+                    <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="mail" size={18} color="currentColor"/></div>
+                    <input type="email" required placeholder="電子郵件" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[14px] font-medium text-warm-gray-800 placeholder-warm-gray-200 focus:outline-none focus:ring-0 tracking-wide" />
                   </div>
                </div>
 
                <div className="mt-auto pt-8">
-                 <button type="button" onClick={handleNext} className="w-full bg-[#2D2D2A] hover:bg-[#49405E] active:scale-[0.98] text-[#FFFFFF] font-medium text-[13px] py-4 shadow-sm transition-colors cursor-pointer uppercase tracking-widest border border-[#2D2D2A]">
+                 <button type="button" onClick={handleNext} className="w-full bg-teal-base hover:bg-cyan-base active:scale-[0.98] text-white font-medium text-[13px] py-4 rounded-xl shadow-sm transition-colors cursor-pointer uppercase tracking-widest border border-teal-base">
                    核對最後一步
                  </button>
                </div>
@@ -203,29 +210,35 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                </div>
                
                {/* REAL LINE Login Block - Floating UI */}
-               <div className="relative mb-6 transition-all duration-500 bg-[#FFFFFF] border border-[#EAEAE6] p-2 flex flex-col">
+               <div className="relative mb-6 transition-all duration-500 bg-white border border-teal-soft p-2 flex flex-col rounded-2xl shadow-sm">
                  <div className="flex items-center justify-between p-4">
                    <div className="flex items-center gap-4">
                      {formData.linePictureUrl ? (
-                       <div className="w-12 h-12 overflow-hidden shrink-0 border border-[#EAEAE6] rounded-full">
-                         <img src={formData.linePictureUrl} alt="LINE Profile" className="w-full h-full object-cover " referrerPolicy="no-referrer" />
+                       <div className="w-12 h-12 overflow-hidden shrink-0 border border-warm-gray-200 rounded-full">
+                         <img 
+                           src={formData.linePictureUrl} 
+                           alt="LINE Profile" 
+                           className="w-full h-full object-cover" 
+                           referrerPolicy="no-referrer"
+                           onError={() => setFormData({...formData, linePictureUrl: ''})}
+                         />
                        </div>
                      ) : (
-                       <div className="w-12 h-12 bg-[#F2F2F0] flex items-center justify-center text-[#D6D3D1] shrink-0 border border-[#EAEAE6] rounded-full">
-                          <Ic n="user" size={20} color="#8B8A88" />
+                       <div className="w-12 h-12 bg-warm-gray-50 flex items-center justify-center text-warm-gray-800/40 shrink-0 border border-warm-gray-200 rounded-full">
+                          <Ic n="user" size={20} color="currentColor" />
                        </div>
                      )}
                      
                      <div className="flex flex-col justify-center">
                        {formData.lineUserId ? (
                          <>
-                           <div className="text-[15px] font-serif font-bold text-[#2D2D2A] mb-0.5">{formData.lineDisplayName}</div>
-                           <div className="text-[11px] text-[#8B8A88] tracking-widest flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-[#2D2D2A] rounded-full inline-block" /> 綁定成功</div>
+                           <div className="text-[15px] font-serif font-bold text-warm-gray-800 mb-0.5">{formData.lineDisplayName}</div>
+                           <div className="text-[11px] text-warm-gray-800/60 tracking-widest flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-teal-base rounded-full inline-block" /> 綁定成功</div>
                          </>
                        ) : (
                          <>
-                           <div className="text-[15px] font-serif font-bold text-[#2D2D2A] mb-0.5">LINE 身份</div>
-                           <div className="text-[11px] text-[#8B8A88] tracking-widest">尚未登入授權</div>
+                           <div className="text-[15px] font-serif font-bold text-warm-gray-800 mb-0.5">LINE 身份</div>
+                           <div className="text-[11px] text-warm-gray-800/60 tracking-widest">尚未登入授權</div>
                          </>
                        )}
                      </div>
@@ -233,11 +246,11 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                    
                    <div className="pr-1">
                      {!formData.lineUserId ? (
-                       <button type="button" onClick={handleLineLogin} disabled={!isReady} className="bg-[#00B900] text-white text-[12px] font-medium tracking-widest px-4 py-2.5 hover:bg-[#00A000] active:scale-95 transition-all outline-none cursor-pointer disabled:opacity-70 flex border border-transparent">
+                       <button type="button" onClick={handleLineLogin} disabled={!isReady} className="bg-[#00B900] text-white text-[12px] font-medium tracking-widest px-4 py-2.5 hover:bg-[#00A000] rounded-xl active:scale-95 transition-all outline-none cursor-pointer disabled:opacity-70 flex shadow-sm">
                          {!isReady ? '連線中' : '授權連動'}
                        </button>
                      ) : (
-                       <div className="flex justify-center items-center h-8 text-[#2D2D2A] pr-2">
+                       <div className="flex justify-center items-center h-8 text-teal-base pr-2">
                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                        </div>
                      )}
@@ -246,23 +259,23 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                </div>
 
                {/* Subscription / Terms List */}
-               <div className="bg-[#FFFFFF] border border-[#EAEAE6] p-0">
-                 <div onClick={() => setFormData({...formData, newsletter: !formData.newsletter})} className="flex items-center p-5 cursor-pointer hover:bg-[#F9F9F8] transition-colors group">
-                   <div className={`w-5 h-5 flex-shrink-0 flex items-center justify-center transition-all mr-4 border ${formData.newsletter ? 'bg-[#2D2D2A] border-[#2D2D2A]' : 'bg-transparent border-[#D6D3D1]'}`}>
+               <div className="bg-white border border-warm-gray-200 p-0 rounded-2xl overflow-hidden shadow-sm">
+                 <div onClick={() => setFormData({...formData, newsletter: !formData.newsletter})} className="flex items-center p-5 cursor-pointer hover:bg-warm-gray-50 transition-colors group">
+                   <div className={`w-5 h-5 flex-shrink-0 flex items-center justify-center transition-all mr-4 border rounded ${formData.newsletter ? 'bg-teal-base border-teal-base' : 'bg-transparent border-warm-gray-200'}`}>
                      {formData.newsletter && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
                    </div>
-                   <span className="text-[13px] text-[#2D2D2A] font-medium tracking-wide">我願意收到理財快訊與電子報</span>
+                   <span className="text-[13px] text-warm-gray-800 font-medium tracking-wide">我願意收到理財快訊與電子報</span>
                  </div>
                  
-                 <div className="h-px bg-[#EAEAE6] w-full" />
+                 <div className="h-px bg-warm-gray-200 w-full" />
 
-                 <div onClick={() => setFormData({...formData, terms: !formData.terms})} className="flex items-center p-5 cursor-pointer hover:bg-[#F9F9F8] transition-colors group">
-                   <div className={`w-5 h-5 flex-shrink-0 flex items-center justify-center transition-all mr-4 border ${formData.terms ? 'bg-[#2D2D2A] border-[#2D2D2A]' : 'bg-transparent border-[#D6D3D1]'}`}>
+                 <div onClick={() => setFormData({...formData, terms: !formData.terms})} className="flex items-center p-5 cursor-pointer hover:bg-warm-gray-50 transition-colors group">
+                   <div className={`w-5 h-5 flex-shrink-0 flex items-center justify-center transition-all mr-4 border rounded ${formData.terms ? 'bg-teal-base border-teal-base' : 'bg-transparent border-warm-gray-200'}`}>
                      {formData.terms && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
                    </div>
                    <div className="flex flex-col">
-                     <span className="text-[13px] text-[#2D2D2A] font-medium tracking-wide">同意服務約定與隱私政策</span>
-                     <span className="text-[11px] text-[#8B8A88] font-normal mt-1 tracking-wider">點擊 <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); onTerms(); }} className="text-[#2D2D2A] bg-transparent outline-none cursor-pointer p-0 border-b border-[#2D2D2A]">查看條款內容</button></span>
+                     <span className="text-[13px] text-warm-gray-800 font-medium tracking-wide">同意服務約定與隱私政策</span>
+                     <span className="text-[11px] text-warm-gray-800/60 font-normal mt-1 tracking-wider">點擊 <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); onTerms(); }} className="text-teal-base font-bold bg-transparent outline-none cursor-pointer p-0 border-b border-teal-base/30 hover:border-teal-base">查看條款內容</button></span>
                    </div>
                  </div>
                </div>
@@ -272,10 +285,10 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                   type="button" 
                   onClick={handleSubmit} 
                   disabled={submitting || !formData.lineUserId} 
-                  className={`w-full font-medium text-[13px] py-4 transition-colors flex justify-center items-center uppercase tracking-widest ${
+                  className={`w-full font-medium text-[13px] py-4 transition-colors flex justify-center items-center uppercase tracking-widest rounded-xl shadow-sm ${
                     formData.lineUserId 
-                      ? 'bg-[#2D2D2A] hover:bg-[#49405E] active:scale-[0.98] text-[#FFFFFF] cursor-pointer border border-[#2D2D2A]' 
-                      : 'bg-[#F2F2F0] text-[#8B8A88] cursor-not-allowed border border-[#EAEAE6]'
+                      ? 'bg-teal-base hover:bg-cyan-base active:scale-[0.98] text-white cursor-pointer border border-teal-base' 
+                      : 'bg-warm-gray-100 text-warm-gray-800/40 cursor-not-allowed border border-warm-gray-200'
                   }`}
                  >
                     {submitting ? '處理中...' : (!formData.lineUserId ? '等待 LINE 綁定完成' : '確認無誤，送出')}

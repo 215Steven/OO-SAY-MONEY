@@ -8,8 +8,8 @@ export const useLiff = () => {
   const [isMockMode, setIsMockMode] = useState(false);
 
   useEffect(() => {
-    // 從環境變數讀取 LIFF ID，如果沒有設定，先使用預設的解鎖更多 LIFF ID
-    const liffId = import.meta.env.VITE_LIFF_ID;
+    // 從環境變數讀取 LIFF ID，如果沒有設定，使用預設的 LIFF ID
+    const liffId = import.meta.env.VITE_LIFF_ID || "2007659354-RMhoJzrA";
     
     if (!liffId) {
       console.warn("VITE_LIFF_ID 尚未設定！啟用模擬 LINE 登入模式。");

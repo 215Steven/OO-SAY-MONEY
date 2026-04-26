@@ -107,7 +107,7 @@ export default function MainApp() {
               <PageTransition><MoneyLanding onBack={goBack} onLogin={() => navigate("/register")} /></PageTransition>
             </Route>
             <Route path="/quiz">
-              <PageTransition><QuizPage onBack={goBack} onComplete={() => navigate("/appointment")} /></PageTransition>
+              <PageTransition><QuizPage onBack={goBack} onComplete={() => navigate("/register")} /></PageTransition>
             </Route>
             <Route path="/unlock">
               <PageTransition><UnlockPage onBack={goBack} onJoin={() => navigate("/register")} /></PageTransition>

@@ -33,16 +33,16 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
           <motion.div 
             initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: i * 0.1 + 0.2 }}
             key={item.key} onClick={() => onSelect(item.key)} 
-            className="bg-white p-6 flex items-center gap-5 border border-warm-gray-200 rounded-lg hover:border-warm-gray-800/30 hover:shadow-sm transition-all cursor-pointer group"
+            className="bg-white p-6 flex items-center gap-5 border border-teal-soft/80 rounded-2xl hover:border-teal-base/30 hover:shadow-md transition-all cursor-pointer group"
           >
-            <div className="w-12 h-12 border border-warm-gray-200 bg-warm-gray-50 rounded-full flex items-center justify-center shrink-0 group-hover:bg-warm-gray-100 transition-colors">
-              <Ic n={item.icon} size={22} color="var(--color-warm-gold)" />
+            <div className="w-12 h-12 border border-teal-soft bg-cyan-soft/50 rounded-full flex items-center justify-center shrink-0 group-hover:bg-cyan-soft transition-colors">
+              <Ic n={item.icon} size={22} color="var(--color-teal-base)" />
             </div>
             <div className="flex-1">
               <div className="text-[17px] font-serif font-bold text-warm-gray-800 tracking-wide mb-0.5">{item.label}</div>
               <div className="text-[14px] text-warm-gray-800/70 leading-relaxed">{item.sub}</div>
             </div>
-            <div className="text-warm-gray-200 group-hover:text-warm-gold transition-colors">
+            <div className="text-teal-base/40 group-hover:text-alert-orange transition-colors">
                <Ic n="arrow" size={20} color="currentColor" />
             </div>
           </motion.div>
@@ -51,10 +51,11 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
       
       {/* Registration CTA */}
       <div className="px-5 flex flex-col gap-4 w-full max-w-sm">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }} className="bg-warm-gray-800 p-8 mt-10 text-center rounded-xl shadow-lg">
-          <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide">開始專屬理財旅程</h3>
-          <p className="text-[14px] text-warm-gray-200/80 font-normal mb-8 leading-relaxed">紀錄財務、顧問諮詢<br/>與您的客製化理財藍圖。</p>
-          <button onClick={() => onSelect("login")} className="w-full bg-white text-warm-gray-800 py-4 rounded-lg text-[14px] font-bold tracking-widest cursor-pointer hover:bg-white/90 transition-all flex justify-center items-center gap-2">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }} className="bg-teal-base p-8 mt-10 text-center rounded-2xl shadow-lg relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-base/20 rounded-full blur-2xl -mr-10 -mt-10" />
+          <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide relative z-10">開始專屬理財旅程</h3>
+          <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">紀錄財務、顧問諮詢<br/>與您的客製化理財藍圖。</p>
+          <button onClick={() => onSelect("login")} className="w-full bg-white text-teal-base py-4 rounded-xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all flex justify-center items-center gap-2 relative z-10 shadow-sm">
              前往註冊 / 登入
           </button>
         </motion.div>

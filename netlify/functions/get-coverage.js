@@ -1,7 +1,7 @@
 import { Client } from "@notionhq/client";
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
-const dbId = process.env.NOTION_COVERAGE_DB_ID; // 9cefb2321c8e47989a00b85a4a3b53b6
+const dbId = process.env.NOTION_COVERAGE_DB_ID || "9cefb2321c8e47989a00b85a4a3b53b6";
 
 function mapRowToCoverage(props) {
   const categories = [

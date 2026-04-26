@@ -1,7 +1,7 @@
 import { Client } from "@notionhq/client";
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
-const dbId = process.env.NOTION_APPOINTMENTS_DB_ID; // bce5fceaf85f4152867606e73919dfda
+const dbId = process.env.NOTION_APPOINTMENTS_DB_ID || "bce5fceaf85f4152867606e73919dfda";
 
 export const handler = async (event) => {
   if (event.httpMethod !== "POST") {

@@ -8,6 +8,14 @@
   --color-warm-gray-200: #E6E2DE;
   --color-warm-gray-800: #2D2D2A;
   --color-warm-gold: #B8966E;
+
+  /* Brand Colors */
+  --color-cyan-base: #0095b8;
+  --color-cyan-soft: #e0f4f9;
+  --color-teal-base: #00a29d;
+  --color-teal-soft: #e0f6f4;
+  --color-alert-red: #ea580c;
+  --color-alert-orange: #f59e0b;
 }
 
 @layer base {

@@ -14,7 +14,7 @@ async function startServer() {
     try {
       const { identity, name, phone, birthday, email, newsletter, lineUserId } = req.body;
       const key = process.env.NOTION_API_KEY;
-      const dbId = process.env.NOTION_DATABASE_ID;
+      const dbId = process.env.NOTION_DATABASE_ID || "94c20fa3caf142e9a3882f5ec54c8c6c";
       const lineToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
       const lineRichMenuId6 = process.env.LINE_RICH_MENU_ID_6;
 
