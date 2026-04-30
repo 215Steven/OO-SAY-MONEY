@@ -3,9 +3,9 @@ import { motion } from "motion/react";
 
 export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
   const items = [
-    { key:"story",  label:"故事起點", bg:"bg-[#F9F9F8]", text:"text-[#2D2D2A]", icon:"info",  sub:"自我介紹" },
-    { key:"quiz",   label:"錢去哪了", bg:"bg-[#F9F9F8]", text:"text-[#2D2D2A]", icon:"money", sub:"測驗" },
-    { key:"unlock", label:"解鎖更多", bg:"bg-[#F9F9F8]", text:"text-[#2D2D2A]", icon:"star",  sub:"簡述會員頁的六格網頁" },
+    { key:"story",  label:"故事起點", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"info",  sub:"自我介紹" },
+    { key:"quiz",   label:"錢去哪了", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"money", sub:"測驗" },
+    { key:"unlock", label:"解鎖更多", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"star",  sub:"簡述會員頁的六格網頁" },
   ];
   return (
     <div className="min-h-screen pb-12 flex flex-col relative bg-warm-gray-50 items-center">
@@ -55,7 +55,7 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
           <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-base/20 rounded-full blur-2xl -mr-10 -mt-10" />
           <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide relative z-10">開始專屬理財旅程</h3>
           <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">紀錄財務、顧問諮詢<br/>與您的客製化理財藍圖。</p>
-          <button onClick={() => onSelect("login")} className="w-full bg-white text-teal-base py-4 rounded-xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all flex justify-center items-center gap-2 relative z-10 shadow-sm">
+          <button onClick={() => onSelect("login")} className="w-full bg-white text-teal-base py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all flex justify-center items-center gap-2 relative z-10 shadow-sm">
              前往註冊 / 登入
           </button>
         </motion.div>

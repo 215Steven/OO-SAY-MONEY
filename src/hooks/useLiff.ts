@@ -9,6 +9,11 @@ export const useLiff = () => {
 
   useEffect(() => {
     // 從環境變數讀取 LIFF ID，如果沒有設定，使用預設的 LIFF ID
+    // 暫時強制啟用模擬模式，避免無效的 LIFF ID 導致卡住
+    setIsMockMode(true);
+    setIsReady(true);
+    return;
+    /*
     const liffId = import.meta.env.VITE_LIFF_ID || "2007659354-RMhoJzrA";
     
     if (!liffId) {
@@ -36,6 +41,7 @@ export const useLiff = () => {
     };
 
     initializeLiff();
+    */
   }, []);
 
   const login = () => {

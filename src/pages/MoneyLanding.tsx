@@ -6,24 +6,24 @@ export const MoneyLanding = ({ onBack, onLogin }: any) => {
   const [_, navigate] = useLocation();
   
   return (
-  <div className="pb-12 min-h-[100dvh] bg-[#F8F8F6] flex flex-col items-center">
+  <div className="pb-12 min-h-[100dvh] bg-warm-gray-50 flex flex-col items-center">
     <div className="pt-8 px-6 pb-6 relative overflow-hidden flex flex-col items-center w-full max-w-sm">
       
       <div className="flex w-full mb-8 relative z-10">
-        <button onClick={onBack} className="bg-[#FFFFFF] border border-[#EAEAE6] w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-[#F2F2F0] transition-colors relative z-10">
+        <button onClick={onBack} className="bg-white border border-warm-gray-200 w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-warm-gray-100 transition-colors relative z-10">
           <Ic n="back" color="#2D2D2A" size={20} />
         </button>
       </div>
       
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="relative z-10 text-center w-full">
-        <div className="inline-flex items-center gap-2 bg-[#FFFFFF] border border-[#EAEAE6] px-3 py-1 mb-6">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#2D2D2A]" />
-          <span className="text-[10px] font-medium text-[#2D2D2A] tracking-[0.2em] uppercase">免費 · 2分鐘</span>
+        <div className="inline-flex items-center gap-2 bg-white border border-warm-gray-200 px-3 py-1 mb-6">
+          <div className="w-1.5 h-1.5 rounded-full bg-teal-base" />
+          <span className="text-[10px] font-medium text-warm-gray-800 tracking-[0.2em] uppercase">免費 · 2分鐘</span>
         </div>
-        <div className="text-[28px] font-serif font-bold text-[#2D2D2A] leading-[1.4] tracking-wider mb-5">
+        <div className="text-[28px] font-serif font-bold text-warm-gray-800 leading-[1.4] tracking-wider mb-5">
           你的錢，<br/>都去哪了？
         </div>
-        <div className="text-[13px] text-[#2D2D2A] leading-loose font-normal px-5 tracking-widest inline-block border-l px-4 border-[#D6D3D1]">
+        <div className="text-[13px] text-warm-gray-800 leading-loose font-normal px-5 tracking-widest inline-block border-l px-4 border-warm-gray-300">
           先了解你的財務心理類型，<br/>再看清你的財務真實數字。
         </div>
       </motion.div>
@@ -52,7 +52,7 @@ export const MoneyLanding = ({ onBack, onLogin }: any) => {
             </span>
           ))}
         </div>
-        <button onClick={() => navigate("/quiz")} className="w-full bg-teal-base text-white border border-teal-base py-4 rounded-xl text-[13px] font-medium tracking-widest uppercase cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2 shadow-sm">
+        <button onClick={() => navigate("/quiz")} className="w-full bg-teal-base text-white border border-teal-base py-4 rounded-2xl text-[13px] font-medium tracking-widest uppercase cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2 shadow-sm">
           開始測驗 <Ic n="trend" size={16} color="currentColor" />
         </button>
       </motion.div>
@@ -89,7 +89,7 @@ export const MoneyLanding = ({ onBack, onLogin }: any) => {
           <div className="text-[13px] text-cyan-soft font-normal mb-8 leading-relaxed tracking-wide">
             加入會員，免費使用財管家所有功能<br/>不再讓記帳變成半途而廢
           </div>
-          <button onClick={onLogin} className="w-full bg-white text-cyan-base border border-white py-4 rounded-xl text-[13px] font-bold tracking-widest uppercase cursor-pointer hover:bg-cyan-soft transition-colors flex items-center justify-center gap-2 shadow-sm">
+          <button onClick={onLogin} className="w-full bg-white text-cyan-base border border-white py-4 rounded-2xl text-[13px] font-bold tracking-widest uppercase cursor-pointer hover:bg-cyan-soft transition-colors flex items-center justify-center gap-2 shadow-sm">
             加入會員，立即開始 <Ic n="arrowRight" size={16} color="currentColor" />
           </button>
         </div>

@@ -78,12 +78,12 @@ export default function MainApp() {
     >
       {/* Editorial Header */}
       {location !== '/register' && (
-        <div className="bg-[#F8F8F6] border-b border-[#EAEAE6] py-4 px-5 text-center sticky top-0 z-50 shrink-0">
-          <div className="font-serif text-[18px] font-bold text-[#2D2D2A] tracking-widest">
+        <div className="bg-warm-gray-50 border-b border-warm-gray-200 py-4 px-5 text-center sticky top-0 z-50 shrink-0">
+          <div className="font-serif text-[18px] font-bold text-warm-gray-800 tracking-widest">
             OO SAY MONEY
           </div>
           {role && (
-            <span className="mt-1 inline-block text-[10px] font-medium tracking-[0.15em] uppercase border border-[#2D2D2A] px-2 py-0.5"
+            <span className="mt-1 inline-block text-[10px] font-medium tracking-[0.15em] uppercase border border-teal-base px-2 py-0.5"
               style={{
                 color: THEMES[ROLE_META[role].theme].accent,
               }}
@@ -151,8 +151,8 @@ export default function MainApp() {
             <Route>
               <PageTransition>
                 <div className="p-10 text-center">
-                  <h2 className="text-[20px] font-serif font-extrabold text-[#2D2D2A]">Page Not Found</h2>
-                  <button onClick={goHome} className="mt-5 py-3 px-6 bg-[#2D2D2A] text-white cursor-pointer font-medium tracking-widest text-[13px] uppercase border hover:bg-[#1A1A18] transition-colors">回到首頁</button>
+                  <h2 className="text-[20px] font-serif font-extrabold text-warm-gray-800">Page Not Found</h2>
+                  <button onClick={goHome} className="mt-5 py-3 px-6 bg-teal-base text-white cursor-pointer font-medium tracking-widest text-[13px] uppercase border hover:bg-[#1A1A18] transition-colors">回到首頁</button>
                 </div>
               </PageTransition>
             </Route>

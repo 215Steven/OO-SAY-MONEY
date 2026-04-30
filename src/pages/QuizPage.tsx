@@ -88,12 +88,13 @@ const QUESTIONS = [
 
 const TYPES: Record<string, any> = {
   guard: {
-    name: '穩健累積型', icon: 'shield', color: 'text-[#2D2D2A]', bg: 'bg-[#F2F2F0]', bar: 'bg-[#2D2D2A]', border: 'border-[#EAEAE6]',
+    name: '穩健累積型', icon: 'shield',
+    color: '#2e86ab', bg: '#e8f4f9', text: '#1a5374',
     tagline: '重視安全感，其實這是優勢',
     desc: '你重視本金安全，不喜歡不確定性。很多人以為這是缺點，但其實穩健才是長期走得下去的基礎。你缺的不是勇氣，是一個「夠穩、還能慢慢長大」的方式。',
     insight: '太保守的問題不是賺不到，而是錢一直在縮水。通貨膨脹每年吃掉 2%，存在帳戶裡的錢其實在虧損。找到一個「本金不減、還有配息」的設計，安全感和成長可以同時兼顧。',
     nextStep: '從「月配息」工具切入是最適合你的第一步。每個月有現金流進來，你看得見、摸得著，不需要冒險，安全感和收益可以一起有。',
-    ctaNote: '為你介紹穩健累積型的現金流規劃，不賣不需要的冒險。',
+    ctaNote: '顧問會為你介紹穩健累積型的現金流規劃，不賣你不需要的冒險。',
     subDescs: {
       plan: '你想穩，但其實也不想太慢。你在等的是一個夠穩、又合理有效率的方式。',
       enjoy: '表面保守，但內心其實有進攻慾望，只是還沒找到足夠的安全感。',
@@ -101,12 +102,13 @@ const TYPES: Record<string, any> = {
     },
   },
   enjoy: {
-    name: '成長放大型', icon: 'trend', color: 'text-[#2D2D2A]', bg: 'bg-[#F2F2F0]', bar: 'bg-[#2D2D2A]', border: 'border-[#EAEAE6]',
+    name: '成長放大型', icon: 'trend',
+    color: '#e85d04', bg: '#fff0e8', text: '#8b2500',
     tagline: '你有機會走得比別人快',
     desc: '你有行動力，不怕嘗試，也願意承擔一定風險。這是做財務規劃最好的性格之一。你需要的不是「被說服要開始」，而是一個方向清楚、有爆發力的配置方式。',
     insight: '進攻型的人最常見的問題是追高殺低，不是因為判斷差，而是缺一個系統。有策略的進攻，和衝動的進攻，結果差很多。風險控制做好，成長才會很明顯。',
     nextStep: '適合建立「成長配息雙軌」配置，一部分穩定產生現金流，一部分追求放大。讓你的進攻有底氣，不怕市場波動打亂節奏。',
-    ctaNote: '我們可以設計一個有方向、有彈性、可以抓機會放大的個人規劃。',
+    ctaNote: '顧問會幫你設計一個有方向、有彈性、可以抓機會放大的個人規劃。',
     subDescs: {
       guard: '你想衝，但也知道不能亂衝。這種組合很好規劃，可以同時成長又不失控。',
       plan: '你不只是想賺，是想用對方法賺。有策略的進攻，效率差很多。',
@@ -114,12 +116,13 @@ const TYPES: Record<string, any> = {
     },
   },
   anxiety: {
-    name: '起步探索型', icon: 'info', color: 'text-[#2D2D2A]', bg: 'bg-[#F2F2F0]', bar: 'bg-[#2D2D2A]', border: 'border-[#EAEAE6]',
+    name: '起步探索型', icon: 'info',
+    color: '#7b2d8b', bg: '#f3e8f9', text: '#4a1a5a',
     tagline: '你不是做不到，只是少了一個開始的方式',
     desc: '你知道應該要做，心裡也有一點焦慮，但一直找不到一個清楚的起點。這不是懶，也不是沒能力，是從來沒有人幫你把第一步講清楚。其實大多數人都在這個階段。',
     insight: '起步探索型的人，行動後改變往往是最大的。因為你在意，才會焦慮。在意的人，一旦方向清楚了，執行力反而很強。你只差一個「簡單可執行的第一步」。',
     nextStep: '先把「我每個月需要多少現金流」這個數字算出來，再往回推第一步怎麼做。把模糊的擔憂變成看得見的目標，就不會再拖了。',
-    ctaNote: '陪你從零開始，把複雜的問題拆解成你可以馬上做的第一步。',
+    ctaNote: '顧問會陪你從零開始，把複雜的問題拆解成你可以馬上做的第一步。',
     subDescs: {
       guard: '你想穩定，但還不知道怎麼開始。從最低風險的第一步切入最適合你。',
       enjoy: '你想快，但還沒有方向。把目標先釐清，行動力自然就會出來。',
@@ -127,12 +130,13 @@ const TYPES: Record<string, any> = {
     },
   },
   plan: {
-    name: '策略進化型', icon: 'map', color: 'text-[#2D2D2A]', bg: 'bg-[#F2F2F0]', bar: 'bg-[#2D2D2A]', border: 'border-[#EAEAE6]',
+    name: '策略進化型', icon: 'map',
+    color: '#2a9068', bg: '#edf7f2', text: '#0e5234',
     tagline: '你已經在正確路上，差的是一個整合策略',
     desc: '你有清晰的財務意識，也有實際在執行記帳或投資。你不需要被說服要規劃，你需要的是讓現有的努力發揮最大效益的方式。',
     insight: '有在執行的人，最常見的問題不是努力不夠，而是策略有沒有放在最有效率的位置。同樣的資金，不同的配置方式，10 年後的結果可以差非常多。',
     nextStep: '適合做一次「策略校準」，把保障、現金流、成長三層放到最有效率的位置，讓你已有的執行力不只是在累積，而是每一塊錢都開始幫你工作。',
-    ctaNote: '協助你檢視現有規劃，找出讓執行力更快轉換成現金流的最短路徑。',
+    ctaNote: '顧問會協助你檢視現有規劃，找出讓執行力更快轉換成現金流的最短路徑。',
     subDescs: {
       guard: '執行力強但偏保守，稍微調整配置比例，整體效率會差很多。',
       enjoy: '策略加上進攻慾，你可以做到的上限比現在高很多。',
@@ -141,15 +145,41 @@ const TYPES: Record<string, any> = {
   },
 };
 
+const Confetti = ({ colors }: { colors: string[] }) => {
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      {Array.from({ length: 35 }).map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute top-[-10px]"
+          initial={{ y: 0, x: `${Math.random() * 100}vw`, opacity: 1, rotate: 0, scale: 1 }}
+          animate={{ y: "100vh", opacity: 0, rotate: 720, scale: 0.5 }}
+          transition={{
+            duration: 1.5 + Math.random() * 2,
+            delay: Math.random() * 0.8,
+            ease: "linear",
+          }}
+          style={{
+            backgroundColor: colors[Math.floor(Math.random() * colors.length)],
+            width: 4 + Math.random() * 8,
+            height: 4 + Math.random() * 8,
+            borderRadius: Math.random() > 0.5 ? '50%' : '2px',
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 export const QuizPage = ({ onBack, onComplete }: any) => {
   const [step, setStep] = useState(0); // 0: welcome, 1-8: questions, 9: loading, 10: result
   const [answers, setAnswers] = useState<string[]>([]);
   const [loadMsg, setLoadMsg] = useState(0);
 
   const MSGS = [
-    { t: "正在分析您的財務性格…", s: "根據您的選擇，我們正在比對適合的方向" },
-    { t: "準備專屬洞察", s: "屬於您的理財解析即將完成…" },
-    { t: "即將揭曉！", s: "您的專屬財務圖譜" }
+    { t: "正在分析您的財務性格…", s: "根據您的 8 個選擇，\n我們正在比對最適合的方向" },
+    { t: "分析完成", s: "正在為您準備個人化洞察…" },
+    { t: "即將揭曉！", s: "您的財務性格結果出爐了" }
   ];
 
   // Auto-progress loading screen
@@ -207,32 +237,32 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
   const renderWelcome = () => (
     <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -30 }} className="px-6 pb-6 pt-10 relative z-10 flex flex-col items-center justify-center min-h-[100dvh]">
       <div className="absolute top-6 left-6 z-20">
-        <button onClick={onBack} className="bg-[#FFFFFF] border border-[#EAEAE6] w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-[#F2F2F0] transition-colors relative z-10">
+        <button onClick={onBack} className="bg-white border border-warm-gray-200 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-warm-gray-100 transition-colors relative z-10">
           <Ic n="back" color="#2D2D2A" size={20} />
         </button>
       </div>
 
-      <div className="w-20 h-20 bg-[#F2F2F0] border border-[#EAEAE6] flex items-center justify-center mb-10 shrink-0">
+      <div className="w-20 h-20 bg-warm-gray-100 border border-warm-gray-200 flex items-center justify-center mb-10 shrink-0">
         <Ic n="money" size={32} color="#2D2D2A" />
       </div>
-      <h1 className="text-[28px] font-serif font-bold text-[#2D2D2A] leading-[1.4] mb-5 text-center tracking-wider">
+      <h1 className="text-[28px] font-serif font-bold text-warm-gray-800 leading-[1.4] mb-5 text-center tracking-wider">
         探索您的<br/>客製化理財性格
       </h1>
-      <div className="text-[13px] text-[#555] font-normal leading-loose text-center mb-10 border-l px-4 border-[#D6D3D1] inline-block">
+      <div className="text-[13px] text-warm-gray-800/80 font-normal leading-loose text-center mb-10 border-l px-4 border-warm-gray-300 inline-block">
         每個人適合的節奏不同。<br/>透過 8 個簡單情境，快速看清你的財務輪廓。
       </div>
 
       <div className="flex flex-col gap-3 mb-12 w-full max-w-[340px]">
-        <div className="bg-[#FFFFFF] border border-[#EAEAE6] px-5 py-4 font-normal text-[13px] text-[#2D2D2A] tracking-wider flex items-center justify-center gap-3">
-          <div className="border border-[#2D2D2A] p-0.5"><Ic n="check" size={14} color="#2D2D2A" /></div> 約 90 秒完成
+        <div className="bg-white rounded-2xl border border-warm-gray-200 px-5 py-4 font-normal text-[13px] text-warm-gray-800 tracking-wider flex items-center justify-center gap-3">
+          <div className="border border-teal-base p-0.5"><Ic n="check" size={14} color="#2D2D2A" /></div> 約 90 秒完成
         </div>
-        <div className="bg-[#FFFFFF] border border-[#EAEAE6] px-5 py-4 font-normal text-[13px] text-[#2D2D2A] tracking-wider flex items-center justify-center gap-3">
-          <div className="border border-[#2D2D2A] p-0.5"><Ic n="shield" size={14} color="#2D2D2A" /></div> 結果皆為隱私，請安心填寫
+        <div className="bg-white rounded-2xl border border-warm-gray-200 px-5 py-4 font-normal text-[13px] text-warm-gray-800 tracking-wider flex items-center justify-center gap-3">
+          <div className="border border-teal-base p-0.5"><Ic n="shield" size={14} color="#2D2D2A" /></div> 結果皆為隱私，請安心填寫
         </div>
       </div>
 
         <div className="w-full max-w-[340px] pb-4">
-          <button onClick={() => setStep(1)} className="w-full bg-[#2D2D2A] text-[#FFFFFF] border border-[#2D2D2A] py-4 text-[13px] font-medium tracking-widest uppercase cursor-pointer hover:bg-[#49405E] transition-colors flex items-center justify-center gap-2">
+          <button onClick={() => setStep(1)} className="w-full bg-teal-base text-white border border-teal-base py-4 text-[13px] font-medium tracking-widest uppercase cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2 rounded-2xl">
             開始測驗 <Ic n="trend" size={16} color="currentColor" />
           </button>
         </div>
@@ -246,17 +276,17 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
       <div className="flex-1 flex flex-col pt-10 px-5 relative z-10 pb-8 min-h-[100dvh]">
         
         <div className="flex justify-between items-center mb-8 relative z-20">
-          <button onClick={onBack} className="bg-[#FFFFFF] border border-[#EAEAE6] w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-[#F2F2F0] transition-colors relative z-10">
+          <button onClick={onBack} className="bg-white border border-warm-gray-200 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-warm-gray-100 transition-colors relative z-10">
             <Ic n="back" color="#2D2D2A" size={20} />
           </button>
-          <div className="text-[12px] font-medium tracking-widest text-[#2D2D2A] bg-[#FFFFFF] border border-[#EAEAE6] px-4 py-2">
-             第 {step} 題 <span className="text-[#D6D3D1] mx-1">/</span> 8
+          <div className="text-[12px] font-medium tracking-widest text-warm-gray-800 bg-white rounded-2xl border border-warm-gray-200 px-4 py-2">
+             第 {step} 題 <span className="text-warm-gray-200 mx-1">/</span> 8
           </div>
         </div>
         
         <div className="flex gap-2 mb-10 w-full max-w-sm mx-auto">
           {QUESTIONS.map((_, i) => (
-            <div key={i} className={`h-[2px] flex-1 ${i < qIdx ? 'bg-[#2D2D2A]' : 'bg-[#D6D3D1]'} overflow-hidden relative`}>
+            <div key={i} className={`h-[2px] flex-1 ${i < qIdx ? 'bg-teal-base' : 'bg-[#D6D3D1]'} overflow-hidden relative`}>
               {i === qIdx && <motion.div initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: 0.5 }} className="absolute inset-0 bg-[#8B8A88]" />}
             </div>
           ))}
@@ -264,11 +294,11 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
 
         <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full">
           {q.hint && (
-            <div className="text-[11px] font-normal tracking-widest text-[#555] mb-4 flex items-center gap-3">
-              <span className="w-6 h-[1px] bg-[#2D2D2A]" />{q.hint}
+            <div className="text-[11px] font-normal tracking-widest text-warm-gray-800/80 mb-4 flex items-center gap-3">
+              <span className="w-6 h-[1px] bg-teal-base" />{q.hint}
             </div>
           )}
-          <h2 className="text-[22px] font-serif font-bold text-[#2D2D2A] leading-[1.6] mb-8 tracking-wider">
+          <h2 className="text-[22px] font-serif font-bold text-warm-gray-800 leading-[1.6] mb-8 tracking-wider">
             {q.q}
           </h2>
 
@@ -279,8 +309,8 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
                   const isSelected = answers[qIdx] === o.type;
                   return (
                     <button key={i} onClick={() => handleSelect(qIdx, o.type)}
-                      className={`text-left px-5 py-5 transition-colors duration-300 text-[14px] cursor-pointer tracking-wide border
-                        ${isSelected ? 'border-[#2D2D2A] bg-[#FFFFFF] text-[#2D2D2A] font-medium' : 'border-[#EAEAE6] bg-[#FFFFFF] text-[#555] hover:bg-[#F9F9F8]'}
+                      className={`text-left px-5 py-5 transition-colors duration-300 text-[14px] cursor-pointer tracking-wide border rounded-2xl
+                        ${isSelected ? 'border-teal-base bg-white text-warm-gray-800 font-medium' : 'border-warm-gray-200 bg-white text-warm-gray-800/80 hover:bg-warm-gray-50'}
                       `}
                     >
                       {o.text}
@@ -297,101 +327,146 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
 
   const renderLoading = () => (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 text-center min-h-[100dvh] relative z-10">
-      <div className="relative mb-8">
-         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 3, ease: "linear" }} className="w-20 h-20 border-[2px] border-[#EAEAE6] border-t-[#2D2D2A] rotate-12" />
-         <div className="absolute inset-0 flex items-center justify-center text-[#2D2D2A]">
-            <Ic n="star" size={24} color="currentColor" />
-         </div>
+      <div className="relative w-[72px] h-[72px] mb-8 mx-auto">
+         <motion.div animate={{ rotate: 360 }} transition={{ ease: "linear", duration: 1, repeat: Infinity }} className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#2a9068]" />
+         <motion.div animate={{ rotate: -360 }} transition={{ ease: "linear", duration: 0.7, repeat: Infinity }} className="absolute inset-[10px] rounded-full border-[3px] border-transparent border-r-[#f0a500]" />
+         <motion.div animate={{ rotate: 360 }} transition={{ ease: "linear", duration: 1.3, repeat: Infinity }} className="absolute inset-[20px] rounded-full border-[3px] border-transparent border-b-[#2a9068]" />
       </div>
-      <motion.h2 key={"t"+loadMsg} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-[20px] font-serif font-bold text-[#2D2D2A] mb-3 tracking-widest">{MSGS[loadMsg].t}</motion.h2>
-      <motion.p key={"s"+loadMsg} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[12px] font-normal text-[#8B8A88] tracking-widest uppercase">{MSGS[loadMsg].s}</motion.p>
+      <motion.h2 key={"t"+loadMsg} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-[20px] font-bold text-warm-gray-800 mb-2">{MSGS[loadMsg].t}</motion.h2>
+      <motion.p key={"s"+loadMsg} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[14px] font-normal text-warm-gray-600 leading-relaxed whitespace-pre-line">{MSGS[loadMsg].s}</motion.p>
     </motion.div>
   );
 
   const renderResult = () => {
-    const { winner, subType } = calculateResult();
+    const { winner, subType, counts } = calculateResult();
     const main = TYPES[winner];
     const sub = subType ? TYPES[subType] : null;
+    
+    const pctMap: Record<string, number> = {};
+    Object.keys(counts).forEach(k => {
+      pctMap[k] = Math.round((counts[k] / 8) * 100);
+    });
+
+    const barColors: Record<string, string> = { guard: '#2e86ab', enjoy: '#e85d04', anxiety: '#7b2d8b', plan: '#2a9068' };
+    const barLabels: Record<string, string> = { guard: '穩健累積', enjoy: '成長放大', anxiety: '起步探索', plan: '策略進化' };
+
+    const confettiColorsMap: Record<string, string[]> = {
+      guard:   ['#2e86ab','#74c2e1','#a8d8ea'],
+      enjoy:   ['#e85d04','#f4a261','#ffd6a5'],
+      anxiety: ['#7b2d8b','#b46fc7','#d8a9e5'],
+      plan:    ['#2a9068','#52b788','#b7e4c7'],
+    };
 
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-[100dvh] pb-10 relative z-10 flex flex-col items-center">
-        <div className={`pt-12 px-5 text-center mb-6 w-full max-w-sm`}>
-          <div className="inline-flex items-center justify-center gap-1.5 px-3 py-1 text-[10px] font-medium tracking-[0.2em] text-[#2D2D2A] bg-[#FFFFFF] border border-[#EAEAE6] mb-8 uppercase">
-            <Ic n="trend" size={14} /> 您的財務性格
-          </div>
-          
-          <div className="w-20 h-20 mx-auto flex items-center justify-center bg-[#F2F2F0] border border-[#EAEAE6] mb-8 text-[#2D2D2A]">
-             <Ic n={main.icon} size={32} color="currentColor" />
-          </div>
-          
-          <div className="text-[32px] font-serif font-bold tracking-wider mb-2 text-[#2D2D2A]">
-            {main.name}
-          </div>
-          {sub && (
-            <div className={`text-[12px] font-normal tracking-widest text-[#8B8A88] mb-6`}>
-              ( 副標籤：{sub.name} )
+      <div className="min-h-[100dvh] relative z-10 flex flex-col items-center" style={{ backgroundColor: main.bg }}>
+        <Confetti colors={confettiColorsMap[winner] || confettiColorsMap.plan} />
+        
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="w-full max-w-[480px]">
+          {/* Header */}
+          <div className="pt-8 px-6 pb-3 text-center relative">
+            <div className="inline-flex items-center justify-center gap-1.5 px-3 py-1 text-[11px] font-bold tracking-[0.06em] rounded-md mb-3.5 uppercase" style={{ background: `${main.color}18`, color: main.color, border: `1.5px solid ${main.color}30` }}>
+              <Ic n="trend" size={14} /> 你的財務性格
             </div>
-          )}
-          <div className="text-[13px] font-medium text-[#2D2D2A] mb-8 tracking-wide border-l border-[#D6D3D1] inline-block px-4">{main.tagline}</div>
-          
-          {sub && main.subDescs[subType!] && (
-            <div className="bg-[#FFFFFF] border border-[#EAEAE6] p-6 mx-auto text-[13px] text-[#555] text-left font-normal leading-loose tracking-wide content-area">
-              {main.subDescs[subType!]}
+            
+            <div className="mb-2.5">
+              <div className="w-20 h-20 mx-auto rounded-2xl flex items-center justify-center relative bg-white" style={{ boxShadow: `0 6px 24px ${main.color}28`, color: main.color }}>
+                <Ic n={main.icon} size={36} color="currentColor" />
+              </div>
             </div>
-          )}
-        </div>
-
-        <div className="px-5 flex flex-col gap-6 w-full max-w-sm">
-          <div className="bg-[#FFFFFF] border border-[#EAEAE6] p-8">
-            <div className={`text-[11px] font-medium tracking-[0.2em] mb-4 flex items-center gap-3 uppercase text-[#2D2D2A]`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${main.bar}`} /> 您是這樣的人
-            </div>
-            <div className="text-[13px] text-[#555] leading-loose font-normal tracking-wide">{main.desc}</div>
-          </div>
-
-          <div className="bg-[#F9F9F8] border border-[#EAEAE6] p-8">
-            <div className="text-[11px] font-medium tracking-[0.2em] mb-4 flex items-center gap-3 uppercase text-[#2D2D2A]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#8B8A88]" /> 您可能沒發現的盲點
-            </div>
-            <div className="text-[13px] text-[#555] leading-loose font-normal tracking-wide italic">{main.insight}</div>
+            
+            <h2 className="text-[28px] font-black tracking-tight mb-1" style={{ color: main.text }}>
+              {main.name}
+            </h2>
+            {sub && (
+              <div className="text-[13px] font-bold mt-1 mb-1 opacity-90" style={{ color: main.color }}>
+                （副：{sub.name}）
+              </div>
+            )}
+            <p className="text-[14px] text-warm-gray-600 mb-0 leading-snug mt-1">
+              {main.tagline}
+            </p>
+            {sub && main.subDescs[subType!] && (
+              <div className="text-[13px] text-warm-gray-500 bg-white/50 rounded-xl px-4 py-3 mt-3 text-left leading-relaxed">
+                {main.subDescs[subType!]}
+              </div>
+            )}
           </div>
 
-          <div className="bg-[#FFFFFF] border border-[#EAEAE6] p-8 mb-4">
-            <div className={`text-[11px] font-medium tracking-[0.2em] mb-4 flex items-center gap-3 uppercase text-[#2D2D2A]`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${main.bar}`} /> 可以從這裡開始
+          {/* Body Sections */}
+          <div className="px-5 pb-5">
+            <div className="bg-white rounded-[14px] p-5 mb-2.5 shadow-[0_1px_8px_rgba(0,0,0,0.05)] border border-black/5">
+              <div className="text-[11px] font-extrabold text-warm-gray-400 tracking-[0.1em] uppercase mb-2.5">你是這樣的人</div>
+              <div className="text-[14.5px] leading-[1.75] text-warm-gray-800">{main.desc}</div>
             </div>
-            <div className="text-[13px] text-[#555] leading-loose font-normal tracking-wide">{main.nextStep}</div>
+
+            <div className="bg-[#fff8e1] border-l-[3px] border-[#f0a500] rounded-r-[14px] p-4 mb-3 shadow-[0_1px_8px_rgba(240,165,0,0.08)]">
+              <div className="text-[11px] font-extrabold text-[#8a5a00] tracking-[0.1em] uppercase mb-2 flex items-center gap-1.5">
+                <Ic n="info" size={14} color="currentColor" /> 你可能不知道
+              </div>
+              <div className="text-[14.5px] leading-[1.75] text-[#5a3a00] border-0">{main.insight}</div>
+            </div>
+
+            <div className="bg-white rounded-[14px] p-5 mb-2.5 shadow-[0_1px_8px_rgba(0,0,0,0.05)] border border-black/5">
+              <div className="text-[11px] font-extrabold text-warm-gray-400 tracking-[0.1em] uppercase mb-2.5">你可以從這裡開始</div>
+              <div className="text-[14.5px] leading-[1.75] text-warm-gray-800">{main.nextStep}</div>
+            </div>
+
+            <div className="bg-white rounded-[14px] p-5 mb-2.5 shadow-[0_1px_8px_rgba(0,0,0,0.05)] border border-black/5">
+              <div className="text-[11px] font-extrabold text-warm-gray-400 tracking-[0.1em] uppercase mb-2.5">你的性格分佈</div>
+              <div className="mt-1 flex flex-col gap-2">
+                {Object.keys(barColors).map(k => (
+                  <div key={k} className="flex items-center gap-2.5">
+                    <div className="text-[11.5px] text-warm-gray-800 font-bold w-[56px] shrink-0 tracking-tight">{barLabels[k]}</div>
+                    <div className="flex-1 h-[7px] bg-warm-gray-200 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }} 
+                        animate={{ width: `${pctMap[k] || 0}%` }} 
+                        transition={{ duration: 1.1, ease: 'easeOut', delay: 0.3 }}
+                        className="h-full rounded-full" 
+                        style={{ backgroundColor: k === winner ? barColors[k] : `${barColors[k]}88` }} 
+                      />
+                    </div>
+                    <div className="text-[12px] text-warm-gray-500 font-bold w-[32px] text-right shrink-0">{pctMap[k] || 0}%</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="bg-[#2D2D2A] p-10 text-center mt-2">
-            <div className="relative z-10 w-full">
-              <div className="text-[18px] font-serif font-bold text-[#FFFFFF] mb-3 tracking-widest">結果化為實際行動</div>
-              <div className="text-[13px] text-[#AFAEA9] font-normal mb-8 leading-relaxed tracking-wide">{main.ctaNote}</div>
-              
-              <div className="bg-[#49405E] border border-[#49405E] p-6 flex flex-col items-center gap-4 text-center mb-10 shadow-inner">
-                <div className="text-white"><Ic n="star" size={20} color="currentColor" /></div>
-                <div className="text-[12px] text-[#FFFFFF] leading-loose font-normal tracking-wide">
-                  預約諮詢後，我會為您整理一份<strong className="text-[#FFFFFF] font-serif tracking-wider text-[14px] inline-block border-b border-[#FFFFFF] pb-0.5 mx-1">專屬資產配置藍圖</strong>。
-                </div>
+          {/* CTA Zone */}
+          <div className="px-5 pb-8">
+            <div className="bg-gradient-to-br from-[#1e7a55] to-[#2a9068] rounded-[14px] p-6 text-center shadow-[0_6px_28px_rgba(26,107,74,0.28)]">
+              <div className="text-[16px] font-extrabold text-white mb-1.5">你的結果，可以變成一個實際的計劃</div>
+              <div className="text-[13px] text-white/80 leading-relaxed mb-4">{main.ctaNote}<br/>顧問將根據你的結果，為你量身設計。</div>
+              <div className="text-[12.5px] text-white/70 pb-3.5 mb-3.5 border-b border-white/15 text-left leading-relaxed">
+                放心，我不會推你不適合的東西。我比較在意的是「長期走得下去的方向」。
+              </div>
+              <div className="bg-white/10 rounded-lg p-3 text-[12.5px] text-white/85 mb-4 flex items-start gap-2.5 leading-[1.55] text-left border border-white/10">
+                <div className="shrink-0 mt-0.5 opacity-80 text-white"><Ic n="star" size={16} color="currentColor" /></div>
+                <div>填完後我會為你整理一份<strong className="text-white font-bold ml-1">專屬資產配置藍圖</strong></div>
               </div>
 
-              <button onClick={onComplete} className="w-full bg-[#FFFFFF] text-[#2D2D2A] py-4 text-[13px] font-medium uppercase tracking-widest transition-colors active:scale-95 border border-[#FFFFFF] cursor-pointer flex justify-center items-center gap-2 hover:bg-[#EAEAE6]">
-                領取專屬解析指南 <Ic n="arrowRight" size={16} color="currentColor" />
+              <button onClick={onComplete} className="w-full bg-white text-teal-800 py-3.5 text-[15px] font-extrabold rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.12)] mb-2.5 hover:scale-[0.98] transition-transform">
+                領取專屬解析指南
               </button>
-              <div className="mt-8">
-                <button onClick={() => setStep(0)} className="bg-transparent border-b border-[#AFAEA9] pb-1 text-[#AFAEA9] font-normal text-[11px] hover:text-[#FFFFFF] cursor-pointer transition-colors uppercase tracking-widest">
-                  再測一次
-                </button>
-              </div>
+              
+              <div className="text-[11.5px] text-white/50 text-center mb-0 tracking-wide">後續顧問將與您聯繫規劃</div>
+            </div>
+            
+            <div className="text-center mt-6">
+              <button onClick={() => setStep(0)} className="text-warm-gray-400 text-[12px] underline font-normal hover:text-warm-gray-600 transition-colors">
+                重新測驗
+              </button>
             </div>
           </div>
-        </div>
-      </motion.div>
+
+        </motion.div>
+      </div>
     );
   };
 
   return (
-    <div className="min-h-[100dvh] bg-[#F8F8F6] flex flex-col relative overflow-hidden">
+    <div className="min-h-[100dvh] bg-warm-gray-50 flex flex-col relative overflow-hidden">
       <div className="relative z-10 w-full flex-1 flex flex-col items-center">
         <div className="w-full">
           {step === 0 && renderWelcome()}

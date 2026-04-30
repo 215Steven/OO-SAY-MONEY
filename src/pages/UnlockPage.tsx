@@ -54,7 +54,7 @@ export const UnlockPage = ({ onBack, onJoin }: any) => (
         <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-base/20 rounded-full blur-2xl -mr-10 -mt-10" />
         <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide relative z-10">免費加入，馬上體驗</h3>
         <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">透過 LINE 授權註冊，選擇您的身份<br/>即刻解鎖完整會員功能</p>
-        <button onClick={onJoin} className="w-full bg-white text-teal-base py-4 rounded-xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all shadow-sm">
+        <button onClick={onJoin} className="w-full bg-white text-teal-base py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all shadow-sm">
            登入 / 註冊會員
         </button>
       </motion.div>
