@@ -13,13 +13,8 @@ export const UnlockPage = ({ onBack, onJoin }: any) => (
       </div>
       
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center w-full">
-        <div className="inline-block text-[11px] font-medium text-warm-gray-800/60 tracking-[0.2em] mb-5 uppercase border border-warm-gray-200 px-4 py-1.5 bg-white rounded-full">
-          MEMBERSHIP
-        </div>
         <div className="text-[28px] font-serif font-bold text-warm-gray-800 leading-snug tracking-wide mb-3">
           解鎖更多
-          <br/>
-          走向財務自由
         </div>
         <div className="text-[14px] text-warm-gray-800/80 leading-relaxed font-normal px-6 tracking-wide">
           加入會員，獲得專屬工具、知識與諮詢
@@ -29,9 +24,9 @@ export const UnlockPage = ({ onBack, onJoin }: any) => (
     
     <div className="px-5 flex flex-col gap-4 w-full max-w-sm pt-4">
       {[
-        { icon:"shield",   title:"財務防線",      desc:"保障規劃是一切起點，風險防護到位，才能安心" },
-        { icon:"chart",    title:"找出轉折",      desc:"財管家分析，儲蓄率與支出流向，找回現金流" },
-        { icon:"calendar", title:"預約聊聊",      desc:"一對一免費初談，為您量身打造理財建議" },
+        { icon:"shield",   title:"財務防線",      desc:"保險是一切起點，風險防護到位，才能安心" },
+        { icon:"chart",    title:"財務健檢",      desc:"財管家分析，初步檢視自己的財務分數" },
+        { icon:"calendar", title:"預約聊聊",      desc:"一對一諮詢，為您量身打造理財建議" },
         { icon:"book",     title:"理財靈感",      desc:"精選理財觀點與實用文章，定期更新" },
         { icon:"map",      title:"啟富藍圖",      desc:"月配息策略說明，規劃您的財務自由路徑" },
       ].map((item, i) => (
@@ -52,10 +47,10 @@ export const UnlockPage = ({ onBack, onJoin }: any) => (
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }} className="bg-teal-base p-8 mt-10 text-center rounded-2xl shadow-lg relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-base/20 rounded-full blur-2xl -mr-10 -mt-10" />
-        <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide relative z-10">免費加入，馬上體驗</h3>
-        <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">透過 LINE 授權註冊，選擇您的身份<br/>即刻解鎖完整會員功能</p>
+        <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide relative z-10">免費加入，解鎖更多</h3>
+        <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">加入會員，即刻解鎖以上功能</p>
         <button onClick={onJoin} className="w-full bg-white text-teal-base py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all shadow-sm">
-           登入 / 註冊會員
+           加入會員
         </button>
       </motion.div>
     </div>

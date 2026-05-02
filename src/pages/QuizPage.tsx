@@ -94,7 +94,7 @@ const TYPES: Record<string, any> = {
     desc: '你重視本金安全，不喜歡不確定性。很多人以為這是缺點，但其實穩健才是長期走得下去的基礎。你缺的不是勇氣，是一個「夠穩、還能慢慢長大」的方式。',
     insight: '太保守的問題不是賺不到，而是錢一直在縮水。通貨膨脹每年吃掉 2%，存在帳戶裡的錢其實在虧損。找到一個「本金不減、還有配息」的設計，安全感和成長可以同時兼顧。',
     nextStep: '從「月配息」工具切入是最適合你的第一步。每個月有現金流進來，你看得見、摸得著，不需要冒險，安全感和收益可以一起有。',
-    ctaNote: '顧問會為你介紹穩健累積型的現金流規劃，不賣你不需要的冒險。',
+    ctaNote: '我們會和你介紹穩健累積型的現金流規劃，不賣你不需要的冒險。',
     subDescs: {
       plan: '你想穩，但其實也不想太慢。你在等的是一個夠穩、又合理有效率的方式。',
       enjoy: '表面保守，但內心其實有進攻慾望，只是還沒找到足夠的安全感。',
@@ -108,7 +108,7 @@ const TYPES: Record<string, any> = {
     desc: '你有行動力，不怕嘗試，也願意承擔一定風險。這是做財務規劃最好的性格之一。你需要的不是「被說服要開始」，而是一個方向清楚、有爆發力的配置方式。',
     insight: '進攻型的人最常見的問題是追高殺低，不是因為判斷差，而是缺一個系統。有策略的進攻，和衝動的進攻，結果差很多。風險控制做好，成長才會很明顯。',
     nextStep: '適合建立「成長配息雙軌」配置，一部分穩定產生現金流，一部分追求放大。讓你的進攻有底氣，不怕市場波動打亂節奏。',
-    ctaNote: '顧問會幫你設計一個有方向、有彈性、可以抓機會放大的個人規劃。',
+    ctaNote: '我們會和你一起設計一個有方向、有彈性、可以把機會放大的個人規劃。',
     subDescs: {
       guard: '你想衝，但也知道不能亂衝。這種組合很好規劃，可以同時成長又不失控。',
       plan: '你不只是想賺，是想用對方法賺。有策略的進攻，效率差很多。',
@@ -122,7 +122,7 @@ const TYPES: Record<string, any> = {
     desc: '你知道應該要做，心裡也有一點焦慮，但一直找不到一個清楚的起點。這不是懶，也不是沒能力，是從來沒有人幫你把第一步講清楚。其實大多數人都在這個階段。',
     insight: '起步探索型的人，行動後改變往往是最大的。因為你在意，才會焦慮。在意的人，一旦方向清楚了，執行力反而很強。你只差一個「簡單可執行的第一步」。',
     nextStep: '先把「我每個月需要多少現金流」這個數字算出來，再往回推第一步怎麼做。把模糊的擔憂變成看得見的目標，就不會再拖了。',
-    ctaNote: '顧問會陪你從零開始，把複雜的問題拆解成你可以馬上做的第一步。',
+    ctaNote: '我們會陪你從零開始，把複雜的問題拆解成你可以馬上做的第一步。',
     subDescs: {
       guard: '你想穩定，但還不知道怎麼開始。從最低風險的第一步切入最適合你。',
       enjoy: '你想快，但還沒有方向。把目標先釐清，行動力自然就會出來。',
@@ -136,7 +136,7 @@ const TYPES: Record<string, any> = {
     desc: '你有清晰的財務意識，也有實際在執行記帳或投資。你不需要被說服要規劃，你需要的是讓現有的努力發揮最大效益的方式。',
     insight: '有在執行的人，最常見的問題不是努力不夠，而是策略有沒有放在最有效率的位置。同樣的資金，不同的配置方式，10 年後的結果可以差非常多。',
     nextStep: '適合做一次「策略校準」，把保障、現金流、成長三層放到最有效率的位置，讓你已有的執行力不只是在累積，而是每一塊錢都開始幫你工作。',
-    ctaNote: '顧問會協助你檢視現有規劃，找出讓執行力更快轉換成現金流的最短路徑。',
+    ctaNote: '我們會和你檢視現有規劃，找出讓執行力更快轉換成現金流的最短路徑。',
     subDescs: {
       guard: '執行力強但偏保守，稍微調整配置比例，整體效率會差很多。',
       enjoy: '策略加上進攻慾，你可以做到的上限比現在高很多。',
@@ -434,23 +434,26 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
           </div>
 
           {/* CTA Zone */}
-          <div className="px-5 pb-8">
-            <div className="bg-gradient-to-br from-[#1e7a55] to-[#2a9068] rounded-[14px] p-6 text-center shadow-[0_6px_28px_rgba(26,107,74,0.28)]">
-              <div className="text-[16px] font-extrabold text-white mb-1.5">你的結果，可以變成一個實際的計劃</div>
-              <div className="text-[13px] text-white/80 leading-relaxed mb-4">{main.ctaNote}<br/>顧問將根據你的結果，為你量身設計。</div>
-              <div className="text-[12.5px] text-white/70 pb-3.5 mb-3.5 border-b border-white/15 text-left leading-relaxed">
-                放心，我不會推你不適合的東西。我比較在意的是「長期走得下去的方向」。
-              </div>
-              <div className="bg-white/10 rounded-lg p-3 text-[12.5px] text-white/85 mb-4 flex items-start gap-2.5 leading-[1.55] text-left border border-white/10">
-                <div className="shrink-0 mt-0.5 opacity-80 text-white"><Ic n="star" size={16} color="currentColor" /></div>
-                <div>填完後我會為你整理一份<strong className="text-white font-bold ml-1">專屬資產配置藍圖</strong></div>
-              </div>
-
-              <button onClick={onComplete} className="w-full bg-white text-teal-800 py-3.5 text-[15px] font-extrabold rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.12)] mb-2.5 hover:scale-[0.98] transition-transform">
-                領取專屬解析指南
-              </button>
+          <div className="px-5 pb-8 mt-2">
+            <div className="bg-teal-base p-8 flex flex-col justify-center items-center text-center rounded-2xl shadow-lg relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-base/20 rounded-full blur-2xl -mr-10 -mt-10" />
               
-              <div className="text-[11.5px] text-white/50 text-center mb-0 tracking-wide">後續顧問將與您聯繫規劃</div>
+              <div className="text-[14px] text-teal-soft/90 font-bold mb-2 tracking-wide relative z-10">恭喜你完成測驗</div>
+              <h3 className="text-[16px] font-serif font-bold text-[#FFD166] mb-3 tracking-wide relative z-10">你的結果，可以變成一個實際的計劃</h3>
+              <p className="text-[14px] text-white/90 font-normal mb-8 leading-relaxed relative z-10">
+                {main.ctaNote}
+              </p>
+              
+              <div className="w-16 h-[1px] bg-white/20 mb-8 relative z-10" />
+
+              <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide relative z-10">想了解更多？</h3>
+              <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">
+                加入會員，解鎖更多理財工具與案例解析
+              </p>
+
+              <button onClick={onComplete} className="w-full bg-white text-teal-base py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all flex justify-center items-center gap-2 shadow-sm relative z-10">
+                 加入會員
+              </button>
             </div>
             
             <div className="text-center mt-6">
