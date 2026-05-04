@@ -19,11 +19,11 @@ import { TermsPage } from "@/src/pages/TermsPage";
 
 const PageTransition = ({ children }: { children: ReactNode }) => (
   <motion.div
-    initial={{ opacity: 0, y: 15 }}
+    initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.2 } }}
-    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-    style={{ minHeight: "100%", width: "100%" }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.2 }}
+    className="w-full min-h-[100dvh] bg-[#f8f8f6]"
   >
     {children}
   </motion.div>

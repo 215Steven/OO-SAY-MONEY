@@ -126,8 +126,15 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
     <div className="min-h-screen bg-warm-gray-50 font-sans pb-10 flex flex-col relative overflow-hidden">
 
       {/* Header Area */}
-      <div className="relative z-10 px-6 pt-12 pb-4 flex items-center justify-center mb-8 border-b border-warm-gray-200 bg-white">
-        <div className="flex flex-col items-center justify-center">
+      <div className="relative z-10 px-6 pt-12 pb-4 flex items-center mb-8 border-b border-warm-gray-200 bg-white">
+        {step > 1 ? (
+          <button type="button" onClick={handlePrev} className="bg-white rounded-full w-10 h-10 flex items-center justify-center border border-warm-gray-200 cursor-pointer hover:bg-warm-gray-100 transition-colors shrink-0 shadow-sm">
+            <Ic n="back" color="var(--color-warm-gray-800)" size={20} />
+          </button>
+        ) : (
+          <div className="w-10 h-10 shrink-0" />
+        )}
+        <div className="flex-1 flex flex-col items-center justify-center -ml-10">
             <h1 className="text-[14px] font-serif font-bold text-warm-gray-800 tracking-[0.2em] uppercase">會員註冊</h1>
         </div>
       </div>
