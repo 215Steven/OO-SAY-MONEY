@@ -8,20 +8,16 @@ export const useLiff = () => {
   const [isMockMode, setIsMockMode] = useState(false);
 
   useEffect(() => {
-    // 從環境變數讀取 LIFF ID，如果沒有設定，使用預設的 LIFF ID
-    // 暫時強制啟用模擬模式，避免無效的 LIFF ID 導致卡住
-    setIsMockMode(true);
-    setIsReady(true);
-    return;
-    /*
-    const liffId = import.meta.env.VITE_LIFF_ID || "2007659354-RMhoJzrA";
-    
-    if (!liffId) {
-      console.warn("VITE_LIFF_ID 尚未設定！啟用模擬 LINE 登入模式。");
-      setIsMockMode(true);
-      setIsReady(true);
-      return;
-    }
+    const getLiffId = () => {
+      const path = window.location.pathname;
+      if (path.includes('/story') || path.includes('/about-us')) return '2007659354-YydM9mE0';
+      if (path.includes('/quiz')) return '2007659354-EofSbRGu';
+      if (path.includes('/unlock')) return '2007659354-ktfXFigk';
+      if (path.includes('/appointment')) return '2007659354-okKabZ27';
+      return import.meta.env.VITE_LIFF_ID || "2007659354-RMhoJzrA";
+    };
+
+    const liffId = getLiffId();
 
     const initializeLiff = async () => {
       try {
@@ -41,7 +37,6 @@ export const useLiff = () => {
     };
 
     initializeLiff();
-    */
   }, []);
 
   const login = () => {

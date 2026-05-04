@@ -128,7 +128,15 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
     const loadCoverage = async () => {
       try {
         let uid = '';
-        const liffId = import.meta?.env?.VITE_LIFF_ID || '';
+        const getLiffId = () => {
+          const path = window.location.pathname;
+          if (path.includes('/story') || path.includes('/about-us')) return '2007659354-YydM9mE0';
+          if (path.includes('/quiz')) return '2007659354-EofSbRGu';
+          if (path.includes('/unlock')) return '2007659354-ktfXFigk';
+          if (path.includes('/appointment')) return '2007659354-okKabZ27';
+          return import.meta.env.VITE_LIFF_ID || "2007659354-RMhoJzrA";
+        };
+        const liffId = getLiffId();
         if (liffId) {
           await liff.init({ liffId });
           if (liff.isLoggedIn()) {
