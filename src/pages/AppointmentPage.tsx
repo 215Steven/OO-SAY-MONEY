@@ -210,15 +210,7 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
       </AnimatePresence>
 
       <div className="relative pt-12 px-6 pb-6 shrink-0 border-b border-warm-gray-200 bg-white">
-        <div className="flex items-center justify-between mb-8 relative z-10 w-full max-w-sm mx-auto">
-           <button onClick={onBack} className="bg-white border border-warm-gray-200 w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-warm-gray-100 transition-colors rounded-full shadow-sm">
-             <Ic n="back" color="var(--color-warm-gray-800)" size={20} />
-           </button>
-           <div className="text-[11px] font-medium text-warm-gray-800 tracking-[0.2em] uppercase px-3 py-1 text-center">
-             OO SAY MONEY
-           </div>
-           <div className="w-10 h-10 shrink-0" />
-        </div>
+
         
         <div className="text-center relative z-10 pt-2 pb-4 w-full max-w-sm mx-auto">
           <h1 className="text-[24px] font-serif font-bold text-warm-gray-800 tracking-wide mb-3">預約免費諮詢</h1>

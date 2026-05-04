@@ -9,11 +9,7 @@ export const MoneyLanding = ({ onBack, onLogin }: any) => {
   <div className="pb-12 min-h-[100dvh] bg-warm-gray-50 flex flex-col items-center">
     <div className="pt-8 px-6 pb-6 relative overflow-hidden flex flex-col items-center w-full max-w-sm">
       
-      <div className="flex w-full mb-8 relative z-10">
-        <button onClick={onBack} className="bg-white border border-warm-gray-200 w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-warm-gray-100 transition-colors relative z-10">
-          <Ic n="back" color="#2D2D2A" size={20} />
-        </button>
-      </div>
+
       
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="relative z-10 text-center w-full">
         <div className="inline-flex items-center gap-2 bg-white border border-warm-gray-200 px-3 py-1 mb-6">

@@ -174,13 +174,7 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
     <div className="min-h-screen bg-warm-gray-50 font-sans pb-10">
       
       <div className="pt-12 pb-10 px-6 relative z-10 w-full max-w-sm mx-auto border-b border-warm-gray-200 mb-8 shrink-0 bg-white">
-        <div className="flex items-center justify-between mb-8">
-          <button onClick={onBack} className="bg-white border border-warm-gray-200 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer transition-colors hover:bg-warm-gray-100 shadow-sm">
-            <Ic n="back" color="var(--color-warm-gray-800)" size={20} />
-          </button>
-          <div className="text-[11px] font-medium text-warm-gray-800 tracking-[0.2em] uppercase">OO SAY MONEY</div>
-          <div className="w-10" />
-        </div>
+
 
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="text-center">
           <div className="inline-flex items-center justify-center w-14 h-14 bg-warm-gray-50 border border-warm-gray-200 rounded-full text-warm-gray-800 mb-6">

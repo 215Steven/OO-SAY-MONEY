@@ -76,23 +76,7 @@ export default function MainApp() {
         background: role ? THEMES[ROLE_META[role]?.theme||"newMember"].bg : "#F8F8F6",
       }}
     >
-      {/* Editorial Header */}
-      {location !== '/register' && (
-        <div className="bg-warm-gray-50 border-b border-warm-gray-200 py-4 px-5 text-center sticky top-0 z-50 shrink-0">
-          <div className="font-serif text-[18px] font-bold text-warm-gray-800 tracking-widest">
-            OO SAY MONEY
-          </div>
-          {role && (
-            <span className="mt-1 inline-block text-[10px] font-medium tracking-[0.15em] uppercase border border-teal-base px-2 py-0.5"
-              style={{
-                color: THEMES[ROLE_META[role].theme].accent,
-              }}
-            >
-              {ROLE_META[role].label}
-            </span>
-          )}
-        </div>
-      )}
+
 
       <div className="flex-1 w-full bg-[#f8f8f6]">
         <AnimatePresence mode="wait">

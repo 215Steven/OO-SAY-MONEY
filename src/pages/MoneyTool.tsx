@@ -248,12 +248,8 @@ export const MoneyTool = ({ onBack, onBook }: any) => {
     return (
       <div className="min-h-[100dvh] bg-warm-gray-50 flex flex-col items-center pb-20 relative">
         <div className="bg-white border-b border-warm-gray-200 w-full pt-12 pb-6 px-6 sticky top-0 z-30 shrink-0">
-          <div className="max-w-sm mx-auto flex items-center justify-between">
-            <button onClick={onBack} className="bg-white border border-warm-gray-200 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer transition-colors hover:bg-warm-gray-50 shadow-sm">
-              <Ic n="back" color="#2D2D2A" size={16} />
-            </button>
+          <div className="max-w-sm mx-auto flex items-center justify-center">
             <div className="text-[14px] font-medium tracking-widest text-warm-gray-800 uppercase">Step 1：財務資訊現況</div>
-            <div className="w-10" />
           </div>
         </div>
 
@@ -409,12 +405,8 @@ export const MoneyTool = ({ onBack, onBook }: any) => {
   return (
     <div className="min-h-[100dvh] bg-warm-gray-50 flex flex-col items-center pb-20 relative">
       <div className="bg-white border-b border-warm-gray-200 w-full pt-12 pb-6 px-6 sticky top-0 z-30 shrink-0 shadow-sm">
-        <div className="max-w-sm mx-auto flex items-center justify-between">
-          <button onClick={() => setStep(0)} className="bg-white border border-warm-gray-200 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer transition-colors hover:bg-warm-gray-50 shadow-sm">
-            <Ic n="back" color="#2D2D2A" size={16} />
-          </button>
+        <div className="max-w-sm mx-auto flex items-center justify-center">
           <div className="text-[14px] font-medium tracking-widest text-warm-gray-800 uppercase">財務健檢結果</div>
-          <div className="w-10" />
         </div>
       </div>
 

@@ -101,13 +101,7 @@ export const BlueprintPage = ({ onBack, role }: { onBack: () => void, role?: str
         
       {/* Header and Hero */}
       <div className="w-full relative z-10 pt-12 px-6 pb-10 flex flex-col items-center border-b border-warm-gray-200 mb-8 shrink-0 bg-warm-gray-50">
-        <div className="flex items-center justify-between w-full max-w-sm mb-8">
-          <button onClick={onBack} className="bg-white border border-warm-gray-200 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer transition-colors hover:bg-warm-gray-50">
-            <Ic n="back" color="#2D2D2A" size={16} />
-          </button>
-          <div className="text-[10px] font-medium text-warm-gray-600 tracking-[0.2em] uppercase">OO SAY MONEY</div>
-          <div className="w-8" />
-        </div>
+
 
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="relative z-10 text-center w-full max-w-sm">
           <div className="inline-block text-[10px] font-medium text-warm-gray-800 tracking-[0.2em] mb-6 bg-white px-4 py-2 border border-warm-gray-200 uppercase rounded-2xl">

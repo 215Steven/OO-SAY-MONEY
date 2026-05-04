@@ -237,9 +237,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
   const renderWelcome = () => (
     <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -30 }} className="px-6 pb-6 pt-10 relative z-10 flex flex-col items-center justify-center min-h-[100dvh]">
       <div className="absolute top-6 left-6 z-20">
-        <button onClick={onBack} className="bg-white border border-warm-gray-200 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-warm-gray-100 transition-colors relative z-10">
-          <Ic n="back" color="#2D2D2A" size={20} />
-        </button>
+        
       </div>
 
       <div className="w-20 h-20 bg-warm-gray-100 border border-warm-gray-200 flex items-center justify-center mb-10 shrink-0">
@@ -275,10 +273,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
     return (
       <div className="flex-1 flex flex-col pt-10 px-5 relative z-10 pb-8 min-h-[100dvh]">
         
-        <div className="flex justify-between items-center mb-8 relative z-20">
-          <button onClick={onBack} className="bg-white border border-warm-gray-200 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer hover:bg-warm-gray-100 transition-colors relative z-10">
-            <Ic n="back" color="#2D2D2A" size={20} />
-          </button>
+        <div className="flex justify-center items-center mb-8 relative z-20">
           <div className="text-[12px] font-medium tracking-widest text-warm-gray-800 bg-white rounded-2xl border border-warm-gray-200 px-4 py-2">
              第 {step} 題 <span className="text-warm-gray-200 mx-1">/</span> 8
           </div>

@@ -43,7 +43,7 @@ export const TermsPage = ({ onBack }: { onBack: () => void }) => {
         </div>
 
         <button onClick={onBack} className="w-full bg-teal-base hover:bg-cyan-base active:scale-[0.98] cursor-pointer text-white font-medium text-[13px] py-4 shadow-sm transition-colors flex justify-center items-center gap-3 tracking-widest uppercase border border-teal-base rounded-2xl">
-           <Ic n="back" color="#FFFFFF" size={16} /> 返回註冊頁面
+           關閉條款
         </button>
       </div>
     </div>
