@@ -127,8 +127,8 @@ async function startServer() {
       const dbId = process.env.NOTION_DATABASE_ID_INSURANCE || "9cefb2321c8e47989a00b85a4a3b53b6";
 
       if (process.env.NOTION_API_KEY && dbId) {
-        const response = await notion.databases.query({
-          database_id: dbId,
+        const response = await notion.dataSources.query({
+          data_source_id: dbId,
           filter: {
             property: "LineUserID",
             rich_text: {
