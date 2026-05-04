@@ -88,11 +88,22 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
       // ===== 暫時使用模擬提交，避免卡住 =======
       console.log('Mocking submission for data:', formData);
       await new Promise(resolve => setTimeout(resolve, 800));
-      alert('註冊成功！將為您關閉頁面，請回到 LINE 官方帳號查看選單。');
-      clearSession();
+      
       if (liff && liff.isInClient && liff.isInClient()) {
+          // 透過送出關鍵字，讓聊天機器人自動切換使用者的圖文選單
+          await liff.sendMessages([
+            {
+              type: "text",
+              text: "已完成註冊開啟會員選單" 
+            }
+          ]).catch(console.error);
+
+          alert('註冊成功！將為您關閉頁面，請回到 LINE 官方帳號查看專屬選單。');
+          clearSession();
           liff.closeWindow();
       } else {
+          alert('註冊成功！');
+          clearSession();
           onSubmitSuccess();
       }
       /*
@@ -149,9 +160,9 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
             </div>
         </div>
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
           {step === 1 && (
-            <motion.div key="step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -10, transition:{duration:0.15} }} transition={{ duration: 0.4 }} className="flex flex-col flex-1">
+            <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20, transition:{duration:0.2} }} transition={{ duration: 0.3 }} className="flex flex-col flex-1">
                <div className="text-center mb-10">
                  <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">身分選擇</h2>
                  <p className="text-[12px] text-warm-gray-600 font-normal tracking-wide">選擇符合您的狀態，以客製化服務內容</p>
@@ -180,7 +191,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
           )}
 
           {step === 2 && (
-            <motion.div key="step2" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10, transition:{duration:0.15} }} transition={{ duration: 0.4 }} className="flex flex-col flex-1">
+            <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20, transition:{duration:0.2} }} transition={{ duration: 0.3 }} className="flex flex-col flex-1">
                <div className="text-center mb-10">
                  <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">聯絡資訊</h2>
                  <p className="text-[12px] text-warm-gray-600 font-normal tracking-wide">確保未來能收到專屬財務通知。</p>
@@ -220,7 +231,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
           )}
 
           {step === 3 && (
-            <motion.div key="step3" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10, transition:{duration:0.15} }} transition={{ duration: 0.4 }} className="flex flex-col flex-1">
+            <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20, transition:{duration:0.2} }} transition={{ duration: 0.3 }} className="flex flex-col flex-1">
                <div className="text-center mb-10">
                  <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">開通專屬選單</h2>
                  <p className="text-[12px] text-warm-gray-600 font-normal tracking-wide">點擊下方進行 LINE 帳號授權綁定。</p>
