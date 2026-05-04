@@ -53,13 +53,13 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
   const handleNext = () => {
     if (step === 1 && !formData.identity) return alert('請先選擇您的身份');
     if (step === 2 && (!formData.name || !formData.phone || !formData.birthday || !formData.email)) return alert('請填寫完整聯絡資訊');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
     setStep(prev => prev + 1);
   };
 
   const handlePrev = () => {
     if (step > 1) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo(0, 0);
       setStep(prev => prev - 1);
     } else {
       onBack();

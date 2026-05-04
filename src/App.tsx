@@ -34,6 +34,10 @@ export default function MainApp() {
   const [role, setRole] = useState<string | null>(null);
   const [modal, setModal] = useState(false);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
   // MOCK LIFF Init: Read ?role=xxx or ?path=xxx from URL to simulate deep link from LINE Rich Menu
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
