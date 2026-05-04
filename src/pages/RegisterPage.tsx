@@ -160,12 +160,12 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
           {step === 1 && (
             <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20, transition:{duration:0.2} }} transition={{ duration: 0.3 }} className="flex flex-col flex-1">
                <div className="text-center mb-10">
-                 <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">身分選擇</h2>
-                 <p className="text-[12px] text-warm-gray-600 font-normal tracking-wide">選擇符合您的狀態，以客製化服務內容</p>
+                 <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">身份確認</h2>
+                 <p className="text-[16px] text-warm-gray-600 font-normal tracking-wide">請問您怎麼認識Steven&Annie？</p>
                </div>
                
                <div className="flex flex-col gap-4 mb-6">
-                 {['同儕', '家庭', '社會大眾'].map((opt) => (
+                 {['親朋好友', '網路社群', '朋友推薦'].map((opt) => (
                    <div key={opt} onClick={() => setFormData({...formData, identity: opt})} className={`group flex items-center p-5 border cursor-pointer transition-all duration-300 rounded-2xl shadow-sm ${formData.identity === opt ? 'border-teal-base bg-cyan-soft/30' : 'border-warm-gray-200 bg-white hover:border-teal-soft/80 hover:bg-cyan-soft/10'}`}>
                      <div className={`w-10 h-10 flex items-center justify-center mr-4 shrink-0 transition-colors rounded-full ${formData.identity === opt ? 'bg-teal-base text-white' : 'bg-warm-gray-50 text-warm-gray-800/60 border border-warm-gray-200 group-hover:bg-cyan-soft group-hover:text-cyan-base group-hover:border-teal-soft'}`}>
                        <Ic n="user" size={20} color="currentColor" />
@@ -190,7 +190,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
             <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20, transition:{duration:0.2} }} transition={{ duration: 0.3 }} className="flex flex-col flex-1">
                <div className="text-center mb-10">
                  <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">聯絡資訊</h2>
-                 <p className="text-[12px] text-warm-gray-600 font-normal tracking-wide">確保未來能收到專屬財務通知。</p>
+                 <p className="text-[16px] text-warm-gray-600 font-normal tracking-wide">確保未來能收到我們提供專屬通知。</p>
                </div>
                
                <div className="flex flex-col gap-0 bg-white border border-warm-gray-200 rounded-2xl overflow-hidden shadow-sm">
@@ -208,7 +208,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
 
                   <div className="flex items-center px-4 py-1">
                     <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="calendar" size={18} color="currentColor"/></div>
-                    <input type="text" required placeholder="生日 例：820105 (民國)" value={formData.birthday} onChange={e => setFormData({...formData, birthday: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[14px] font-medium text-warm-gray-800 placeholder-warm-gray-200 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
+                    <input type="text" inputMode="numeric" pattern="[0-9]*" required placeholder="生日 例：820105 (民國)" value={formData.birthday} onChange={e => setFormData({...formData, birthday: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[14px] font-medium text-warm-gray-800 placeholder-warm-gray-200 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
                   </div>
                   <div className="h-px bg-warm-gray-200 w-full" />
 
@@ -229,8 +229,8 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
           {step === 3 && (
             <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20, transition:{duration:0.2} }} transition={{ duration: 0.3 }} className="flex flex-col flex-1">
                <div className="text-center mb-10">
-                 <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">開通專屬選單</h2>
-                 <p className="text-[12px] text-warm-gray-600 font-normal tracking-wide">點擊下方進行 LINE 帳號授權綁定。</p>
+                 <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">開通會員選單</h2>
+                 <p className="text-[16px] text-warm-gray-600 font-normal tracking-wide">點擊下方進行 LINE 帳號授權綁定。</p>
                </div>
                
                {/* REAL LINE Login Block - Floating UI */}

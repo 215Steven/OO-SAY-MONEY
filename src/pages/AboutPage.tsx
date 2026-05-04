@@ -99,7 +99,7 @@ export const AboutPage = ({ onBack, onJoin }: any) => (
           <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide relative z-10">想了解更多？</h3>
           <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">加入會員，解鎖讓錢為你工作的運作邏輯</p>
           <button onClick={onJoin} className="w-full bg-white text-teal-base py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all flex justify-center items-center gap-2 shadow-sm relative z-10">
-             前往註冊
+             加入會員
           </button>
         </div>
       </motion.div>
