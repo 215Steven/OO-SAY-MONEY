@@ -8,16 +8,36 @@ export const useLiff = () => {
   const [isMockMode, setIsMockMode] = useState(false);
 
   useEffect(() => {
-    const getLiffId = () => {
+    const getInitialLiffId = () => {
+      // 紀錄入口的 URL，確保 liff.login() 有合乎 LINE 後台設定的回傳網址 (Endpoint URL)
+      if (!sessionStorage.getItem('entryUrl')) {
+        sessionStorage.setItem('entryUrl', window.location.href);
+      }
+
+      // 1. 如果有存過就直接用，確保 SPA 切換頁面時 liffId 是一致的
+      const savedLiffId = sessionStorage.getItem('currentLiffId');
+      if (savedLiffId) return savedLiffId;
+
+      // 2. 根據首次載入的路徑判斷 (來自 LINE 選單的不同按鈕)
       const path = window.location.pathname;
-      if (path.includes('/story') || path.includes('/about-us')) return '2007659354-YydM9mE0';
-      if (path.includes('/quiz')) return '2007659354-EofSbRGu';
-      if (path.includes('/unlock')) return '2007659354-ktfXFigk';
-      if (path.includes('/appointment')) return '2007659354-okKabZ27';
-      return import.meta.env.VITE_LIFF_ID || "2007659354-RMhoJzrA";
+      let matchedId = "2007659354-RMhoJzrA"; // fallback (解鎖更多)
+      
+      if (path.includes('/story') || path.includes('/about-us')) {
+        matchedId = '2007659354-YydM9mE0';
+      } else if (path.includes('/quiz')) {
+        matchedId = '2007659354-EofSbRGu';
+      } else if (path.includes('/unlock')) {
+        matchedId = '2007659354-ktfXFigk';
+      } else if (path.includes('/appointment')) {
+        matchedId = '2007659354-okKabZ27';
+      }
+
+      // 3. 記住這次的 LIFF ID
+      sessionStorage.setItem('currentLiffId', matchedId);
+      return matchedId;
     };
 
-    const liffId = getLiffId();
+    const liffId = getInitialLiffId();
 
     const initializeLiff = async () => {
       try {
@@ -27,6 +47,15 @@ export const useLiff = () => {
         if (liff.isLoggedIn()) {
           const userProfile = await liff.getProfile();
           setProfile(userProfile);
+
+          // 如果有記錄登入前想去的路徑，就導向過去
+          const pendingRedirect = sessionStorage.getItem('postLoginRedirect');
+          if (pendingRedirect && window.location.pathname !== pendingRedirect) {
+            document.body.style.opacity = '0'; // 避免畫面閃爍 (隱藏舊畫面)
+            sessionStorage.removeItem('postLoginRedirect');
+            window.location.replace(window.location.origin + pendingRedirect);
+            return;
+          }
         }
       } catch (err: any) {
         console.error("LIFF 初始化失敗", err);
@@ -52,7 +81,9 @@ export const useLiff = () => {
     }
 
     if (!liff.isLoggedIn()) {
-      liff.login();
+      // 確保登入後的 callback URL 是首次進站的 URL，因為 LINE 後台只有預設註冊那個 Endpoint URL
+      const entryUrl = sessionStorage.getItem('entryUrl') || (window.location.origin + '/');
+      liff.login({ redirectUri: entryUrl });
     }
   };
 

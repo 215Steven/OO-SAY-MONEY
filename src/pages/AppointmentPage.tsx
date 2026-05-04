@@ -28,12 +28,18 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
     const initLiff = async () => {
       try {
         const getLiffId = () => {
+          const savedLiffId = sessionStorage.getItem('currentLiffId');
+          if (savedLiffId) return savedLiffId;
+
           const path = window.location.pathname;
-          if (path.includes('/story') || path.includes('/about-us')) return '2007659354-YydM9mE0';
-          if (path.includes('/quiz')) return '2007659354-EofSbRGu';
-          if (path.includes('/unlock')) return '2007659354-ktfXFigk';
-          if (path.includes('/appointment')) return '2007659354-okKabZ27';
-          return import.meta.env.VITE_LIFF_ID || "2007659354-RMhoJzrA";
+          let matchedId = "2007659354-RMhoJzrA";
+          if (path.includes('/story') || path.includes('/about-us')) matchedId = '2007659354-YydM9mE0';
+          else if (path.includes('/quiz')) matchedId = '2007659354-EofSbRGu';
+          else if (path.includes('/unlock')) matchedId = '2007659354-ktfXFigk';
+          else if (path.includes('/appointment')) matchedId = '2007659354-okKabZ27';
+          
+          sessionStorage.setItem('currentLiffId', matchedId);
+          return matchedId;
         };
         const liffId = getLiffId();
         if (!liffId) return;

@@ -73,6 +73,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
 
   const handleLineLogin = () => {
     if (isReady && !profile) {
+      sessionStorage.setItem('postLoginRedirect', window.location.pathname);
       login();
     }
   };
