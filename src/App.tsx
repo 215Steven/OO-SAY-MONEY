@@ -29,6 +29,34 @@ const PageTransition = ({ children }: { children: ReactNode }) => (
   </motion.div>
 );
 
+const RouteWithRegister = ({ component: Component, goBack, navigate, handleLogin, ...props }: any) => {
+  const [showReg, setShowReg] = useState(false);
+  
+  if (showReg) {
+    return (
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="min-h-[100dvh]">
+        <RegisterPage 
+          onBack={() => { window.scrollTo(0, 0); setShowReg(false); }} 
+          onTerms={() => navigate("/terms")} 
+          onSubmitSuccess={() => { setShowReg(false); handleLogin("newMember"); }} 
+        />
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="min-h-[100dvh]">
+       <Component 
+         onBack={goBack} 
+         {...props} 
+         onJoin={() => { window.scrollTo(0, 0); setShowReg(true); }} 
+         onComplete={() => { window.scrollTo(0, 0); setShowReg(true); }} 
+         onLogin={() => { window.scrollTo(0, 0); setShowReg(true); }} 
+       />
+    </motion.div>
+  );
+};
+
 export default function MainApp() {
   const [location, navigate] = useLocation();
   const [role, setRole] = useState<string | null>(null);
@@ -85,16 +113,16 @@ export default function MainApp() {
               <PageTransition><PublicGrid onSelect={handlePublic} /></PageTransition>
             </Route>
             <Route path="/about">
-              <PageTransition><AboutPage onBack={goBack} onJoin={() => navigate("/register")} /></PageTransition>
+              <PageTransition><RouteWithRegister component={AboutPage} goBack={goBack} navigate={navigate} handleLogin={handleLogin} /></PageTransition>
             </Route>
             <Route path="/money">
-              <PageTransition><MoneyLanding onBack={goBack} onLogin={() => navigate("/register")} /></PageTransition>
+              <PageTransition><RouteWithRegister component={MoneyLanding} goBack={goBack} navigate={navigate} handleLogin={handleLogin} /></PageTransition>
             </Route>
             <Route path="/quiz">
-              <PageTransition><QuizPage onBack={goBack} onComplete={() => navigate("/register")} /></PageTransition>
+              <PageTransition><RouteWithRegister component={QuizPage} goBack={goBack} navigate={navigate} handleLogin={handleLogin} /></PageTransition>
             </Route>
             <Route path="/unlock">
-              <PageTransition><UnlockPage onBack={goBack} onJoin={() => navigate("/register")} /></PageTransition>
+              <PageTransition><RouteWithRegister component={UnlockPage} goBack={goBack} navigate={navigate} handleLogin={handleLogin} /></PageTransition>
             </Route>
             <Route path="/appointment">
               <PageTransition><AppointmentPage onBack={goBack} /></PageTransition>
@@ -121,7 +149,7 @@ export default function MainApp() {
             <Route path="/blueprint"><PageTransition><BlueprintPage onBack={goBack} role={role} /></PageTransition></Route>
             <Route path="/inspire"><PageTransition><TemplatePage title="理財靈感" desc="知識與文章" onBack={goBack} /></PageTransition></Route>
             <Route path="/story">
-              <PageTransition><AboutPage onBack={goBack} onJoin={() => navigate("/register")} /></PageTransition>
+              <PageTransition><RouteWithRegister component={AboutPage} goBack={goBack} navigate={navigate} handleLogin={handleLogin} /></PageTransition>
             </Route>
             <Route path="/news"><PageTransition><TemplatePage title="最新動態" desc="最新消息與市場動態" onBack={goBack} /></PageTransition></Route>
             <Route path="/plan"><PageTransition><TemplatePage title="啟富計劃" desc="我的財務規劃" onBack={goBack} /></PageTransition></Route>
