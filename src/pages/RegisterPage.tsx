@@ -83,11 +83,13 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
 
     setSubmitting(true);
     try {
-      // ===== 暫時使用模擬提交，避免卡住 =======
-      console.log('Mocking submission for data:', formData);
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      if (liff && liff.isInClient && liff.isInClient()) {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) {
+        if (liff && liff.isInClient && liff.isInClient()) {
           // 透過送出關鍵字，讓聊天機器人自動切換使用者的圖文選單
           await liff.sendMessages([
             {
@@ -95,29 +97,14 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
               text: "已完成註冊開啟會員選單" 
             }
           ]).catch(console.error);
-      }
-
-      clearSession();
-      onSubmitSuccess();
-      /*
-      const res = await fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      if (res.ok) {
-        alert('註冊成功！將為您關閉頁面，請回到 LINE 官方帳號查看選單。');
-        clearSession();
-        if (liff && liff.isInClient && liff.isInClient()) {
-            liff.closeWindow();
-        } else {
-            onSubmitSuccess();
         }
+        
+        clearSession();
+        onSubmitSuccess();
       } else {
         const errJson = await res.json().catch(() => ({}));
-        alert(`提交失敗: ${errJson.error || '請檢查網路連線或稍後再試。'}\n(請確認 Netlify 是否已設定 NOTION_API_KEY 等變數)`);
+        alert(`提交失敗: ${errJson.error || '請檢查網路連線或稍後再試。'}\n(請確認是否已將會員資料庫右上角「•••」->「連結」-> 與 OOSAYHI 應用程式連結)`);
       }
-      */
     } catch (err) {
       console.error(err);
       alert('發生無預期的錯誤');
@@ -161,11 +148,11 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
             <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20, transition:{duration:0.2} }} transition={{ duration: 0.3 }} className="flex flex-col flex-1">
                <div className="text-center mb-10">
                  <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">身份確認</h2>
-                 <p className="text-[16px] text-warm-gray-600 font-normal tracking-wide">請問您怎麼認識Steven&Annie？</p>
+                 <p className="text-[16px] text-warm-gray-600 font-normal tracking-wide">請問您怎麼認識<span className="text-teal-base"> Steven&Annie </span>？</p>
                </div>
                
                <div className="flex flex-col gap-4 mb-6">
-                 {['親朋好友', '網路社群', '朋友推薦'].map((opt) => (
+                 {['親朋好友', '網路社群', '其他管道'].map((opt) => (
                    <div key={opt} onClick={() => setFormData({...formData, identity: opt})} className={`group flex items-center p-5 border cursor-pointer transition-all duration-300 rounded-2xl shadow-sm ${formData.identity === opt ? 'border-teal-base bg-cyan-soft/30' : 'border-warm-gray-200 bg-white hover:border-teal-soft/80 hover:bg-cyan-soft/10'}`}>
                      <div className={`w-10 h-10 flex items-center justify-center mr-4 shrink-0 transition-colors rounded-full ${formData.identity === opt ? 'bg-teal-base text-white' : 'bg-warm-gray-50 text-warm-gray-800/60 border border-warm-gray-200 group-hover:bg-cyan-soft group-hover:text-cyan-base group-hover:border-teal-soft'}`}>
                        <Ic n="user" size={20} color="currentColor" />

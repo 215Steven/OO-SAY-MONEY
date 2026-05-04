@@ -68,13 +68,13 @@ async function startServer() {
         await notion.pages.create({
           parent: { database_id: dbId },
           properties: {
-            "Name": { title: [{ text: { content: name || "" } }] },
-            "LineUserID": { rich_text: [{ text: { content: lineUserId || "" } }] },
-            "Phone": { rich_text: [{ text: { content: phone || "" } }] },
-            "Birthday": { rich_text: [{ text: { content: birthday || "" } }] },
-            "Email": { email: email || null },
-            "Identity": { select: { name: identity || "其他" } },
-            "Newsletter": { checkbox: !!newsletter }
+            "名字": { title: [{ text: { content: name || "" } }] },
+            "LINE User ID": { rich_text: [{ text: { content: lineUserId || "" } }] },
+            "手機號碼": { rich_text: [{ text: { content: phone || "" } }] },
+            "生日": { rich_text: [{ text: { content: birthday || "" } }] },
+            "email": { email: email || null },
+            "客戶來源": { select: { name: identity || "其他" } },
+            "訂閱電子報": { checkbox: !!newsletter }
           }
         });
       } else {
