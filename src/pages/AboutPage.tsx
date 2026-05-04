@@ -27,39 +27,26 @@ export const AboutPage = ({ onBack, onJoin }: any) => (
 
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="w-full max-w-sm">
         <div className="bg-white p-8 border border-teal-soft/80 rounded-2xl relative hover:border-teal-base/30 transition-all shadow-sm">
-          <div className="w-14 h-14 bg-cyan-soft border border-teal-soft rounded-full flex items-center justify-center mb-6">
-            <Ic n="star" size={24} color="var(--color-teal-base)" />
-          </div>
-          <div className="text-[19px] font-serif font-bold text-warm-gray-800 mb-5 tracking-wide leading-relaxed">
+          <div className="text-[19px] font-serif font-bold text-warm-gray-800 tracking-wide leading-relaxed mb-5">
             從等待，到擁有選擇的自由
           </div>
           <div className="text-[15px] space-y-4 text-warm-gray-800/80 leading-relaxed font-normal tracking-wide">
             <p>
               如果理財只是 Buy and Hold，<br />
-              <span className="text-teal-base">這世界就不需要投資策略和理財書籍了。</span>
+              <span className="text-teal-base">這世界就不需要投資策略了。</span>
             </p>
             <p>
-              曾經拼命想退休，只是為了逃離現狀；<br />
-              後來才明白，真正的自由，是你隨時都有選擇的權利。
+              真正的自由，不是逃離現狀，<br />
+              而是當機會來臨時，<span className="text-teal-base">你有選擇的底氣。</span>
             </p>
             <p>
-              很多人糾結配息有沒有意義。<br />
-              但關鍵從來不是配不配，而是
-              <span className="text-teal-base">你配出來的錢，最後去了哪裡！</span>
-            </p>
-            <p>
-              我們做的不是單純選標的，而是建構一套現金流系統。<br />
-              讓每個月的配息不只是消費，而是持續滾動、增長，直到多到花不完。
-            </p>
-            <p>
-              當現金流穩定，機會來時你不需要猶豫。<br />
-              <span className="text-teal-base">因為你有選擇的底氣。</span>
+              我們做的不是單純選標的，<br />
+              而是建構一套能持續滾動、增長的<span className="text-teal-base">現金流系統。</span>
             </p>
             <p className="pt-2">
-              這套方法已在我們管理的九位數資產規劃中反覆驗證。<br />
-              協助不少人從等待未來，走向選擇人生。<br />
-              與其獨自摸索， <br /> 
-              <span className="text-teal-base">不如讓這套實戰系統，成為你的財務底層邏輯。</span>
+              這套歷經九位數資產驗證的實戰方法，已經協助許多人從等待走向選擇人生。<br />
+              與其獨自摸索，<br /> 
+              <span className="text-teal-base">不如讓它成為你的財務底層邏輯。</span>
             </p>
           </div>
         </div>
@@ -71,13 +58,15 @@ export const AboutPage = ({ onBack, onJoin }: any) => (
           { icon:"trend",   title:"讓錢替你工作",        desc:"資產配置 × 複利效應，加速達到財務自由的時間點。" },
           { icon:"diamond", title:"舒服走到想去的地方", desc:"不說教、不販賣焦慮。只給你能執行、真的會抵達的路線。" },
         ].map(item => (
-          <div key={item.title} className="bg-white border border-warm-gray-200 p-6 rounded-2xl shadow-sm flex flex-col sm:flex-row items-start gap-4 hover:border-teal-soft group transition-all">
-            <div className="w-12 h-12 border border-warm-gray-200 bg-warm-gray-50 group-hover:bg-cyan-soft group-hover:border-teal-soft/50 rounded-full flex items-center justify-center shrink-0 transition-colors">
-              <Ic n={item.icon} size={22} color="currentColor" className="text-warm-gray-800 group-hover:text-teal-base transition-colors" />
+          <div key={item.title} className="bg-white border border-warm-gray-200 p-6 rounded-2xl shadow-sm hover:border-teal-soft group transition-all">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 border border-warm-gray-200 bg-warm-gray-50 group-hover:bg-cyan-soft group-hover:border-teal-soft/50 rounded-full flex items-center justify-center shrink-0 transition-colors">
+                <Ic n={item.icon} size={18} color="currentColor" className="text-warm-gray-800 group-hover:text-teal-base transition-colors" />
+              </div>
+              <div className="text-[17px] font-serif font-bold text-warm-gray-800 tracking-wide">{item.title}</div>
             </div>
-            <div className="pt-0.5">
-              <div className="text-[17px] font-serif font-bold text-warm-gray-800 tracking-wide mb-2">{item.title}</div>
-              <div className="text-[14px] text-warm-gray-800/70 leading-relaxed font-normal tracking-wide">{item.desc}</div>
+            <div className="text-[14px] text-warm-gray-800/70 leading-relaxed font-normal tracking-wide pl-[52px]">
+              {item.desc}
             </div>
           </div>
         ))}

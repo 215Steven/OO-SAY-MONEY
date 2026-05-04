@@ -95,15 +95,10 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
               text: "已完成註冊開啟會員選單" 
             }
           ]).catch(console.error);
-
-          alert('註冊成功！將為您關閉頁面，請回到 LINE 官方帳號查看專屬選單。');
-          clearSession();
-          liff.closeWindow();
-      } else {
-          alert('註冊成功！');
-          clearSession();
-          onSubmitSuccess();
       }
+
+      clearSession();
+      onSubmitSuccess();
       /*
       const res = await fetch('/api/register', {
         method: 'POST',
@@ -143,9 +138,12 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
         ) : (
           <div className="w-10 h-10 shrink-0" />
         )}
-        <div className="flex-1 flex flex-col items-center justify-center -ml-10">
-            <h1 className="text-[14px] font-serif font-bold text-warm-gray-800 tracking-[0.2em] uppercase">會員註冊</h1>
+        <div className="flex-1 flex flex-col items-center justify-center">
+            <h1 className="text-[14px] font-serif font-bold text-warm-gray-800 tracking-[0.2em] uppercase ml-10">會員註冊</h1>
         </div>
+        <button type="button" onClick={onSubmitSuccess} className="w-10 h-10 shrink-0 text-[11px] text-warm-gray-500 hover:text-teal-base tracking-widest font-medium flex items-center justify-center transition-colors">
+          測試
+        </button>
       </div>
 
       <div className="flex-1 px-6 max-w-[430px] w-full mx-auto relative z-10 flex flex-col pt-4">
