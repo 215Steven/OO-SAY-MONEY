@@ -109,7 +109,7 @@ app.get("/api/insurance/:lineUserId", async (req, res) => {
       // Note: Notion query uses data_source_id in the newer API, so we resolve it dynamically.
       let dataSourceId = dbId;
       try {
-        const dbResponse = await notion.databases.retrieve({ database_id: dbId });
+        const dbResponse: any = await notion.databases.retrieve({ database_id: dbId });
         if (dbResponse.data_sources && dbResponse.data_sources.length > 0) {
           dataSourceId = dbResponse.data_sources[0].id;
         }
