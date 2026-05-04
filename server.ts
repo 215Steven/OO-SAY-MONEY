@@ -60,7 +60,7 @@ async function startServer() {
   app.post("/api/register", async (req, res) => {
     try {
       const { identity, name, phone, birthday, email, newsletter, lineUserId } = req.body;
-      const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "db3a7c51-5cf3-4244-adde-8d8ba3b453ae"; // Changed to specific DB
+      const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "b0b467b3-324b-4df3-93c3-aa7a638aa069"; // Use the newly created correct DB
       const lineRichMenuId6 = process.env.LINE_RICH_MENU_ID_6;
 
       // 1. Submit to Notion
@@ -98,7 +98,7 @@ async function startServer() {
   app.post("/api/reservations", async (req, res) => {
     try {
       const { lineUserId, date, time, serviceType, notes } = req.body;
-      const dbId = process.env.NOTION_DATABASE_ID_RESERVATIONS || "8f368206-726b-4090-8798-2f19f977eb07";
+      const dbId = process.env.NOTION_DATABASE_ID_RESERVATIONS || "443b7fca-94e0-4fce-b685-7cde16cc8ddf";
 
       if (process.env.NOTION_API_KEY && dbId) {
         await notion.pages.create({
@@ -127,8 +127,19 @@ async function startServer() {
       const dbId = process.env.NOTION_DATABASE_ID_INSURANCE || "9cefb2321c8e47989a00b85a4a3b53b6";
 
       if (process.env.NOTION_API_KEY && dbId) {
+        
+        let dataSourceId = dbId;
+        try {
+          const dbResponse = await notion.databases.retrieve({ database_id: dbId });
+          if (dbResponse.data_sources && dbResponse.data_sources.length > 0) {
+            dataSourceId = dbResponse.data_sources[0].id;
+          }
+        } catch (e: any) {
+          console.warn("Could not retrieve database to find its data_source, using raw ID for query fallback.", e.message);
+        }
+
         const response = await notion.dataSources.query({
-          data_source_id: dbId,
+          data_source_id: dataSourceId,
           filter: {
             property: "LineUserID",
             rich_text: {

@@ -106,8 +106,19 @@ app.get("/api/insurance/:lineUserId", async (req, res) => {
     const dbId = process.env.NOTION_DATABASE_ID_INSURANCE || "9cefb2321c8e47989a00b85a4a3b53b6";
 
     if (process.env.NOTION_API_KEY && dbId) {
+      // Note: Notion query uses data_source_id in the newer API, so we resolve it dynamically.
+      let dataSourceId = dbId;
+      try {
+        const dbResponse = await notion.databases.retrieve({ database_id: dbId });
+        if (dbResponse.data_sources && dbResponse.data_sources.length > 0) {
+          dataSourceId = dbResponse.data_sources[0].id;
+        }
+      } catch (e: any) {
+        console.warn("Could not retrieve database to find its data_source, using raw ID for query fallback.", e.message);
+      }
+
       const response = await notion.dataSources.query({
-        data_source_id: dbId,
+        data_source_id: dataSourceId,
         filter: { property: "LineUserID", rich_text: { equals: lineUserId } }
       });
 
