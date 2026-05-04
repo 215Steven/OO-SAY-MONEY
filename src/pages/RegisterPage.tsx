@@ -53,13 +53,11 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
   const handleNext = () => {
     if (step === 1 && !formData.identity) return alert('請先選擇您的身份');
     if (step === 2 && (!formData.name || !formData.phone || !formData.birthday || !formData.email)) return alert('請填寫完整聯絡資訊');
-    window.scrollTo(0, 0);
     setStep(prev => prev + 1);
   };
 
   const handlePrev = () => {
     if (step > 1) {
-      window.scrollTo(0, 0);
       setStep(prev => prev - 1);
     } else {
       onBack();
@@ -160,7 +158,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
             </div>
         </div>
 
-        <AnimatePresence mode="popLayout">
+        <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
           {step === 1 && (
             <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20, transition:{duration:0.2} }} transition={{ duration: 0.3 }} className="flex flex-col flex-1">
                <div className="text-center mb-10">

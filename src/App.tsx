@@ -34,10 +34,6 @@ export default function MainApp() {
   const [role, setRole] = useState<string | null>(null);
   const [modal, setModal] = useState(false);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location]);
-
   // MOCK LIFF Init: Read ?role=xxx or ?path=xxx from URL to simulate deep link from LINE Rich Menu
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -83,7 +79,7 @@ export default function MainApp() {
 
 
       <div className="flex-1 w-full bg-[#f8f8f6]">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
           <Switch location={location} key={location}>
             <Route path="/">
               <PageTransition><PublicGrid onSelect={handlePublic} /></PageTransition>
