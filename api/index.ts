@@ -46,7 +46,7 @@ app.use(express.json());
 app.post("/api/register", async (req, res) => {
   try {
     const { identity, name, phone, birthday, email, newsletter, lineUserId } = req.body;
-    const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "db3a7c51-5cf3-4244-adde-8d8ba3b453ae";
+    const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "b0b467b3-324b-4df3-93c3-aa7a638aa069";
     const lineRichMenuId6 = process.env.LINE_RICH_MENU_ID_6;
 
     if (process.env.NOTION_API_KEY && dbId) {
@@ -78,7 +78,7 @@ app.post("/api/register", async (req, res) => {
 app.post("/api/reservations", async (req, res) => {
   try {
     const { lineUserId, date, time, serviceType, notes } = req.body;
-    const dbId = process.env.NOTION_DATABASE_ID_RESERVATIONS || "8f368206-726b-4090-8798-2f19f977eb07";
+    const dbId = process.env.NOTION_DATABASE_ID_RESERVATIONS || "443b7fca-94e0-4fce-b685-7cde16cc8ddf";
 
     if (process.env.NOTION_API_KEY && dbId) {
       await notion.pages.create({
