@@ -33,7 +33,7 @@ export const AboutPage = ({ onBack, onJoin }: any) => (
           <div className="text-[15px] space-y-4 text-warm-gray-800/80 leading-relaxed font-normal tracking-wide">
             <p>
               如果理財只是 Buy and Hold，<br />
-              <span className="text-teal-base">這世界就不需要投資策略了。</span>
+              <span className="text-teal-base">這世界就不需要投資策略和理財書籍了。</span>
             </p>
             <p>
               真正的自由，不是逃離現狀，<br />
