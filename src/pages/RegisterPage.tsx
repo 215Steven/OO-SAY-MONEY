@@ -7,7 +7,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
   const [step, setStep] = useState(() => {
     const saved = sessionStorage.getItem('registerStep');
     const parsedStep = saved ? parseInt(saved) : 1;
-    return parsedStep > 2 ? 1 : parsedStep;
+    return parsedStep > 3 ? 1 : parsedStep;
   });
   
   const [formData, setFormData] = useState(() => {
@@ -62,11 +62,25 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
     }
   };
 
+  const handleNext = () => {
+    if (step === 1) {
+      if (!formData.lineUserId) return alert('LINE 帳號尚未連線完成，請稍候再試。');
+      if (!formData.identity) return alert('請選擇您怎麼認識我們');
+      setStep(2);
+    }
+  };
+
+  const handlePrev = () => {
+    if (step > 1) {
+      setStep(prev => prev - 1);
+    } else {
+      onBack();
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.identity) return alert('請選擇您的身份');
     if (!formData.name || !formData.phone || !formData.birthday || !formData.email) return alert('請填寫完整聯絡資訊');
-    if (!formData.lineUserId) return alert('請先點擊上方按鈕進行 LINE 綁定，以便開通專屬圖文選單。');
     if (!formData.terms) return alert('請確認服務條款與隱私權政策');
 
     setSubmitting(true);
@@ -81,14 +95,14 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
           // 透過送出關鍵字，讓聊天機器人自動切換使用者的圖文選單
           await liff.sendMessages([
             {
-              type: "text",
-              text: "已完成註冊開啟會員選單" 
+               type: "text",
+               text: "已完成註冊開啟會員選單" 
             }
           ]).catch(console.error);
         }
         
         clearSession();
-        setStep(2);
+        setStep(3);
       } else {
         const errJson = await res.json().catch(() => ({}));
         alert(`提交失敗: ${errJson.error || '請檢查網路連線或稍後再試。'}\n(請確認是否已將會員資料庫右上角「•••」->「連結」-> 與 OOSAYHI 應用程式連結)`);
@@ -106,8 +120,8 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
 
       {/* Header Area */}
       <div className="relative z-10 px-6 pt-12 pb-4 flex items-center mb-8 border-b border-warm-gray-200 bg-white">
-        {step === 1 ? (
-          <button type="button" onClick={onBack} className="bg-white rounded-full w-10 h-10 flex items-center justify-center border border-warm-gray-200 cursor-pointer hover:bg-warm-gray-100 transition-colors shrink-0 shadow-sm">
+        {step < 3 ? (
+          <button type="button" onClick={handlePrev} className="bg-white rounded-full w-10 h-10 flex items-center justify-center border border-warm-gray-200 cursor-pointer hover:bg-warm-gray-100 transition-colors shrink-0 shadow-sm">
             <Ic n="back" color="var(--color-warm-gray-800)" size={20} />
           </button>
         ) : (
@@ -122,70 +136,51 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
       </div>
 
       <div className="flex-1 px-6 max-w-[430px] w-full mx-auto relative z-10 flex flex-col pt-2">
+        {/* Progress Indicator */}
+        {step < 3 && (
+          <div className="flex justify-center mb-8">
+              <div className="flex items-center gap-3">
+                {[1, 2].map(i => (
+                   <div key={i} className={`rounded-full transition-all duration-300 ease-out ${step >= i ? 'bg-teal-base w-6 h-1.5' : 'bg-[#D6D3D1] w-1.5 h-1.5'}`} />
+                ))}
+              </div>
+          </div>
+        )}
+
         <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
           {step === 1 && (
             <motion.div key="step1" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="flex flex-col flex-1 pb-10">
                
                <div className="text-center mb-8">
-                 <h2 className="text-[20px] font-serif font-bold text-warm-gray-800 mb-2 tracking-widest">填寫會員資料</h2>
-                 <p className="text-[14px] text-warm-gray-600 font-normal tracking-wide">請填寫以下資訊，一次完成註冊與綁定。</p>
+                 <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">身分選擇</h2>
+                 <p className="text-[14px] text-warm-gray-600 font-normal tracking-wide">選擇符合您的狀態，以客製化服務內容</p>
                </div>
 
                {/* REAL LINE Login Block */}
-               <div className="mb-8">
-                 <h3 className="text-[14px] font-bold text-warm-gray-800 tracking-wider mb-3">1. LINE 帳號綁定 <span className="text-red-500">*</span></h3>
-                 <div className="relative transition-all duration-500 bg-white border border-teal-soft p-1 flex flex-col rounded-2xl shadow-sm">
-                   <div className="flex items-center justify-between p-3">
-                     <div className="flex items-center gap-4">
-                       {formData.linePictureUrl ? (
-                         <div className="w-12 h-12 overflow-hidden shrink-0 border border-warm-gray-200 rounded-full">
-                           <img 
-                             src={formData.linePictureUrl} 
-                             alt="LINE Profile" 
-                             className="w-full h-full object-cover" 
-                             referrerPolicy="no-referrer"
-                             onError={() => setFormData({...formData, linePictureUrl: ''})}
-                           />
-                         </div>
-                       ) : (
-                         <div className="w-12 h-12 bg-warm-gray-50 flex items-center justify-center text-warm-gray-800/40 shrink-0 border border-warm-gray-200 rounded-full">
-                            <Ic n="user" size={20} color="currentColor" />
-                         </div>
-                       )}
-                       
-                       <div className="flex flex-col justify-center">
-                         {formData.lineUserId ? (
-                           <>
-                             <div className="text-[15px] font-serif font-bold text-warm-gray-800 mb-0.5">{formData.lineDisplayName}</div>
-                             <div className="text-[11px] text-warm-gray-800/60 tracking-widest flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-teal-base rounded-full inline-block" /> 綁定成功</div>
-                           </>
-                         ) : (
-                           <>
-                             <div className="text-[15px] font-serif font-bold text-warm-gray-800 mb-0.5">尚未登入</div>
-                             <div className="text-[11px] text-warm-gray-800/60 tracking-widest">請點擊右方按鈕</div>
-                           </>
-                         )}
-                       </div>
-                     </div>
-                     
-                     <div className="pr-1">
-                       {!formData.lineUserId ? (
-                         <button type="button" onClick={handleLineLogin} disabled={!isReady} className="bg-[#00B900] text-white text-[12px] font-medium tracking-widest px-4 py-2 hover:bg-[#00A000] rounded-xl active:scale-95 transition-all outline-none cursor-pointer disabled:opacity-70 shadow-sm">
-                           {!isReady ? '連線中' : '授權連動'}
-                         </button>
-                       ) : (
-                         <div className="flex justify-center items-center h-8 text-teal-base pr-2">
-                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                         </div>
-                       )}
-                     </div>
-                   </div>
+               <div className="mb-10 flex justify-center">
+                 <div className="bg-white px-5 py-3 rounded-full flex items-center gap-3 shadow-sm border border-warm-gray-100 min-w-[200px]">
+                    <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-warm-gray-200">
+                        {formData.linePictureUrl ? (
+                           <img src={formData.linePictureUrl} alt="LINE Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={() => setFormData({...formData, linePictureUrl: ''})} />
+                        ) : (
+                           <div className="w-full h-full bg-warm-gray-50 flex items-center justify-center text-warm-gray-800/40">
+                             <Ic n="user" size={18} color="currentColor" />
+                           </div>
+                        )}
+                    </div>
+                    {formData.lineUserId ? (
+                      <div className="font-serif font-bold text-[15px] text-warm-gray-800 tracking-wide pr-2">{formData.lineDisplayName}</div>
+                    ) : (
+                      <button type="button" onClick={handleLineLogin} disabled={!isReady} className="font-serif font-bold text-[14px] text-warm-gray-800/60 tracking-wide outline-none pr-2">
+                        {isReady ? '點此驗證 LINE 授權' : '與 LINE 連線中...'}
+                      </button>
+                    )}
                  </div>
                </div>
 
                {/* Identity Selection */}
                <div className="mb-8">
-                 <h3 className="text-[14px] font-bold text-warm-gray-800 tracking-wider mb-3">2. 請問您怎麼認識 Steven&Annie？ <span className="text-red-500">*</span></h3>
+                 <h3 className="text-[14px] font-bold text-warm-gray-800 tracking-wider mb-3">請問您怎麼認識 Steven&Annie？ <span className="text-red-500">*</span></h3>
                  <div className="flex flex-col gap-3">
                    {['親朋好友', '網路社群', '其他管道'].map((opt) => (
                      <div key={opt} onClick={() => setFormData({...formData, identity: opt})} className={`group flex items-center p-4 border cursor-pointer transition-all duration-300 rounded-2xl shadow-sm ${formData.identity === opt ? 'border-teal-base bg-cyan-soft/30' : 'border-warm-gray-200 bg-white hover:border-teal-soft/80 hover:bg-cyan-soft/10'}`}>
@@ -198,9 +193,32 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                  </div>
                </div>
 
+               <div className="mt-auto">
+                 <button 
+                  type="button" 
+                  onClick={handleNext} 
+                  className={`w-full font-medium text-[14px] py-4 transition-colors flex justify-center items-center uppercase tracking-widest rounded-2xl shadow-sm ${
+                    formData.lineUserId && formData.identity
+                      ? 'bg-teal-base hover:bg-cyan-base active:scale-[0.98] text-white cursor-pointer border border-teal-base' 
+                      : 'bg-warm-gray-200 text-warm-gray-500 cursor-not-allowed border border-transparent'
+                  }`}
+                 >
+                    繼續下一步
+                 </button>
+               </div>
+            </motion.div>
+          )}
+
+          {step === 2 && (
+            <motion.div key="step2" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="flex flex-col flex-1 pb-10">
+               
+               <div className="text-center mb-10">
+                 <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">聯絡資訊</h2>
+                 <p className="text-[14px] text-warm-gray-600 font-normal tracking-wide">確保未來能收到我們提供專屬通知。</p>
+               </div>
+
                {/* Contact Info */}
                <div className="mb-8">
-                 <h3 className="text-[14px] font-bold text-warm-gray-800 tracking-wider mb-3">3. 聯絡資訊 <span className="text-red-500">*</span></h3>
                  <div className="flex flex-col bg-white border border-warm-gray-200 rounded-2xl overflow-hidden shadow-sm">
                     <div className="flex items-center px-4 py-1">
                       <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="user" size={18} color="currentColor"/></div>
@@ -255,7 +273,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                   onClick={handleSubmit} 
                   disabled={submitting} 
                   className={`w-full font-medium text-[14px] py-4 transition-colors flex justify-center items-center uppercase tracking-widest rounded-2xl shadow-sm ${
-                    formData.lineUserId && formData.identity && formData.name && formData.phone && formData.birthday && formData.email && formData.terms
+                    formData.name && formData.phone && formData.birthday && formData.email && formData.terms
                       ? 'bg-teal-base hover:bg-cyan-base active:scale-[0.98] text-white cursor-pointer border border-teal-base' 
                       : 'bg-warm-gray-200 text-warm-gray-500 cursor-not-allowed border border-transparent'
                   }`}
@@ -267,8 +285,8 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
             </motion.div>
           )}
           
-          {step === 2 && (
-            <motion.div key="step2" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }} className="flex flex-col flex-1 items-center justify-center py-10 mt-10">
+          {step === 3 && (
+            <motion.div key="step3" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }} className="flex flex-col flex-1 items-center justify-center py-10 mt-10">
                <div className="w-16 h-16 rounded-full bg-teal-soft flex items-center justify-center text-teal-base mb-6">
                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                </div>

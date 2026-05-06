@@ -40,6 +40,22 @@ export const useLiff = () => {
     const liffId = getInitialLiffId();
 
     const initializeLiff = async () => {
+      // --- If in iframe (like AI Studio preview), force mock mode to prevent LINE login block ---
+      const isInIframe = window.self !== window.top;
+      
+      if (isInIframe) {
+        setIsMockMode(true);
+        setIsReady(true);
+        setTimeout(() => {
+          setProfile({
+            userId: `mock_line_uid_${Math.random().toString(36).substr(2, 9)}`,
+            displayName: `理財好朋友(預覽機)`,
+            pictureUrl: 'https://api.dicebear.com/7.x/notionists/svg?seed=Felix&backgroundColor=a855f7'
+          });
+        }, 800);
+        return;
+      }
+      
       try {
         await liff.init({ liffId });
         setIsReady(true);
@@ -56,12 +72,25 @@ export const useLiff = () => {
             window.location.replace(window.location.origin + pendingRedirect);
             return;
           }
+        } else {
+          // If not in iframe and not logged in, auto redirect to login
+          const entryUrl = sessionStorage.getItem('entryUrl') || (window.location.origin + '/');
+          liff.login({ redirectUri: entryUrl });
         }
       } catch (err: any) {
         console.error("LIFF 初始化失敗", err);
         setError(err.message);
         setIsMockMode(true);
         setIsReady(true);
+        
+        // Auto mock profile if init fails
+        setTimeout(() => {
+          setProfile({
+            userId: `mock_line_uid_err_${Math.random().toString(36).substr(2, 9)}`,
+            displayName: `理財好朋友(離線)`,
+            pictureUrl: 'https://api.dicebear.com/7.x/notionists/svg?seed=Felix&backgroundColor=a855f7'
+          });
+        }, 800);
       }
     };
 
