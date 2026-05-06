@@ -21,8 +21,8 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
   try {
     const events = req.body.events;
     for (const event of events) {
-      if (event.type === 'message' && event.message.type === 'text') {
-         const text = event.message.text;
+      if ((event.type === 'message' && event.message.type === 'text') || event.type === 'postback') {
+         const text = event.type === 'message' ? event.message.text : event.postback?.data || '';
          const userId = event.source.userId;
          
          if (userId) {
