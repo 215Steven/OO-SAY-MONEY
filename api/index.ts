@@ -32,6 +32,7 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
            
            if (process.env.NOTION_API_KEY && dbId) {
              try {
+               // @ts-ignore
                const response = await notion.databases.query({
                  database_id: dbId,
                  filter: { property: "LINE User ID", rich_text: { equals: userId } }
@@ -45,7 +46,7 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
            // 如果發現已經不在資料庫，自動解除綁定並通知
            if (!isMember) {
              try {
-               await lineClient.unlinkRichMenuFromUser(userId);
+               await lineClient.unlinkRichMenuIdFromUser(userId);
                await lineClient.replyMessage({
                  replyToken: event.replyToken,
                  messages: [{ type: 'text', text: '系統通知：您的會員身分已更新，已為您切換回訪客選單。如需重新開通請再次註冊。' }]
@@ -135,7 +136,7 @@ app.post("/api/reservations", async (req, res) => {
 app.get("/api/admin/unlink/:lineUserId", async (req, res) => {
   try {
     const { lineUserId } = req.params;
-    await lineClient.unlinkRichMenuFromUser(lineUserId);
+    await lineClient.unlinkRichMenuIdFromUser(lineUserId);
     res.send(`<h1>✅ 成功解除綁定！</h1><p>User ID: ${lineUserId} 已恢復為預設訪客選單。</p><p>請關閉此視窗。</p>`);
   } catch (err: any) {
     console.error(err);
