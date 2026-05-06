@@ -5,13 +5,13 @@ import { useLiff } from "@/src/hooks/useLiff";
 
 export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () => void, onTerms: () => void, onSubmitSuccess: () => void }) => {
   const [step, setStep] = useState(() => {
-    const saved = sessionStorage.getItem('registerStep');
+    const saved = localStorage.getItem('registerStep');
     const parsedStep = saved ? parseInt(saved) : 1;
     return parsedStep > 3 ? 1 : parsedStep;
   });
   
   const [formData, setFormData] = useState(() => {
-    const saved = sessionStorage.getItem('registerData');
+    const saved = localStorage.getItem('registerData');
     return saved ? JSON.parse(saved) : {
       identity: '',
       name: '',
@@ -30,8 +30,8 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
   const { liff, isReady, profile, login } = useLiff();
 
   useEffect(() => {
-    sessionStorage.setItem('registerData', JSON.stringify(formData));
-    sessionStorage.setItem('registerStep', step.toString());
+    localStorage.setItem('registerData', JSON.stringify(formData));
+    localStorage.setItem('registerStep', step.toString());
   }, [formData, step]);
 
   useEffect(() => {
@@ -51,13 +51,13 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
   }, [profile]);
 
   const clearSession = () => {
-    sessionStorage.removeItem('registerData');
-    sessionStorage.removeItem('registerStep');
+    localStorage.removeItem('registerData');
+    localStorage.removeItem('registerStep');
   };
 
   const handleLineLogin = () => {
     if (isReady && !profile) {
-      sessionStorage.setItem('postLoginRedirect', window.location.pathname);
+      localStorage.setItem('postLoginRedirect', window.location.pathname);
       login();
     }
   };
@@ -190,9 +190,6 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                         key={opt} 
                         onClick={() => {
                           setFormData({...formData, identity: opt});
-                          if (formData.lineUserId) {
-                             setTimeout(() => setStep(2), 300);
-                          }
                         }} 
                         className={`group flex items-center p-4 border cursor-pointer transition-all duration-300 rounded-2xl shadow-sm ${formData.identity === opt ? 'border-teal-base bg-cyan-soft/30' : 'border-warm-gray-200 bg-white hover:border-teal-soft/80 hover:bg-cyan-soft/10'}`}
                      >

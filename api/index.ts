@@ -34,10 +34,9 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
            
            if (process.env.NOTION_API_KEY && dbId) {
              try {
-               // @ts-ignore
-               const response = await notion.databases.query({
-                 database_id: dbId,
-                 filter: { property: "LINE User ID", rich_text: { equals: userId } }
+               const response = await notion.dataSources.query({
+                 data_source_id: dbId,
+                 filter: { property: "LINE UserID", rich_text: { equals: userId } }
                });
                
                const validMembers = response.results.filter((res: any) => !res.archived && !(res.in_trash));
@@ -119,10 +118,9 @@ app.get("/api/check-member", async (req, res) => {
       debugInfo.error = "Missing NOTION_DATABASE_ID_MEMBERS";
     } else {
       try {
-        // @ts-ignore
-        const response = await notion.databases.query({
-          database_id: dbId,
-          filter: { property: "LINE User ID", rich_text: { equals: userId } }
+        const response = await notion.dataSources.query({
+          data_source_id: dbId,
+          filter: { property: "LINE UserID", rich_text: { equals: userId } }
         });
         
         const validMembers = response.results.filter((res: any) => !res.archived && !res.in_trash);
@@ -172,16 +170,15 @@ app.post("/api/register", async (req, res) => {
 
     if (process.env.NOTION_API_KEY && dbId) {
       // Check if user already exists
-      // @ts-ignore
-      const existing = await notion.databases.query({
-        database_id: dbId,
-        filter: { property: "LINE User ID", rich_text: { equals: lineUserId } }
+      const existing = await notion.dataSources.query({
+        data_source_id: dbId,
+        filter: { property: "LINE UserID", rich_text: { equals: lineUserId } }
       });
       const validMembers = existing.results.filter((res: any) => !res.archived && !(res.in_trash));
       
       const properties = {
-          "名字": { title: [{ text: { content: name || "" } }] },
-          "LINE User ID": { rich_text: [{ text: { content: lineUserId || "" } }] },
+          "LINE 名稱": { title: [{ text: { content: name || "" } }] },
+          "LINE UserID": { rich_text: [{ text: { content: lineUserId || "" } }] },
           "手機號碼": { rich_text: [{ text: { content: phone || "" } }] },
           "生日": { rich_text: [{ text: { content: birthday || "" } }] },
           "email": { email: email || null },
@@ -198,7 +195,7 @@ app.post("/api/register", async (req, res) => {
       } else {
         // Create new
         await notion.pages.create({
-          parent: { database_id: dbId },
+          parent: { data_source_id: dbId },
           properties: properties
         });
       }
@@ -222,7 +219,7 @@ app.post("/api/reservations", async (req, res) => {
 
     if (process.env.NOTION_API_KEY && dbId) {
       await notion.pages.create({
-        parent: { database_id: dbId },
+        parent: { data_source_id: dbId },
         properties: {
           "Title": { title: [{ text: { content: `${serviceType} - ${date}` } }] },
           "LineUserID": { rich_text: [{ text: { content: lineUserId || "" } }] },
