@@ -113,6 +113,7 @@ app.get("/api/check-member", async (req, res) => {
 
     if (process.env.NOTION_API_KEY && dbId) {
       try {
+        // @ts-ignore
         const response = await notion.databases.query({
           database_id: dbId,
           filter: { property: "LINE User ID", rich_text: { equals: userId } }
@@ -156,6 +157,7 @@ app.post("/api/register", async (req, res) => {
 
     if (process.env.NOTION_API_KEY && dbId) {
       // Check if user already exists
+      // @ts-ignore
       const existing = await notion.databases.query({
         database_id: dbId,
         filter: { property: "LINE User ID", rich_text: { equals: lineUserId } }
