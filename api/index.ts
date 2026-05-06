@@ -98,6 +98,56 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
 
 app.use(express.json());
 
+app.get("/api/check-member", async (req, res) => {
+  try {
+    const userId = req.query.userId as string;
+    if (!userId) {
+      res.status(400).json({ error: "Missing userId" });
+      return;
+    }
+
+    const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "b0b467b3-324b-4df3-93c3-aa7a638aa069";
+    const lineRichMenuId6 = process.env.LINE_RICH_MENU_ID_6;
+
+    let isMember = false;
+
+    if (process.env.NOTION_API_KEY && dbId) {
+      try {
+        const response = await notion.databases.query({
+          database_id: dbId,
+          filter: { property: "LINE User ID", rich_text: { equals: userId } }
+        });
+        
+        const validMembers = response.results.filter((res: any) => !res.archived && !res.in_trash);
+        isMember = validMembers.length > 0;
+      } catch (e: any) {
+        console.error("Notion check failed in /api/check-member:", e);
+      }
+    }
+
+    if (process.env.LINE_CHANNEL_ACCESS_TOKEN) {
+      if (isMember && lineRichMenuId6) {
+        try {
+          await lineClient.linkRichMenuIdToUser(userId, lineRichMenuId6);
+        } catch (linkErr) {
+          console.error("Link menu failed:", linkErr);
+        }
+      } else {
+        try {
+          await lineClient.unlinkRichMenuIdFromUser(userId);
+        } catch (unlinkErr) {
+          console.error("Unlink menu failed:", unlinkErr);
+        }
+      }
+    }
+
+    res.json({ status: "ok", isMember });
+  } catch (error: any) {
+    console.error("API Error in check-member:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post("/api/register", async (req, res) => {
   try {
     const { identity, name, phone, birthday, email, newsletter, lineUserId } = req.body;

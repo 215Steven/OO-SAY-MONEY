@@ -16,6 +16,7 @@ import { DefensePage } from "@/src/pages/DefensePage";
 import { BlueprintPage } from "@/src/pages/BlueprintPage";
 import { RegisterPage } from "@/src/pages/RegisterPage";
 import { TermsPage } from "@/src/pages/TermsPage";
+import { useLiff } from "@/src/hooks/useLiff";
 
 const PageTransition = ({ children }: { children: ReactNode }) => (
   <motion.div
@@ -61,8 +62,22 @@ export default function MainApp() {
   const [location, navigate] = useLocation();
   const [role, setRole] = useState<string | null>(null);
   const [modal, setModal] = useState(false);
+  
+  const { isReady, profile, isMockMode } = useLiff();
 
-  // MOCK LIFF Init: Read ?role=xxx or ?path=xxx from URL to simulate deep link from LINE Rich Menu
+  // Handle Notion validation and LINE rich menu dynamically based on userId
+  useEffect(() => {
+    if (isReady && profile?.userId && !isMockMode) {
+      fetch(`/api/check-member?userId=${profile.userId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.isMember) setRole("newMember");
+        })
+        .catch(err => console.error("Check member error:", err));
+    }
+  }, [isReady, profile?.userId, isMockMode]);
+
+  // Read ?role=xxx or ?path=xxx from URL to simulate deep link from LINE Rich Menu
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const urlRole = params.get("role");

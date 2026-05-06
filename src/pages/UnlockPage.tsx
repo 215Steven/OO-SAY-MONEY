@@ -5,7 +5,9 @@ export const UnlockPage = ({ onBack, onJoin }: any) => (
   <div className="min-h-screen pb-12 flex flex-col relative bg-warm-gray-50 items-center">
     
     <div className="pt-12 px-6 pb-8 flex flex-col items-center w-full max-w-sm">
-      
+      <button onClick={onBack} className="self-start mb-6 text-warm-gray-500 hover:text-warm-gray-800 transition-colors flex items-center gap-1">
+        <Ic n="arrow-left" size={18} /> 返回
+      </button>
 
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center w-full">
         <div className="text-[28px] font-serif font-bold text-warm-gray-800 leading-snug tracking-wide mb-3">
