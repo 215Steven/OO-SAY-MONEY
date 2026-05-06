@@ -99,10 +99,13 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                text: "已完成註冊開啟會員選單" 
             }
           ]).catch(console.error);
+          alert("註冊成功！資料驗證中，即將關閉視窗");
+          liff.closeWindow();
+        } else {
+          alert("註冊成功！系統已記錄您的資料，請回到 LINE 聊天室查看。");
         }
         
         clearSession();
-        setStep(3);
       } else {
         const errJson = await res.json().catch(() => ({}));
         alert(`提交失敗: ${errJson.error || '請檢查網路連線或稍後再試。'}\n(請確認是否已將會員資料庫右上角「•••」->「連結」-> 與 OOSAYHI 應用程式連結)`);
@@ -171,9 +174,9 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                     {formData.lineUserId ? (
                       <div className="font-serif font-bold text-[15px] text-warm-gray-800 tracking-wide pr-2">{formData.lineDisplayName}</div>
                     ) : (
-                      <button type="button" onClick={handleLineLogin} disabled={!isReady} className="font-serif font-bold text-[14px] text-warm-gray-800/60 tracking-wide outline-none pr-2">
-                        {isReady ? '點此驗證 LINE 授權' : '與 LINE 連線中...'}
-                      </button>
+                      <div className="font-serif font-bold text-[14px] text-warm-gray-800/60 tracking-wide pr-2 animate-pulse">
+                        {isReady ? '請稍候，驗證中...' : '與 LINE 連線中...'}
+                      </div>
                     )}
                  </div>
                </div>
@@ -183,7 +186,16 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                  <h3 className="text-[14px] font-bold text-warm-gray-800 tracking-wider mb-3">請問您怎麼認識 Steven&Annie？ <span className="text-red-500">*</span></h3>
                  <div className="flex flex-col gap-3">
                    {['親朋好友', '網路社群', '其他管道'].map((opt) => (
-                     <div key={opt} onClick={() => setFormData({...formData, identity: opt})} className={`group flex items-center p-4 border cursor-pointer transition-all duration-300 rounded-2xl shadow-sm ${formData.identity === opt ? 'border-teal-base bg-cyan-soft/30' : 'border-warm-gray-200 bg-white hover:border-teal-soft/80 hover:bg-cyan-soft/10'}`}>
+                     <div 
+                        key={opt} 
+                        onClick={() => {
+                          setFormData({...formData, identity: opt});
+                          if (formData.lineUserId) {
+                             setTimeout(() => setStep(2), 300);
+                          }
+                        }} 
+                        className={`group flex items-center p-4 border cursor-pointer transition-all duration-300 rounded-2xl shadow-sm ${formData.identity === opt ? 'border-teal-base bg-cyan-soft/30' : 'border-warm-gray-200 bg-white hover:border-teal-soft/80 hover:bg-cyan-soft/10'}`}
+                     >
                        <span className={`text-[15px] font-medium flex-1 tracking-wider transition-colors ml-2 ${formData.identity === opt ? 'text-teal-base':'text-warm-gray-800'}`}>{opt}</span>
                        <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-all duration-300 ${formData.identity === opt ? 'bg-teal-base' : 'bg-white border border-warm-gray-200'}`}>
                          {formData.identity === opt && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
@@ -282,32 +294,6 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                  </button>
                  <p className="text-center text-[12px] text-warm-gray-500 mt-4 tracking-wide">請再次確認填寫正確，送出後專屬圖文即開通</p>
                </div>
-            </motion.div>
-          )}
-          
-          {step === 3 && (
-            <motion.div key="step3" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }} className="flex flex-col flex-1 items-center justify-center py-10 mt-10">
-               <div className="w-16 h-16 rounded-full bg-teal-soft flex items-center justify-center text-teal-base mb-6">
-                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-               </div>
-               <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">開通成功</h2>
-               <p className="text-[15px] text-warm-gray-600 font-normal tracking-wide text-center leading-relaxed mb-8">
-                 您的會員功能已全部開通！<br/><br/>請關閉此視窗，並返回 LINE 聊天室，<br/>即可開始使用您的「專屬會員圖文選單」。
-               </p>
-               <button 
-                 type="button" 
-                 onClick={() => {
-                   // @ts-ignore
-                   if (window.liff && window.liff.isInClient && window.liff.isInClient()) {
-                     // @ts-ignore
-                     window.liff.closeWindow();
-                   } else {
-                     window.location.href = "https://line.me/R/ti/p/@oosaymoney";
-                   }
-                 }} 
-                 className="w-full max-w-[200px] bg-teal-base hover:bg-cyan-base text-white font-medium text-[13px] py-4 rounded-2xl cursor-pointer uppercase tracking-widest shadow-sm">
-                 關閉視窗 / 返回官方帳號
-               </button>
             </motion.div>
           )}
         </AnimatePresence>

@@ -87,9 +87,10 @@ export const useLiff = () => {
         setTimeout(() => {
           setProfile({
             userId: `mock_line_uid_err_${Math.random().toString(36).substr(2, 9)}`,
-            displayName: `理財好朋友(離線)`,
+            displayName: `理財好朋友(離線模式/出錯)`,
             pictureUrl: 'https://api.dicebear.com/7.x/notionists/svg?seed=Felix&backgroundColor=a855f7'
           });
+          alert("LINE LIFF 初始化失敗，或您目前使用的是測試網址。目前已切換為「模擬帳號」！\n(註：此模擬帳號送出的資料將暫無法與您的真實 LINE 連動，請使用正確的連結於 LINE App 內開啟。)");
         }, 800);
       }
     };
