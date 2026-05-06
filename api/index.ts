@@ -23,9 +23,41 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
     for (const event of events) {
       if (event.type === 'message' && event.message.type === 'text') {
          const text = event.message.text;
-         if (text === '查詢我的保險') {
-           const userId = event.source.userId;
-           if (userId) {
+         const userId = event.source.userId;
+         
+         if (userId) {
+           // [自動化機制] 檢查使用者是否還在 Notion 會員資料庫中
+           const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "b0b467b3-324b-4df3-93c3-aa7a638aa069";
+           let isMember = true;
+           
+           if (process.env.NOTION_API_KEY && dbId) {
+             try {
+               const response = await notion.databases.query({
+                 database_id: dbId,
+                 filter: { property: "LINE User ID", rich_text: { equals: userId } }
+               });
+               isMember = response.results.length > 0;
+             } catch (e) {
+               console.error("Notion check failed:", e);
+             }
+           }
+
+           // 如果發現已經不在資料庫，自動解除綁定並通知
+           if (!isMember) {
+             try {
+               await lineClient.unlinkRichMenuFromUser(userId);
+               await lineClient.replyMessage({
+                 replyToken: event.replyToken,
+                 messages: [{ type: 'text', text: '系統通知：您的會員身分已更新，已為您切換回訪客選單。如需重新開通請再次註冊。' }]
+               });
+               continue; // 結束這個事件的處理
+             } catch (unlinkErr) {
+               console.error("Unlink failed:", unlinkErr);
+             }
+           }
+
+           // 原本的關鍵字回應邏輯
+           if (text === '查詢我的保險') {
               await lineClient.replyMessage({
                 replyToken: event.replyToken,
                 messages: [{ type: 'text', text: '您的專屬保險資料正在準備中，請稍候。' }]
@@ -97,6 +129,17 @@ app.post("/api/reservations", async (req, res) => {
   } catch (error: any) {
     console.error("API Error:", error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/api/admin/unlink/:lineUserId", async (req, res) => {
+  try {
+    const { lineUserId } = req.params;
+    await lineClient.unlinkRichMenuFromUser(lineUserId);
+    res.send(`<h1>✅ 成功解除綁定！</h1><p>User ID: ${lineUserId} 已恢復為預設訪客選單。</p><p>請關閉此視窗。</p>`);
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).send(`<h1>❌ 解除綁定失敗</h1><p>${err.message}</p>`);
   }
 });
 
