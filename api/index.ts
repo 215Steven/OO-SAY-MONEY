@@ -47,14 +47,19 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
            if (!isMember) {
              try {
                await lineClient.unlinkRichMenuIdFromUser(userId);
-               await lineClient.replyMessage({
-                 replyToken: event.replyToken,
-                 messages: [{ type: 'text', text: '系統通知：您的會員身分已更新，已為您切換回訪客選單。如需重新開通請再次註冊。' }]
-               });
-               continue; // 結束這個事件的處理
              } catch (unlinkErr) {
                console.error("Unlink failed:", unlinkErr);
              }
+
+             try {
+               await lineClient.replyMessage({
+                 replyToken: event.replyToken,
+                 messages: [{ type: 'text', text: '系統通知：您的會員身分已更新，已切換回訪客選單 (如果選單未變，請將LINE應用程式重新開啟)。如需重啟服務請再次註冊！' }]
+               });
+             } catch (e) {
+               console.error("reply failed:", e);
+             }
+             continue; // 結束這個事件的處理
            }
 
            // 原本的關鍵字回應邏輯
@@ -63,6 +68,11 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
                 replyToken: event.replyToken,
                 messages: [{ type: 'text', text: '您的專屬保險資料正在準備中，請稍候。' }]
               });
+           } else if (text) {
+              await lineClient.replyMessage({
+                replyToken: event.replyToken,
+                messages: [{ type: 'text', text: '您好！系統確認您目前是「專屬會員」身分。若您在 Notion 刪除資料，請再次輸入文字以更新選單！' }]
+              }).catch(e => console.error("reply err", e));
            }
          }
       }
