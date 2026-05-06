@@ -111,9 +111,13 @@ app.get("/api/check-member", async (req, res) => {
     const lineRichMenuId6 = process.env.LINE_RICH_MENU_ID_6;
 
     let isMember = false;
-    let debugInfo: any = null;
+    let debugInfo: any = { status: "init" };
 
-    if (process.env.NOTION_API_KEY && dbId) {
+    if (!process.env.NOTION_API_KEY) {
+      debugInfo.error = "Missing NOTION_API_KEY";
+    } else if (!dbId) {
+      debugInfo.error = "Missing NOTION_DATABASE_ID_MEMBERS";
+    } else {
       try {
         // @ts-ignore
         const response = await notion.databases.query({
@@ -133,6 +137,7 @@ app.get("/api/check-member", async (req, res) => {
         };
       } catch (e: any) {
         console.error("Notion check failed in /api/check-member:", e);
+        debugInfo = { error: e.message, code: e.code, name: e.name };
       }
     }
 
