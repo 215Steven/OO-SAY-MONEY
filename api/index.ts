@@ -110,6 +110,7 @@ app.get("/api/check-member", async (req, res) => {
     const lineRichMenuId6 = process.env.LINE_RICH_MENU_ID_6;
 
     let isMember = false;
+    let debugInfo: any = null;
 
     if (process.env.NOTION_API_KEY && dbId) {
       try {
@@ -121,6 +122,14 @@ app.get("/api/check-member", async (req, res) => {
         
         const validMembers = response.results.filter((res: any) => !res.archived && !res.in_trash);
         isMember = validMembers.length > 0;
+        debugInfo = {
+          databaseId: dbId,
+          queriedUserId: userId,
+          rawResultsCount: response.results.length,
+          validMembersCount: validMembers.length,
+          // Extract some basic info to debug without leaking full objects
+          firstResultProperties: response.results.length > 0 ? (response.results[0] as any).properties : null
+        };
       } catch (e: any) {
         console.error("Notion check failed in /api/check-member:", e);
       }
@@ -142,7 +151,7 @@ app.get("/api/check-member", async (req, res) => {
       }
     }
 
-    res.json({ status: "ok", isMember });
+    res.json({ status: "ok", isMember, debugInfo });
   } catch (error: any) {
     console.error("API Error in check-member:", error);
     res.status(500).json({ error: error.message });

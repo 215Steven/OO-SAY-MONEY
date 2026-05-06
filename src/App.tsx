@@ -62,6 +62,7 @@ export default function MainApp() {
   const [location, navigate] = useLocation();
   const [role, setRole] = useState<string | null>(null);
   const [modal, setModal] = useState(false);
+  const [debugData, setDebugData] = useState<any>(null);
   
   const { isReady, profile, isMockMode } = useLiff();
 
@@ -72,6 +73,7 @@ export default function MainApp() {
         .then(res => res.json())
         .then(data => {
           if (data.isMember) setRole("newMember");
+          setDebugData(data);
         })
         .catch(err => console.error("Check member error:", err));
     }
@@ -122,6 +124,13 @@ export default function MainApp() {
 
 
       <div className="flex-1 w-full bg-[#f8f8f6]">
+        {debugData && (
+          <div className="absolute top-16 left-4 right-4 p-4 bg-black/80 text-green-400 font-mono text-xs z-50 overflow-auto max-h-48 rounded shadow-lg break-all pointer-events-auto">
+            <h3 className="font-bold text-white mb-1">Notion Check Result:</h3>
+            <pre className="whitespace-pre-wrap">{JSON.stringify(debugData, null, 2)}</pre>
+            <button onClick={() => setDebugData(null)} className="absolute top-2 right-2 text-white bg-red-500/50 px-2 py-1 rounded">X</button>
+          </div>
+        )}
         <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
           <Switch location={location} key={location}>
             <Route path="/">
