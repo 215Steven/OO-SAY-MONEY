@@ -29,6 +29,7 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
            // [自動化機制] 檢查使用者是否還在 Notion 會員資料庫中
            const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "b0b467b3-324b-4df3-93c3-aa7a638aa069";
            let isMember = true;
+           let resultsCount = 0;
            
            if (process.env.NOTION_API_KEY && dbId) {
              try {
@@ -39,7 +40,8 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
                });
                
                const validMembers = response.results.filter((res: any) => !res.archived && !(res.in_trash));
-               isMember = validMembers.length > 0;
+               resultsCount = validMembers.length;
+               isMember = resultsCount > 0;
                
                // Debug message to user if needed
                // console.log("Notion results:", validMembers.length);
@@ -81,7 +83,7 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
            } else if (text) {
               await lineClient.replyMessage({
                 replyToken: event.replyToken,
-                messages: [{ type: 'text', text: `您好！系統確認您目前是「專屬會員」身分。若您在 Notion 刪除資料，請再次輸入文字以更新選單！(isMember=${isMember})` }]
+                messages: [{ type: 'text', text: `您好！系統確認您目前是「專屬會員」身分。\n(Notion中找到 ${resultsCount} 筆包含您LINE ID的資料。如果您已經在Notion刪除，可能是之前測試時重複註冊綁定了多筆，請回 Notion 檢查是否有其他名稱/ID重複的資料，並將重複的資料都刪除！)` }]
               }).catch(e => console.error("reply err", e));
            }
          }
@@ -103,9 +105,14 @@ app.post("/api/register", async (req, res) => {
     const lineRichMenuId6 = process.env.LINE_RICH_MENU_ID_6;
 
     if (process.env.NOTION_API_KEY && dbId) {
-      await notion.pages.create({
-        parent: { database_id: dbId },
-        properties: {
+      // Check if user already exists
+      const existing = await notion.databases.query({
+        database_id: dbId,
+        filter: { property: "LINE User ID", rich_text: { equals: lineUserId } }
+      });
+      const validMembers = existing.results.filter((res: any) => !res.archived && !(res.in_trash));
+      
+      const properties = {
           "名字": { title: [{ text: { content: name || "" } }] },
           "LINE User ID": { rich_text: [{ text: { content: lineUserId || "" } }] },
           "手機號碼": { rich_text: [{ text: { content: phone || "" } }] },
@@ -113,8 +120,21 @@ app.post("/api/register", async (req, res) => {
           "email": { email: email || null },
           "客戶來源": { select: { name: identity || "其他" } },
           "訂閱電子報": { checkbox: !!newsletter }
-        }
-      });
+      };
+      
+      if (validMembers.length > 0) {
+        // Update existing instead of creating duplicate
+        await notion.pages.update({
+          page_id: validMembers[0].id,
+          properties: properties
+        });
+      } else {
+        // Create new
+        await notion.pages.create({
+          parent: { database_id: dbId },
+          properties: properties
+        });
+      }
     }
 
     if (lineUserId && process.env.LINE_CHANNEL_ACCESS_TOKEN && lineRichMenuId6) {
