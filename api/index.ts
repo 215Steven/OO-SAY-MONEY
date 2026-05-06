@@ -37,9 +37,19 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
                  database_id: dbId,
                  filter: { property: "LINE User ID", rich_text: { equals: userId } }
                });
-               isMember = response.results.length > 0;
-             } catch (e) {
+               
+               const validMembers = response.results.filter((res: any) => !res.archived && !(res.in_trash));
+               isMember = validMembers.length > 0;
+               
+               // Debug message to user if needed
+               // console.log("Notion results:", validMembers.length);
+             } catch (e: any) {
                console.error("Notion check failed:", e);
+               await lineClient.replyMessage({
+                 replyToken: event.replyToken,
+                 messages: [{ type: 'text', text: `查詢會員失敗: ${e.message}` }]
+               }).catch(console.error);
+               continue;
              }
            }
 
@@ -71,7 +81,7 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
            } else if (text) {
               await lineClient.replyMessage({
                 replyToken: event.replyToken,
-                messages: [{ type: 'text', text: '您好！系統確認您目前是「專屬會員」身分。若您在 Notion 刪除資料，請再次輸入文字以更新選單！' }]
+                messages: [{ type: 'text', text: `您好！系統確認您目前是「專屬會員」身分。若您在 Notion 刪除資料，請再次輸入文字以更新選單！(isMember=${isMember})` }]
               }).catch(e => console.error("reply err", e));
            }
          }
