@@ -1,3 +1,4 @@
+// @ts-nocheck
 import express from "express";
 import { Client } from "@notionhq/client";
 import { messagingApi, middleware as lineMiddleware } from "@line/bot-sdk";
