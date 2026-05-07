@@ -18,7 +18,7 @@ const notion = new Client({ auth: process.env.NOTION_API_KEY });
 const lineClient = new MessagingApiClient(lineConfig);
 
 // 1. LINE Webhook Endpoint
-app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
+app.post("/api/webhook", express.json(), async (req, res) => {
   try {
     const events = req.body.events;
     for (const event of events) {
