@@ -28,7 +28,7 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
          
          if (userId) {
            // [自動化機制] 檢查使用者是否還在 Notion 會員資料庫中
-           const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "db3a7c51-5cf3-4244-adde-8d8ba3b453ae";
+           const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "b0b467b3-324b-4df3-93c3-aa7a638aa069";
            let isMember = true;
            let resultsCount = 0;
            
@@ -106,7 +106,7 @@ app.get("/api/check-member", async (req, res) => {
       return;
     }
 
-    const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "db3a7c51-5cf3-4244-adde-8d8ba3b453ae";
+    const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "b0b467b3-324b-4df3-93c3-aa7a638aa069";
     const lineRichMenuId6 = process.env.LINE_RICH_MENU_ID_6;
 
     let isMember = false;
@@ -165,7 +165,7 @@ app.get("/api/check-member", async (req, res) => {
 app.post("/api/register", async (req, res) => {
   try {
     const { identity, name, phone, birthday, email, newsletter, lineUserId } = req.body;
-    const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "db3a7c51-5cf3-4244-adde-8d8ba3b453ae";
+    const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "b0b467b3-324b-4df3-93c3-aa7a638aa069";
     const lineRichMenuId6 = process.env.LINE_RICH_MENU_ID_6;
 
     if (process.env.NOTION_API_KEY && dbId) {

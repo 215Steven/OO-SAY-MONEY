@@ -61,7 +61,7 @@ async function startServer() {
   app.post("/api/register", async (req, res) => {
     try {
       const { identity, name, phone, birthday, email, newsletter, lineUserId } = req.body;
-      const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "db3a7c51-5cf3-4244-adde-8d8ba3b453ae";
+      const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "b0b467b3-324b-4df3-93c3-aa7a638aa069";
       const lineRichMenuId6 = process.env.LINE_RICH_MENU_ID_6;
 
       // 1. Submit to Notion
