@@ -1,4 +1,5 @@
 import express from "express";
+import "dotenv/config";
 import { createServer as createViteServer } from "vite";
 import { Client } from "@notionhq/client";
 import { messagingApi, middleware as lineMiddleware } from "@line/bot-sdk";
@@ -60,16 +61,16 @@ async function startServer() {
   app.post("/api/register", async (req, res) => {
     try {
       const { identity, name, phone, birthday, email, newsletter, lineUserId } = req.body;
-      const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "b0b467b3-324b-4df3-93c3-aa7a638aa069"; // Use the newly created correct DB
+      const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "db3a7c51-5cf3-4244-adde-8d8ba3b453ae";
       const lineRichMenuId6 = process.env.LINE_RICH_MENU_ID_6;
 
       // 1. Submit to Notion
       if (process.env.NOTION_API_KEY && dbId) {
         await notion.pages.create({
-          parent: { database_id: dbId },
+          parent: { data_source_id: dbId },
           properties: {
-            "名字": { title: [{ text: { content: name || "" } }] },
-            "LINE User ID": { rich_text: [{ text: { content: lineUserId || "" } }] },
+            "LINE 名稱": { title: [{ text: { content: name || "" } }] },
+            "LINE UserID": { rich_text: [{ text: { content: lineUserId || "" } }] },
             "手機號碼": { rich_text: [{ text: { content: phone || "" } }] },
             "生日": { rich_text: [{ text: { content: birthday || "" } }] },
             "email": { email: email || null },
@@ -102,7 +103,7 @@ async function startServer() {
 
       if (process.env.NOTION_API_KEY && dbId) {
         await notion.pages.create({
-          parent: { database_id: dbId },
+          parent: { data_source_id: dbId } as any,
           properties: {
             "Title": { title: [{ text: { content: `${serviceType} - ${date}` } }] },
             "LineUserID": { rich_text: [{ text: { content: lineUserId || "" } }] },
