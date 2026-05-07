@@ -231,25 +231,25 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                  <div className="flex flex-col bg-white border border-warm-gray-200 rounded-2xl overflow-hidden shadow-sm">
                     <div className="flex items-center px-4 py-1">
                       <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="user" size={18} color="currentColor"/></div>
-                      <input type="text" required placeholder="您的真實姓名" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[14px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
+                      <input type="text" required placeholder="您的真實姓名" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
                     </div>
                     <div className="h-px bg-warm-gray-200 w-full" />
   
                     <div className="flex items-center px-4 py-1 bg-warm-gray-50/50">
                       <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="list" size={18} color="currentColor"/></div>
-                      <input type="tel" required placeholder="手機號碼 (09...)" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[14px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
+                      <input type="tel" required placeholder="手機號碼 (09...)" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
                     </div>
                     <div className="h-px bg-warm-gray-200 w-full" />
   
                     <div className="flex items-center px-4 py-1">
                       <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="calendar" size={18} color="currentColor"/></div>
-                      <input type="text" inputMode="numeric" pattern="[0-9]*" required placeholder="生日 例：820105 (民國)" value={formData.birthday} onChange={e => setFormData({...formData, birthday: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[14px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
+                      <input type="text" inputMode="numeric" pattern="[0-9]*" required placeholder="生日 例：820105 (民國)" value={formData.birthday} onChange={e => setFormData({...formData, birthday: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
                     </div>
                     <div className="h-px bg-warm-gray-200 w-full" />
   
                     <div className="flex items-center px-4 py-1 bg-warm-gray-50/50">
                       <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="mail" size={18} color="currentColor"/></div>
-                      <input type="email" required placeholder="接收重要通知信箱" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[14px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
+                      <input type="email" required placeholder="接收重要通知信箱" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
                     </div>
                  </div>
                </div>
