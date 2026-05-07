@@ -33,10 +33,19 @@ app.post("/api/webhook", lineMiddleware(lineConfig), async (req, res) => {
            let resultsCount = 0;
            
            if (process.env.NOTION_API_KEY && dbId) {
+             let dataSourceId = dbId;
+             try {
+               const dbResponse: any = await notion.databases.retrieve({ database_id: dbId });
+               if (dbResponse.data_sources && dbResponse.data_sources.length > 0) {
+                 dataSourceId = dbResponse.data_sources[0].id;
+               }
+             } catch (e) {
+               // Fallback: assume dbId is already a valid data_source_id or old DB.
+             }
              try {
                const response = await notion.dataSources.query({
-                 data_source_id: dbId,
-                 filter: { property: "LINE UserID", rich_text: { equals: userId } }
+                 data_source_id: dataSourceId,
+                 filter: { property: "LINE User ID", rich_text: { equals: userId } }
                });
                
                const validMembers = response.results.filter((res: any) => !res.archived && !(res.in_trash));
@@ -117,10 +126,20 @@ app.get("/api/check-member", async (req, res) => {
     } else if (!dbId) {
       debugInfo.error = "Missing NOTION_DATABASE_ID_MEMBERS";
     } else {
+      let dataSourceId = dbId;
+      try {
+        const dbResponse: any = await notion.databases.retrieve({ database_id: dbId });
+        if (dbResponse.data_sources && dbResponse.data_sources.length > 0) {
+          dataSourceId = dbResponse.data_sources[0].id;
+        }
+      } catch (e) {
+        // Fallback
+      }
+
       try {
         const response = await notion.dataSources.query({
-          data_source_id: dbId,
-          filter: { property: "LINE UserID", rich_text: { equals: userId } }
+          data_source_id: dataSourceId,
+          filter: { property: "LINE User ID", rich_text: { equals: userId } }
         });
         
         const validMembers = response.results.filter((res: any) => !res.archived && !res.in_trash);
@@ -169,16 +188,26 @@ app.post("/api/register", async (req, res) => {
     const lineRichMenuId6 = process.env.LINE_RICH_MENU_ID_6;
 
     if (process.env.NOTION_API_KEY && dbId) {
+      let dataSourceId = dbId;
+      try {
+        const dbResponse: any = await notion.databases.retrieve({ database_id: dbId });
+        if (dbResponse.data_sources && dbResponse.data_sources.length > 0) {
+          dataSourceId = dbResponse.data_sources[0].id;
+        }
+      } catch (e) {
+         // Fallback
+      }
+
       // Check if user already exists
       const existing = await notion.dataSources.query({
-        data_source_id: dbId,
-        filter: { property: "LINE UserID", rich_text: { equals: lineUserId } }
+        data_source_id: dataSourceId,
+        filter: { property: "LINE User ID", rich_text: { equals: lineUserId } }
       });
       const validMembers = existing.results.filter((res: any) => !res.archived && !(res.in_trash));
       
       const properties = {
-          "LINE 名稱": { title: [{ text: { content: name || "" } }] },
-          "LINE UserID": { rich_text: [{ text: { content: lineUserId || "" } }] },
+          "名字": { title: [{ text: { content: name || "" } }] },
+          "LINE User ID": { rich_text: [{ text: { content: lineUserId || "" } }] },
           "手機號碼": { rich_text: [{ text: { content: phone || "" } }] },
           "生日": { rich_text: [{ text: { content: birthday || "" } }] },
           "email": { email: email || null },
@@ -195,7 +224,7 @@ app.post("/api/register", async (req, res) => {
       } else {
         // Create new
         await notion.pages.create({
-          parent: { data_source_id: dbId },
+          parent: { data_source_id: dataSourceId },
           properties: properties
         });
       }
@@ -218,8 +247,18 @@ app.post("/api/reservations", async (req, res) => {
     const dbId = process.env.NOTION_DATABASE_ID_RESERVATIONS || "443b7fca-94e0-4fce-b685-7cde16cc8ddf";
 
     if (process.env.NOTION_API_KEY && dbId) {
+      let dataSourceId = dbId;
+      try {
+        const dbResponse: any = await notion.databases.retrieve({ database_id: dbId });
+        if (dbResponse.data_sources && dbResponse.data_sources.length > 0) {
+          dataSourceId = dbResponse.data_sources[0].id;
+        }
+      } catch (e) {
+        // Fallback
+      }
+
       await notion.pages.create({
-        parent: { data_source_id: dbId },
+        parent: { data_source_id: dataSourceId },
         properties: {
           "Title": { title: [{ text: { content: `${serviceType} - ${date}` } }] },
           "LineUserID": { rich_text: [{ text: { content: lineUserId || "" } }] },

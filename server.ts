@@ -66,11 +66,21 @@ async function startServer() {
 
       // 1. Submit to Notion
       if (process.env.NOTION_API_KEY && dbId) {
+        let dataSourceId = dbId;
+        try {
+          const dbResponse: any = await notion.databases.retrieve({ database_id: dbId });
+          if (dbResponse.data_sources && dbResponse.data_sources.length > 0) {
+            dataSourceId = dbResponse.data_sources[0].id;
+          }
+        } catch (e: any) {
+          // fallback
+        }
+
         await notion.pages.create({
-          parent: { data_source_id: dbId },
+          parent: { data_source_id: dataSourceId },
           properties: {
-            "LINE 名稱": { title: [{ text: { content: name || "" } }] },
-            "LINE UserID": { rich_text: [{ text: { content: lineUserId || "" } }] },
+            "名字": { title: [{ text: { content: name || "" } }] },
+            "LINE User ID": { rich_text: [{ text: { content: lineUserId || "" } }] },
             "手機號碼": { rich_text: [{ text: { content: phone || "" } }] },
             "生日": { rich_text: [{ text: { content: birthday || "" } }] },
             "email": { email: email || null },
@@ -102,8 +112,18 @@ async function startServer() {
       const dbId = process.env.NOTION_DATABASE_ID_RESERVATIONS || "443b7fca-94e0-4fce-b685-7cde16cc8ddf";
 
       if (process.env.NOTION_API_KEY && dbId) {
+        let dataSourceId = dbId;
+        try {
+          const dbResponse: any = await notion.databases.retrieve({ database_id: dbId });
+          if (dbResponse.data_sources && dbResponse.data_sources.length > 0) {
+            dataSourceId = dbResponse.data_sources[0].id;
+          }
+        } catch (e: any) {
+          // fallback
+        }
+
         await notion.pages.create({
-          parent: { data_source_id: dbId } as any,
+          parent: { data_source_id: dataSourceId } as any,
           properties: {
             "Title": { title: [{ text: { content: `${serviceType} - ${date}` } }] },
             "LineUserID": { rich_text: [{ text: { content: lineUserId || "" } }] },
