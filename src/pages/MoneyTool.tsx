@@ -17,7 +17,8 @@ export const MoneyTool = ({ onBack, onBook }: any) => {
 
   const set = (k: string, v: string) => {
     if (isDemo) clearDemo();
-    setData(d => ({ ...d, [k]: v === "" ? "" : parseFloat(v) || 0 }));
+    // 允許輸入任何字元（包含小數點等），以免輸入到一半被 parseFloat 吃掉
+    setData(d => ({ ...d, [k]: v }));
   };
 
   const clearDemo = () => {
