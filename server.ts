@@ -29,21 +29,78 @@ async function startServer() {
     try {
       const events = req.body.events;
       for (const event of events) {
-        if (event.type === 'message' && event.message.type === 'text') {
-           // Provide basic echo or keyword trigger
-           const text = event.message.text;
-           if (text === '查詢我的保險') {
-             // Query notion for this user's insurance
-             const userId = event.source.userId;
-             if (userId) {
-                // Here you'd fetch from Notion based on line userId
+        if ((event.type === 'message' && event.message.type === 'text') || event.type === 'postback') {
+           const text = event.type === 'message' ? event.message.text : event.postback?.data || '';
+           const userId = event.source.userId;
+           
+           if (userId) {
+             // [自動化機制] 檢查使用者是否還在 Notion 會員資料庫中
+             const dbId = process.env.NOTION_DATABASE_ID_MEMBERS || "b0b467b3-324b-4df3-93c3-aa7a638aa069";
+             let isMember = true;
+             let resultsCount = 0;
+             
+             if (process.env.NOTION_API_KEY && dbId) {
+               let dataSourceId = dbId;
+               try {
+                 const dbResponse: any = await notion.databases.retrieve({ database_id: dbId });
+                 if (dbResponse.data_sources && dbResponse.data_sources.length > 0) {
+                   dataSourceId = dbResponse.data_sources[0].id;
+                 }
+               } catch (e) {
+                 // Fallback: assume dbId is already a valid data_source_id or old DB.
+               }
+               try {
+                 const response = await notion.dataSources.query({
+                   data_source_id: dataSourceId,
+                   filter: { property: "LINE User ID", rich_text: { equals: userId } }
+                 });
+                 
+                 const validMembers = response.results.filter((res: any) => !res.archived && !(res.in_trash));
+                 resultsCount = validMembers.length;
+                 isMember = resultsCount > 0;
+                 
+                 // Debug message to user if needed
+                 // console.log("Notion results:", validMembers.length);
+               } catch (e: any) {
+                 console.error("Notion check failed:", e);
+                 await lineClient.replyMessage({
+                   replyToken: event.replyToken,
+                   messages: [{ type: 'text', text: `查詢會員失敗: ${e.message}` }]
+                 }).catch(console.error);
+                 continue;
+               }
+             }
+
+             // 如果發現已經不在資料庫，自動解除綁定並通知
+             if (!isMember) {
+               try {
+                 await lineClient.unlinkRichMenuIdFromUser(userId);
+               } catch (unlinkErr) {
+                 console.error("Unlink failed:", unlinkErr);
+               }
+
+               try {
+                 await lineClient.replyMessage({
+                   replyToken: event.replyToken,
+                   messages: [{ type: 'text', text: '系統通知：您的會員身分已更新，已切換回訪客選單 (如果選單未變，請將LINE應用程式重新開啟)。如需重啟服務請再次註冊！' }]
+                 });
+               } catch (e) {
+                 console.error("reply failed:", e);
+               }
+               continue; // 結束這個事件的處理
+             }
+
+             // 原本的關鍵字回應邏輯
+             if (text === '查詢我的保險') {
                 await lineClient.replyMessage({
                   replyToken: event.replyToken,
-                  messages: [{
-                    type: 'text',
-                    text: '您的專屬保險資料正在準備中，請稍候。'
-                  }]
+                  messages: [{ type: 'text', text: '您的專屬保險資料正在準備中，請稍候。' }]
                 });
+             } else if (text) {
+                await lineClient.replyMessage({
+                  replyToken: event.replyToken,
+                  messages: [{ type: 'text', text: `您好！系統確認您目前是「專屬會員」身分。\n(Notion中找到 ${resultsCount} 筆包含您LINE ID的資料。如果您已經在Notion刪除，可能是之前測試時重複註冊綁定了多筆，請回 Notion 檢查是否有其他名稱/ID重複的資料，並將重複的資料都刪除！)` }]
+                }).catch(e => console.error("reply err", e));
              }
            }
         }
