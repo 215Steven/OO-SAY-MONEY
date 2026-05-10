@@ -446,7 +446,18 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
                 加入會員，解鎖更多理財工具與案例解析
               </p>
 
-              <button onClick={onComplete} className="w-full bg-white text-teal-base py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all flex justify-center items-center gap-2 shadow-sm relative z-10">
+              <button onClick={() => {
+                const res = calculateResult();
+                const m = TYPES[res.winner] || {};
+                const s = res.subType ? TYPES[res.subType] : null;
+                localStorage.setItem('pendingQuizResult', JSON.stringify({
+                  mainName: m.name,
+                  mainIcon: m.icon,
+                  subName: s ? s.name : '',
+                  color: m.color
+                }));
+                onComplete();
+              }} className="w-full bg-white text-teal-base py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all flex justify-center items-center gap-2 shadow-sm relative z-10">
                  加入會員
               </button>
             </div>

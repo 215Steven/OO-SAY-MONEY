@@ -92,16 +92,81 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
       });
       if (res.ok) {
         if (liff && liff.isInClient && liff.isInClient()) {
-          // 透過送出關鍵字，讓聊天機器人自動切換使用者的圖文選單
-          await liff.sendMessages([
-            {
-               type: "text",
-               text: "已完成註冊開啟會員選單" 
+          const messages: any[] = [];
+          const pendingQuizStr = localStorage.getItem('pendingQuizResult');
+          
+          if (pendingQuizStr) {
+            try {
+              const quizResult = JSON.parse(pendingQuizStr);
+              messages.push({
+                type: "flex",
+                altText: "【財務性格測驗結果】",
+                contents: {
+                  type: "bubble",
+                  size: "kilo",
+                  direction: "ltr",
+                  body: {
+                    type: "box",
+                    layout: "vertical",
+                    contents: [
+                       {
+                         type: "text",
+                         text: "🎊 財務性格測驗結果 🎊",
+                         weight: "bold",
+                         size: "md",
+                         color: quizResult.color || "#14b8a6",
+                         align: "center",
+                         margin: "none"
+                       },
+                       {
+                         type: "separator",
+                         margin: "md"
+                       },
+                       {
+                         type: "text",
+                         text: "主要性格",
+                         size: "xs",
+                         color: "#aaaaaa",
+                         margin: "md"
+                       },
+                       {
+                         type: "text",
+                         text: quizResult.mainName || "未知",
+                         size: "xl",
+                         weight: "bold",
+                         color: "#333333",
+                         wrap: true
+                       },
+                       {
+                         type: "text",
+                         text: "副屬性格： " + (quizResult.subName || "無"),
+                         size: "sm",
+                         color: "#666666",
+                         margin: "sm",
+                         wrap: true
+                       }
+                    ]
+                  }
+                }
+              });
+              // 記錄後即清除
+              localStorage.removeItem('pendingQuizResult');
+            } catch (e) {
+               console.error("quiz result parse error", e);
             }
-          ]).catch(console.error);
+          }
+
+          // 透過送出關鍵字，讓聊天機器人自動切換使用者的圖文選單
+          messages.push({
+            type: "text",
+            text: "已完成註冊開啟會員選單" 
+          });
+
+          await liff.sendMessages(messages).catch(console.error);
           alert("註冊成功！資料驗證中，即將關閉視窗");
           liff.closeWindow();
         } else {
+          localStorage.removeItem('pendingQuizResult');
           alert("註冊成功！系統已記錄您的資料，請回到 LINE 聊天室查看。");
         }
         
