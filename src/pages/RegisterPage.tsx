@@ -162,9 +162,15 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
             text: "已完成註冊開啟會員選單" 
           });
 
-          await liff.sendMessages(messages).catch(console.error);
-          alert("註冊成功！資料驗證中，即將關閉視窗");
-          liff.closeWindow();
+          try {
+            await liff.sendMessages(messages);
+            alert("註冊成功！資料驗證中，即將關閉視窗");
+            liff.closeWindow();
+          } catch (err: any) {
+            console.error("sendMessages error", err);
+            alert("發送訊息失敗，請檢查 LIFF 是否有開啟 chat_message.write 權限。\n錯誤訊息：" + err.message);
+            liff.closeWindow();
+          }
         } else {
           localStorage.removeItem('pendingQuizResult');
           alert("註冊成功！系統已記錄您的資料，請回到 LINE 聊天室查看。");
