@@ -1,5 +1,5 @@
 import { Client } from "@notionhq/client";
-import { CONFIG } from "./config";
+import { CONFIG } from "./config.js";
 
 export const notion = new Client({ auth: CONFIG.notionApiKey });
 

@@ -1,7 +1,7 @@
 import express, { type Request, type Response } from "express";
-import { CONFIG } from "./config";
-import { notion, resolveDataSourceId, findMembersByLineUserId } from "./notion";
-import { lineClient, verifyWebhookSignature, getVerifiedUserId } from "./line";
+import { CONFIG } from "./config.js";
+import { notion, resolveDataSourceId, findMembersByLineUserId } from "./notion.js";
+import { lineClient, verifyWebhookSignature, getVerifiedUserId } from "./line.js";
 
 export const app = express();
 

@@ -1,6 +1,6 @@
 import type { Request } from "express";
 import { messagingApi, validateSignature } from "@line/bot-sdk";
-import { CONFIG } from "./config";
+import { CONFIG } from "./config.js";
 
 const { MessagingApiClient } = messagingApi;
 
