@@ -2,6 +2,7 @@ import { Ic } from "@/src/components/Icons";
 import { motion, AnimatePresence } from "motion/react";
 import { useState, useEffect } from "react";
 import liff from '@line/liff';
+import { getLiffIdForPath, authHeaders } from "@/src/constants/liff";
 
 const DEFENSE_SECTIONS = [
 
@@ -127,34 +128,18 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
   useEffect(() => {
     const loadCoverage = async () => {
       try {
-        let uid = '';
-        const getLiffId = () => {
-          const savedLiffId = sessionStorage.getItem('currentLiffId');
-          if (savedLiffId) return savedLiffId;
-
-          const path = window.location.pathname;
-          let matchedId = "2007659354-RMhoJzrA";
-          if (path.includes('/story') || path.includes('/about-us')) matchedId = '2007659354-YydM9mE0';
-          else if (path.includes('/quiz')) matchedId = '2007659354-EofSbRGu';
-          else if (path.includes('/unlock')) matchedId = '2007659354-ktfXFigk';
-          else if (path.includes('/appointment')) matchedId = '2007659354-okKabZ27';
-          
-          sessionStorage.setItem('currentLiffId', matchedId);
-          return matchedId;
-        };
-        const liffId = getLiffId();
+        const liffId = getLiffIdForPath();
         if (liffId) {
           await liff.init({ liffId });
           if (liff.isLoggedIn()) {
             const p = await liff.getProfile();
-            uid = p.userId || '';
-            setLineUserId(uid);
+            setLineUserId(p.userId || '');
           }
         }
-        const url = '/.netlify/functions/get-coverage' + (uid ? '?lineUserId=' + uid : '');
-        const res = await fetch(url);
+        // 身分由後端依 access token 驗證，只回傳自己的保單
+        const res = await fetch('/api/insurance', { headers: authHeaders() });
         if (res.ok) setCoverageData(await res.json());
-      } catch (e) {
+      } catch (e: any) {
         console.warn('Coverage fetch failed:', e.message);
       } finally {
         setCoverageLoading(false);

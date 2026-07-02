@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import liff from "@line/liff";
+import { getLiffIdForPath, getLiffAccessToken } from "@/src/constants/liff";
 
 export const useLiff = () => {
   const [error, setError] = useState<string | null>(null);
@@ -8,36 +9,12 @@ export const useLiff = () => {
   const [isMockMode, setIsMockMode] = useState(false);
 
   useEffect(() => {
-    const getInitialLiffId = () => {
-      // 紀錄入口的 URL，確保 liff.login() 有合乎 LINE 後台設定的回傳網址 (Endpoint URL)
-      if (!sessionStorage.getItem('entryUrl')) {
-        sessionStorage.setItem('entryUrl', window.location.href);
-      }
+    // 紀錄入口的 URL，確保 liff.login() 有合乎 LINE 後台設定的回傳網址 (Endpoint URL)
+    if (!sessionStorage.getItem('entryUrl')) {
+      sessionStorage.setItem('entryUrl', window.location.href);
+    }
 
-      // 1. 如果有存過就直接用，確保 SPA 切換頁面時 liffId 是一致的
-      const savedLiffId = sessionStorage.getItem('currentLiffId');
-      if (savedLiffId) return savedLiffId;
-
-      // 2. 根據首次載入的路徑判斷 (來自 LINE 選單的不同按鈕)
-      const path = window.location.pathname;
-      let matchedId = "2007659354-RMhoJzrA"; // fallback (解鎖更多)
-      
-      if (path.includes('/story') || path.includes('/about-us')) {
-        matchedId = '2007659354-YydM9mE0';
-      } else if (path.includes('/quiz')) {
-        matchedId = '2007659354-EofSbRGu';
-      } else if (path.includes('/unlock')) {
-        matchedId = '2007659354-ktfXFigk';
-      } else if (path.includes('/appointment')) {
-        matchedId = '2007659354-okKabZ27';
-      }
-
-      // 3. 記住這次的 LIFF ID
-      sessionStorage.setItem('currentLiffId', matchedId);
-      return matchedId;
-    };
-
-    const liffId = getInitialLiffId();
+    const liffId = getLiffIdForPath();
 
     const initializeLiff = async () => {
       // --- If in iframe (like AI Studio preview), force mock mode to prevent LINE login block ---
@@ -129,5 +106,8 @@ export const useLiff = () => {
     }
   };
 
-  return { liff, isReady, error, profile, login, logout, isMockMode };
+  /** 已登入時回傳 LIFF access token（mock 模式回傳 null） */
+  const getAccessToken = () => (isMockMode ? null : getLiffAccessToken());
+
+  return { liff, isReady, error, profile, login, logout, isMockMode, getAccessToken };
 };

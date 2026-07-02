@@ -4,10 +4,25 @@ import { InputBox } from "@/src/components/ui/InputBox";
 import { motion } from "motion/react";
 import { fmt } from "@/src/utils/formatters";
 
-export const MoneyTool = ({ onBack, onBook }: any) => {
+// 欄位值允許 number（demo 預設值）或 string（使用者輸入中，
+// 包含小數點打到一半的狀態），計算時一律以 Number() 轉換
+type MoneyForm = Record<
+  | 'a_cash' | 'a_invest' | 'a_property'
+  | 'l_mortgage' | 'l_other'
+  | 'i_active' | 'i_passive'
+  | 'e_living' | 'e_housing' | 'e_debt' | 'e_insurance' | 'e_dca',
+  number | string
+>;
+
+interface MoneyToolProps {
+  onBack: () => void;
+  onBook: () => void;
+}
+
+export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
   const [step, setStep] = useState(0); // 0 = inputs, 1 = report
   const [isDemo, setIsDemo] = useState(true);
-  const [data, setData] = useState({
+  const [data, setData] = useState<MoneyForm>({
     a_cash: 80, a_invest: 30, a_property: 0,
     l_mortgage: 0, l_other: 5,
     i_active: 75000, i_passive: 5000,
@@ -17,18 +32,17 @@ export const MoneyTool = ({ onBack, onBook }: any) => {
 
   const set = (k: string, v: string) => {
     if (isDemo) clearDemo();
-    // 允許輸入任何字元（包含小數點等），以免輸入到一半被 parseFloat 吃掉
     setData(d => ({ ...d, [k]: v }));
   };
 
   const clearDemo = () => {
     setIsDemo(false);
     setData({
-      a_cash: '' as any, a_invest: '' as any, a_property: '' as any,
-      l_mortgage: '' as any, l_other: '' as any,
-      i_active: '' as any, i_passive: '' as any,
-      e_living: '' as any, e_housing: '' as any, e_debt: '' as any, e_insurance: '' as any,
-      e_dca: '' as any
+      a_cash: '', a_invest: '', a_property: '',
+      l_mortgage: '', l_other: '',
+      i_active: '', i_passive: '',
+      e_living: '', e_housing: '', e_debt: '', e_insurance: '',
+      e_dca: ''
     });
   };
 

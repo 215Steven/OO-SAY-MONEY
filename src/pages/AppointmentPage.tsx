@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Ic } from "@/src/components/Icons";
 import { motion, AnimatePresence } from "motion/react";
 import liff from '@line/liff';
+import { getLiffIdForPath, authHeaders } from "@/src/constants/liff";
 
 // --- Constants ---
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"];
@@ -27,21 +28,7 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
   useEffect(() => {
     const initLiff = async () => {
       try {
-        const getLiffId = () => {
-          const savedLiffId = sessionStorage.getItem('currentLiffId');
-          if (savedLiffId) return savedLiffId;
-
-          const path = window.location.pathname;
-          let matchedId = "2007659354-RMhoJzrA";
-          if (path.includes('/story') || path.includes('/about-us')) matchedId = '2007659354-YydM9mE0';
-          else if (path.includes('/quiz')) matchedId = '2007659354-EofSbRGu';
-          else if (path.includes('/unlock')) matchedId = '2007659354-ktfXFigk';
-          else if (path.includes('/appointment')) matchedId = '2007659354-okKabZ27';
-          
-          sessionStorage.setItem('currentLiffId', matchedId);
-          return matchedId;
-        };
-        const liffId = getLiffId();
+        const liffId = getLiffIdForPath();
         if (!liffId) return;
         await liff.init({ liffId });
         if (liff.isLoggedIn()) {
@@ -110,21 +97,26 @@ export const AppointmentPage = ({ onBack }: { onBack: () => void }) => {
   const submitBooking = async () => {
     setIsSubmitting(true);
     try {
-      const topicStr = Array.isArray(topics) ? topics.join(', ') : (topics || '一般諮詢');
+      const topicList = Array.isArray(topics) ? topics : [topics].filter(Boolean);
       const dateStr = selectedDate ? selectedDate.toISOString().split('T')[0] : '';
-      await fetch('/.netlify/functions/book-appointment', {
+      // Notion select 選項名稱不能含逗號，serviceType 取第一個主題，完整內容放備註
+      const detailNotes = [
+        topicList.length > 1 ? `主題: ${topicList.join(' / ')}` : '',
+        `聯絡人: ${profile?.name || ''} ${phone || ''}`,
+        note || ''
+      ].filter(Boolean).join('\n');
+
+      const res = await fetch('/api/reservations', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify({
-          lineUserId,
           date: dateStr,
-          timeSlot: selectedSlot || '',
-          topic: topicStr,
-          contactName: profile?.name || '',
-          phone: phone || '',
-          notes: note || ''
+          time: selectedSlot || '',
+          serviceType: topicList[0] || '一般諮詢',
+          notes: detailNotes
         })
       });
+      if (!res.ok) throw new Error(`Reservation failed: ${res.status}`);
       setStep(4);
     } catch (e) {
       setToastMsg('預約失敗，請稍後再試');

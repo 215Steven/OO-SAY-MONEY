@@ -1,22 +1,29 @@
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect, lazy, Suspense, ReactNode, ComponentType } from "react";
 import { useLocation, Route, Switch } from "wouter";
 import { AnimatePresence, motion } from "motion/react";
 import { THEMES, ROLE_META } from "@/src/constants/roles";
-import { PublicGrid } from "@/src/pages/PublicGrid";
-import { AboutPage } from "@/src/pages/AboutPage";
-import { MoneyLanding } from "@/src/pages/MoneyLanding";
-import { UnlockPage } from "@/src/pages/UnlockPage";
-import { AppointmentPage } from "@/src/pages/AppointmentPage";
-import { RoleHome } from "@/src/pages/RoleHome";
-import { MoneyTool } from "@/src/pages/MoneyTool";
 import { LoginModal } from "@/src/components/LoginModal";
-import { TemplatePage } from "@/src/pages/TemplatePage";
-import { QuizPage } from "@/src/pages/QuizPage";
-import { DefensePage } from "@/src/pages/DefensePage";
-import { BlueprintPage } from "@/src/pages/BlueprintPage";
-import { RegisterPage } from "@/src/pages/RegisterPage";
-import { TermsPage } from "@/src/pages/TermsPage";
 import { useLiff } from "@/src/hooks/useLiff";
+
+// 頁面採 lazy 載入做 code splitting，改善 LIFF 首屏載入速度
+const lazyPage = <T extends Record<string, any>>(
+  loader: () => Promise<T>,
+  name: keyof T
+) => lazy(() => loader().then((m) => ({ default: m[name] as ComponentType<any> })));
+
+const PublicGrid = lazyPage(() => import("@/src/pages/PublicGrid"), "PublicGrid");
+const AboutPage = lazyPage(() => import("@/src/pages/AboutPage"), "AboutPage");
+const MoneyLanding = lazyPage(() => import("@/src/pages/MoneyLanding"), "MoneyLanding");
+const UnlockPage = lazyPage(() => import("@/src/pages/UnlockPage"), "UnlockPage");
+const AppointmentPage = lazyPage(() => import("@/src/pages/AppointmentPage"), "AppointmentPage");
+const RoleHome = lazyPage(() => import("@/src/pages/RoleHome"), "RoleHome");
+const MoneyTool = lazyPage(() => import("@/src/pages/MoneyTool"), "MoneyTool");
+const TemplatePage = lazyPage(() => import("@/src/pages/TemplatePage"), "TemplatePage");
+const QuizPage = lazyPage(() => import("@/src/pages/QuizPage"), "QuizPage");
+const DefensePage = lazyPage(() => import("@/src/pages/DefensePage"), "DefensePage");
+const BlueprintPage = lazyPage(() => import("@/src/pages/BlueprintPage"), "BlueprintPage");
+const RegisterPage = lazyPage(() => import("@/src/pages/RegisterPage"), "RegisterPage");
+const TermsPage = lazyPage(() => import("@/src/pages/TermsPage"), "TermsPage");
 
 const PageTransition = ({ children }: { children: ReactNode }) => (
   <motion.div
@@ -63,12 +70,14 @@ export default function MainApp() {
   const [role, setRole] = useState<string | null>(null);
   const [modal, setModal] = useState(false);
   
-  const { isReady, profile, isMockMode } = useLiff();
+  const { isReady, profile, isMockMode, getAccessToken } = useLiff();
 
-  // Handle Notion validation and LINE rich menu dynamically based on userId
+  // Handle Notion validation and LINE rich menu (身分由後端依 access token 驗證)
   useEffect(() => {
     if (isReady && profile?.userId && !isMockMode) {
-      fetch(`/api/check-member?userId=${profile.userId}`)
+      const token = getAccessToken();
+      if (!token) return;
+      fetch("/api/check-member", { headers: { Authorization: `Bearer ${token}` } })
         .then(res => res.json())
         .then(data => {
           if (data.isMember) setRole("newMember");
@@ -122,6 +131,7 @@ export default function MainApp() {
 
 
       <div className="flex-1 w-full bg-[#f8f8f6]">
+        <Suspense fallback={<div className="p-10 text-center text-slate-400 font-medium">載入中…</div>}>
         <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
           <Switch location={location} key={location}>
             <Route path="/">
@@ -185,6 +195,7 @@ export default function MainApp() {
             </Route>
           </Switch>
         </AnimatePresence>
+        </Suspense>
       </div>
 
       {modal && <LoginModal onClose={() => setModal(false)} onLogin={handleLogin} />}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Ic } from "@/src/components/Icons";
 import { useLiff } from "@/src/hooks/useLiff";
+import { authHeaders } from "@/src/constants/liff";
 
 export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () => void, onTerms: () => void, onSubmitSuccess: () => void }) => {
   const [step, setStep] = useState(() => {
@@ -87,7 +88,8 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
     try {
       const res = await fetch('/api/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        // 身分由後端依 access token 驗證，不信任前端傳的 lineUserId
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify(formData)
       });
       if (res.ok) {
