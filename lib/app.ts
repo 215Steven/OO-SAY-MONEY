@@ -180,11 +180,20 @@ app.post("/api/register", async (req: Request, res: Response) => {
       try {
         await saveMember(properties);
       } catch (e: any) {
-        // 「註冊入口」欄位不存在等 schema 錯誤：移除該欄位重試一次
         if (properties["註冊入口"] && e?.code === "validation_error") {
-          console.warn("註冊入口欄位寫入失敗，略過來源追蹤：", e.message);
-          delete properties["註冊入口"];
-          await saveMember(properties);
+          // 「註冊入口」欄位可能不存在：嘗試自動建立後重試
+          try {
+            await (notion as any).dataSources.update({
+              data_source_id: dataSourceId,
+              properties: { 註冊入口: { select: {} } },
+            });
+            await saveMember(properties);
+          } catch (schemaErr: any) {
+            // 建立欄位也失敗：放棄來源追蹤，確保註冊本身成功
+            console.warn("自動建立註冊入口欄位失敗，略過來源追蹤：", schemaErr?.message);
+            delete properties["註冊入口"];
+            await saveMember(properties);
+          }
         } else {
           throw e;
         }
