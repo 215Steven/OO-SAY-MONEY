@@ -2,6 +2,61 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Ic } from "@/src/components/Icons";
 import { useLocation } from "wouter";
+import liff from "@line/liff";
+
+// 測驗的 LIFF 永久連結（分享給朋友用）
+const QUIZ_LIFF_URL = "https://liff.line.me/2007659354-EofSbRGu";
+
+/** 分享測驗結果給朋友（LINE 內用 shareTargetPicker，其他環境複製連結） */
+async function shareQuizResult(mainName: string, subName: string, color: string) {
+  const flexMessage = {
+    type: "flex" as const,
+    altText: `我的財務性格是「${mainName}」！你也來測測看`,
+    contents: {
+      type: "bubble",
+      size: "kilo",
+      body: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          { type: "text", text: "💡 90 秒財務性格測驗", weight: "bold", size: "sm", color: "#888888", align: "center" },
+          { type: "separator", margin: "md" },
+          { type: "text", text: "我的財務性格是", size: "xs", color: "#aaaaaa", margin: "lg", align: "center" },
+          { type: "text", text: mainName || "？", size: "xl", weight: "bold", color: color || "#14b8a6", align: "center", margin: "sm" },
+          ...(subName ? [{ type: "text", text: `副屬性格：${subName}`, size: "sm", color: "#666666", align: "center", margin: "sm" }] : []),
+          { type: "text", text: "每個人適合的節奏不同，你也來看清自己的財務輪廓", size: "xs", color: "#999999", wrap: true, align: "center", margin: "lg" }
+        ]
+      },
+      footer: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            color: "#0d9488",
+            action: { type: "uri", label: "我也要測", uri: QUIZ_LIFF_URL }
+          }
+        ]
+      }
+    }
+  };
+
+  try {
+    if (liff.isApiAvailable && liff.isApiAvailable("shareTargetPicker")) {
+      await liff.shareTargetPicker([flexMessage as any]);
+      return;
+    }
+  } catch {
+    // 使用者取消分享或 API 不可用，改用複製連結
+  }
+  try {
+    await navigator.clipboard.writeText(`我的財務性格是「${mainName}」！你也來測測看：${QUIZ_LIFF_URL}`);
+    alert("已複製測驗連結，貼給朋友吧！");
+  } catch {
+    alert(`分享連結：${QUIZ_LIFF_URL}`);
+  }
+}
 
 const QUESTIONS = [
   {
@@ -460,8 +515,17 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
               }} className="w-full bg-white text-teal-base py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all flex justify-center items-center gap-2 shadow-sm relative z-10">
                  加入會員
               </button>
+
+              <button onClick={() => {
+                const res = calculateResult();
+                const m = TYPES[res.winner] || {};
+                const s = res.subType ? TYPES[res.subType] : null;
+                shareQuizResult(m.name || '', s ? s.name : '', m.color || '');
+              }} className="w-full mt-3 bg-transparent text-white py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer border border-white/40 hover:bg-white/10 transition-all flex justify-center items-center gap-2 relative z-10">
+                 分享結果給朋友
+              </button>
             </div>
-            
+
             <div className="text-center mt-6">
               <button onClick={() => setStep(0)} className="text-warm-gray-400 text-[12px] underline font-normal hover:text-warm-gray-600 transition-colors">
                 重新測驗

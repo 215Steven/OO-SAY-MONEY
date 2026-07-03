@@ -142,7 +142,8 @@ app.post("/api/register", async (req: Request, res: Response) => {
     const userId = await requireUser(req, res);
     if (!userId) return;
 
-    const { identity, name, phone, birthday, email, newsletter } = req.body || {};
+    const { identity, name, phone, birthday, email, newsletter, registerSource } =
+      req.body || {};
 
     if (CONFIG.notionApiKey) {
       const dataSourceId = await resolveDataSourceId(CONFIG.dbMembers);
@@ -157,15 +158,36 @@ app.post("/api/register", async (req: Request, res: Response) => {
         客戶來源: { select: { name: identity || "其他" } },
         訂閱電子報: { checkbox: !!newsletter },
       };
+      // 註冊來源追蹤：Notion 需有「註冊入口」select 欄位；沒有時自動略過不擋註冊
+      if (registerSource) {
+        properties["註冊入口"] = {
+          select: { name: String(registerSource).slice(0, 50) },
+        };
+      }
 
-      if (existing.length > 0) {
-        // 已存在則更新，避免重複建立
-        await notion.pages.update({ page_id: existing[0].id, properties });
-      } else {
-        await notion.pages.create({
-          parent: { data_source_id: dataSourceId } as any,
-          properties,
-        });
+      const saveMember = async (props: any) => {
+        if (existing.length > 0) {
+          // 已存在則更新，避免重複建立
+          await notion.pages.update({ page_id: existing[0].id, properties: props });
+        } else {
+          await notion.pages.create({
+            parent: { data_source_id: dataSourceId } as any,
+            properties: props,
+          });
+        }
+      };
+
+      try {
+        await saveMember(properties);
+      } catch (e: any) {
+        // 「註冊入口」欄位不存在等 schema 錯誤：移除該欄位重試一次
+        if (properties["註冊入口"] && e?.code === "validation_error") {
+          console.warn("註冊入口欄位寫入失敗，略過來源追蹤：", e.message);
+          delete properties["註冊入口"];
+          await saveMember(properties);
+        } else {
+          throw e;
+        }
       }
     }
 

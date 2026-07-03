@@ -30,6 +30,15 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
   const [submitting, setSubmitting] = useState(false);
   const { liff, isReady, profile, login } = useLiff();
 
+  // 記錄註冊來源（從哪個頁面進入註冊），首次進站的路徑為準
+  const [registerSource] = useState(() => {
+    const saved = sessionStorage.getItem('registerSource');
+    if (saved) return saved;
+    const path = window.location.pathname.replace(/^\//, '') || 'home';
+    sessionStorage.setItem('registerSource', path);
+    return path;
+  });
+
   useEffect(() => {
     localStorage.setItem('registerData', JSON.stringify(formData));
     localStorage.setItem('registerStep', step.toString());
@@ -81,8 +90,9 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.phone || !formData.birthday || !formData.email) return alert('請填寫完整聯絡資訊');
     if (!formData.terms) return alert('請確認服務條款與隱私權政策');
+    // 聯絡資料改為選填，降低註冊門檻；名字未填時以 LINE 顯示名稱代入
+    const finalName = formData.name || formData.lineDisplayName || '';
 
     setSubmitting(true);
     try {
@@ -90,7 +100,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
         method: 'POST',
         // 身分由後端依 access token 驗證，不信任前端傳的 lineUserId
         headers: { 'Content-Type': 'application/json', ...authHeaders() },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ ...formData, name: finalName, registerSource })
       });
       if (res.ok) {
         if (liff && liff.isInClient && liff.isInClient()) {
@@ -296,7 +306,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                
                <div className="text-center mb-10">
                  <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">聯絡資訊</h2>
-                 <p className="text-[14px] text-warm-gray-600 font-normal tracking-wide">確保未來能收到我們提供專屬通知。</p>
+                 <p className="text-[14px] text-warm-gray-600 font-normal tracking-wide">以下皆為選填，留下聯絡方式可收到專屬通知。</p>
                </div>
 
                {/* Contact Info */}
@@ -304,25 +314,25 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                  <div className="flex flex-col bg-white border border-warm-gray-200 rounded-2xl overflow-hidden shadow-sm">
                     <div className="flex items-center px-4 py-1">
                       <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="user" size={18} color="currentColor"/></div>
-                      <input type="text" required placeholder="您的真實姓名" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
+                      <input type="text" placeholder={`您的姓名（未填以「${formData.lineDisplayName || 'LINE 名稱'}」記錄）`} value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
                     </div>
                     <div className="h-px bg-warm-gray-200 w-full" />
   
                     <div className="flex items-center px-4 py-1 bg-warm-gray-50/50">
                       <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="list" size={18} color="currentColor"/></div>
-                      <input type="tel" required placeholder="手機號碼 (09...)" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
+                      <input type="tel" placeholder="手機號碼（選填）" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
                     </div>
                     <div className="h-px bg-warm-gray-200 w-full" />
   
                     <div className="flex items-center px-4 py-1">
                       <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="calendar" size={18} color="currentColor"/></div>
-                      <input type="text" inputMode="numeric" pattern="[0-9]*" required placeholder="生日 例：820105 (民國)" value={formData.birthday} onChange={e => setFormData({...formData, birthday: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
+                      <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder="生日 例：820105（選填）" value={formData.birthday} onChange={e => setFormData({...formData, birthday: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
                     </div>
                     <div className="h-px bg-warm-gray-200 w-full" />
   
                     <div className="flex items-center px-4 py-1 bg-warm-gray-50/50">
                       <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="mail" size={18} color="currentColor"/></div>
-                      <input type="email" required placeholder="接收重要通知信箱" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
+                      <input type="email" placeholder="Email（選填，訂閱電子報用）" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide rounded-2xl" />
                     </div>
                  </div>
                </div>
@@ -355,14 +365,14 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
                   onClick={handleSubmit} 
                   disabled={submitting} 
                   className={`w-full font-medium text-[14px] py-4 transition-colors flex justify-center items-center uppercase tracking-widest rounded-2xl shadow-sm ${
-                    formData.name && formData.phone && formData.birthday && formData.email && formData.terms
-                      ? 'bg-teal-base hover:bg-cyan-base active:scale-[0.98] text-white cursor-pointer border border-teal-base' 
+                    formData.terms
+                      ? 'bg-teal-base hover:bg-cyan-base active:scale-[0.98] text-white cursor-pointer border border-teal-base'
                       : 'bg-warm-gray-200 text-warm-gray-500 cursor-not-allowed border border-transparent'
                   }`}
                  >
-                    {submitting ? '處理中...' : '確認無誤，送出'}
+                    {submitting ? '處理中...' : '完成加入'}
                  </button>
-                 <p className="text-center text-[12px] text-warm-gray-500 mt-4 tracking-wide">請再次確認填寫正確，送出後專屬圖文即開通</p>
+                 <p className="text-center text-[12px] text-warm-gray-500 mt-4 tracking-wide">送出後專屬圖文選單即開通，聯絡資料可日後補填</p>
                </div>
             </motion.div>
           )}
