@@ -7,7 +7,6 @@ import {
   getMemberRichMenuId,
   getCurrentRichMenuDefinition,
   applyRichMenuAreaUpdates,
-  syncCurrentRichMenuToNotion,
 } from "./richmenu.js";
 import { RICHMENU_ADMIN_HTML } from "./richmenuAdminHtml.js";
 
@@ -356,9 +355,9 @@ app.get("/api/admin/unlink/:lineUserId", async (req: Request, res: Response) => 
 
 // ---------------------------------------------------------------------------
 // 7. 管理端點：會員六格選單後台（需 ADMIN_TOKEN）
-// 讀取/修改目前會員選單的每格動作；儲存時會自動重建選單（LINE 選單建立後
-// 無法原地編輯）、複製原圖、重新連結所有現有會員，並把新選單 ID 存進
-// Notion，讓下次修改立即生效、不需要改 Vercel 環境變數或重新部署。
+// 直接在網頁編輯每格動作；儲存時會自動重建選單（LINE 選單建立後無法原地
+// 編輯）、複製原圖、重新連結所有現有會員，並把新選單 ID 存進 Notion（僅存
+// 這一個 ID，讓下次修改立即生效、不需要改 Vercel 環境變數或重新部署）。
 // ---------------------------------------------------------------------------
 app.get("/api/admin/richmenu-ui", (req: Request, res: Response) => {
   res.set("Content-Type", "text/html; charset=utf-8");
@@ -387,28 +386,6 @@ app.post("/api/admin/richmenu", async (req: Request, res: Response) => {
     res.json({ status: "ok", ...result });
   } catch (error) {
     serverError(res, "/api/admin/richmenu", error);
-  }
-});
-
-// 把目前選單同步到 Notion（第一次使用 / 想重新對齊真實狀態時按）
-app.get("/api/admin/richmenu/sync-to-notion", async (req: Request, res: Response) => {
-  try {
-    if (!requireAdmin(req, res)) return;
-    const result = await syncCurrentRichMenuToNotion();
-    res.json({ status: "ok", ...result });
-  } catch (error) {
-    serverError(res, "/api/admin/richmenu/sync-to-notion", error);
-  }
-});
-
-// 套用 Notion 目前內容到 LINE 選單（改完 Notion 後按這個才會真的生效）
-app.post("/api/admin/richmenu/apply", async (req: Request, res: Response) => {
-  try {
-    if (!requireAdmin(req, res)) return;
-    const result = await applyRichMenuAreaUpdates();
-    res.json({ status: "ok", ...result });
-  } catch (error) {
-    serverError(res, "/api/admin/richmenu/apply", error);
   }
 });
 

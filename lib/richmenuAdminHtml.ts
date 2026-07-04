@@ -7,14 +7,12 @@ export const RICHMENU_ADMIN_HTML = `<!DOCTYPE html>
 <title>會員選單管理後台</title>
 <style>
   body { font-family: -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif; background: #f7f5f2; margin: 0; padding: 24px; color: #333; }
-  .wrap { max-width: 640px; margin: 0 auto; }
+  .wrap { max-width: 720px; margin: 0 auto; }
   h1 { font-size: 20px; margin-bottom: 4px; }
-  p.desc { color: #777; font-size: 13px; margin-top: 0; margin-bottom: 24px; line-height: 1.6; }
+  p.desc { color: #777; font-size: 13px; margin-top: 0; margin-bottom: 24px; }
   .card { background: #fff; border: 1px solid #e5e0da; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
-  .step-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
-  .step-desc { font-size: 13px; color: #777; margin-bottom: 12px; line-height: 1.6; }
   label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 600; }
-  input[type=password] {
+  input[type=text], input[type=password], select {
     width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;
     font-size: 14px; margin-bottom: 12px;
   }
@@ -23,58 +21,83 @@ export const RICHMENU_ADMIN_HTML = `<!DOCTYPE html>
     font-size: 14px; cursor: pointer; font-weight: 600;
   }
   button:hover { background: #237370; }
+  button.secondary { background: #999; }
   button:disabled { background: #ccc; cursor: not-allowed; }
-  a.notion-link { display: inline-block; margin-top: 10px; color: #2a8f8a; font-weight: 600; font-size: 14px; }
-  .status { font-size: 13px; padding: 10px 12px; border-radius: 8px; margin-top: 12px; white-space: pre-wrap; line-height: 1.6; }
+  .area-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #eee; }
+  .area-label { width: 28px; font-weight: 700; color: #2a8f8a; padding-top: 10px; }
+  .area-fields { flex: 1; }
+  .status { font-size: 13px; padding: 10px 12px; border-radius: 8px; margin-top: 12px; white-space: pre-wrap; }
   .status.ok { background: #e6f4ea; color: #1e7a3d; }
   .status.err { background: #fdecea; color: #b3261e; }
-  #steps { display: none; }
+  #mainArea { display: none; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>會員選單管理後台</h1>
-  <p class="desc">OO SAY MONEY 會員六格圖文選單的實際內容改在 Notion 資料庫編輯，這裡只負責「同步」跟「套用」兩個動作。</p>
+  <p class="desc">編輯 OO SAY MONEY 會員六格圖文選單的每格動作，儲存後會自動重建選單、重新連結所有現有會員。</p>
 
   <div class="card" id="tokenCard">
     <label>管理密鑰（ADMIN_TOKEN）</label>
     <input type="password" id="tokenInput" placeholder="請輸入 Vercel 環境變數 ADMIN_TOKEN 的值" />
-    <button id="unlockBtn">開始</button>
+    <button id="loadBtn">讀取目前選單</button>
     <div id="tokenStatus"></div>
   </div>
 
-  <div id="steps">
+  <div id="mainArea">
     <div class="card">
-      <div class="step-title">步驟 1：同步目前選單到 Notion</div>
-      <div class="step-desc">第一次使用，或懷疑 Notion 內容跟 LINE 實際狀態不一致時按這個，會把「目前 LINE 選單」的 6 格內容寫進 Notion 資料庫。</div>
-      <button id="syncBtn">同步目前選單到 Notion</button>
-      <div id="syncStatus"></div>
-    </div>
-
-    <div class="card">
-      <div class="step-title">步驟 2：去 Notion 編輯</div>
-      <div class="step-desc">同步成功後，點下面連結打開 Notion 資料庫，六列對應 A～F 六格。「類型」選連結或文字，「內容」填網址或訊息文字，改完存檔即可（Notion 會自動存檔）。</div>
-      <div id="notionLinkArea"></div>
-    </div>
-
-    <div class="card">
-      <div class="step-title">步驟 3：套用 Notion 內容到 LINE 選單</div>
-      <div class="step-desc">在 Notion 改完之後回來按這個，才會真的重建 LINE 選單、重新連結所有現有會員。</div>
-      <button id="applyBtn">套用 Notion 設定到 LINE 選單</button>
-      <div id="applyStatus"></div>
+      <div id="areasContainer"></div>
+      <button id="saveBtn">儲存並套用</button>
+      <button class="secondary" id="reloadBtn" style="margin-left:8px;">重新讀取</button>
+      <div id="saveStatus"></div>
     </div>
   </div>
 </div>
 
 <script>
+  const LETTERS = ["A", "B", "C", "D", "E", "F"];
   let token = localStorage.getItem("oosaymoney_admin_token") || "";
   document.getElementById("tokenInput").value = token;
 
-  function showSteps() {
-    document.getElementById("steps").style.display = "block";
+  function actionToFields(action) {
+    if (!action) return { type: "text", value: "", label: "" };
+    if (action.type === "uri") return { type: "uri", value: action.uri || "", label: action.label || "" };
+    if (action.type === "message") return { type: "message", value: action.text || "", label: action.label || "" };
+    return { type: action.type || "text", value: JSON.stringify(action), label: action.label || "" };
   }
 
-  async function unlock() {
+  function fieldsToAction(type, value, label) {
+    if (type === "uri") return { type: "uri", uri: value, label: label || undefined };
+    if (type === "message") return { type: "message", text: value, label: label || undefined };
+    return { type: "message", text: value || "", label: label || undefined };
+  }
+
+  function renderAreas(areas) {
+    const container = document.getElementById("areasContainer");
+    container.innerHTML = "";
+    areas.forEach((area, i) => {
+      const f = actionToFields(area.action);
+      const row = document.createElement("div");
+      row.className = "area-row";
+      row.innerHTML = \`
+        <div class="area-label">\${LETTERS[i] || i}</div>
+        <div class="area-fields">
+          <label>類型</label>
+          <select data-idx="\${i}" class="type-select">
+            <option value="uri" \${f.type === "uri" ? "selected" : ""}>連結（開啟網址 / LIFF）</option>
+            <option value="message" \${f.type === "message" ? "selected" : ""}>文字（傳送訊息）</option>
+          </select>
+          <label>內容（連結請填完整網址，例如 https://liff.line.me/xxxx）</label>
+          <input type="text" data-idx="\${i}" class="value-input" value="\${(f.value || "").replace(/"/g, "&quot;")}" />
+          <label>動作標籤（選填，僅供辨識用）</label>
+          <input type="text" data-idx="\${i}" class="label-input" value="\${(f.label || "").replace(/"/g, "&quot;")}" />
+        </div>
+      \`;
+      container.appendChild(row);
+    });
+  }
+
+  async function loadRichMenu() {
     token = document.getElementById("tokenInput").value.trim();
     if (!token) { alert("請輸入 ADMIN_TOKEN"); return; }
     localStorage.setItem("oosaymoney_admin_token", token);
@@ -84,51 +107,39 @@ export const RICHMENU_ADMIN_HTML = `<!DOCTYPE html>
       const res = await fetch("/api/admin/richmenu", { headers: { "x-admin-token": token } });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || ("HTTP " + res.status));
-      statusEl.innerHTML = '<div class="status ok">驗證成功（目前選單 ID： ' + data.richMenuId + '）</div>';
-      showSteps();
+      renderAreas(data.areas);
+      document.getElementById("mainArea").style.display = "block";
+      statusEl.innerHTML = '<div class="status ok">讀取成功，共 ' + data.areas.length + ' 格（目前選單 ID： ' + data.richMenuId + '）</div>';
     } catch (e) {
-      statusEl.innerHTML = '<div class="status err">驗證失敗：' + e.message + '</div>';
+      statusEl.innerHTML = '<div class="status err">讀取失敗：' + e.message + '</div>';
     }
   }
 
-  async function syncToNotion() {
-    const statusEl = document.getElementById("syncStatus");
-    const btn = document.getElementById("syncBtn");
-    btn.disabled = true;
-    statusEl.innerHTML = '<div class="status">同步中...</div>';
-    try {
-      const res = await fetch("/api/admin/richmenu/sync-to-notion", {
-        method: "GET",
-        headers: { "x-admin-token": token },
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || ("HTTP " + res.status));
-      statusEl.innerHTML = '<div class="status ok">同步成功！</div>';
-      document.getElementById("notionLinkArea").innerHTML =
-        '<a class="notion-link" href="' + data.notionUrl + '" target="_blank" rel="noopener">開啟 Notion 資料庫 →</a>';
-    } catch (e) {
-      statusEl.innerHTML = '<div class="status err">同步失敗：' + e.message + '</div>';
-    } finally {
-      btn.disabled = false;
-    }
-  }
-
-  async function applyFromNotion() {
-    const statusEl = document.getElementById("applyStatus");
-    const btn = document.getElementById("applyBtn");
+  async function saveRichMenu() {
+    const rows = document.querySelectorAll(".area-row");
+    const areas = [];
+    rows.forEach((row, i) => {
+      const type = row.querySelector(".type-select").value;
+      const value = row.querySelector(".value-input").value.trim();
+      const label = row.querySelector(".label-input").value.trim();
+      areas.push({ index: i, action: fieldsToAction(type, value, label) });
+    });
+    const statusEl = document.getElementById("saveStatus");
+    const btn = document.getElementById("saveBtn");
     btn.disabled = true;
     statusEl.innerHTML = '<div class="status">處理中，請稍候（會重建選單並重新連結所有會員，可能需要一點時間）...</div>';
     try {
-      const res = await fetch("/api/admin/richmenu/apply", {
+      const res = await fetch("/api/admin/richmenu", {
         method: "POST",
-        headers: { "x-admin-token": token },
+        headers: { "Content-Type": "application/json", "x-admin-token": token },
+        body: JSON.stringify({ areas }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || ("HTTP " + res.status));
       let msg = "套用成功！\\n新選單 ID：" + data.newRichMenuId +
         "\\n已重新連結會員：" + data.relinked + " / " + data.totalMembers +
         (data.failedUserIds && data.failedUserIds.length ? ("\\n連結失敗：" + data.failedUserIds.length + " 位") : "") +
-        "\\n設定已" + (data.settingPersistedToNotion ? "自動存到 Notion，之後可再次修改後直接套用" : "無法寫入 Notion，請手動更新 Vercel 環境變數 LINE_RICH_MENU_ID_6 = " + data.newRichMenuId);
+        "\\n設定已" + (data.settingPersistedToNotion ? "自動存到 Notion，之後可直接在此頁再次修改" : "無法寫入 Notion，請手動更新 Vercel 環境變數 LINE_RICH_MENU_ID_6 = " + data.newRichMenuId);
       statusEl.innerHTML = '<div class="status ok">' + msg + '</div>';
     } catch (e) {
       statusEl.innerHTML = '<div class="status err">套用失敗：' + e.message + '</div>';
@@ -137,10 +148,10 @@ export const RICHMENU_ADMIN_HTML = `<!DOCTYPE html>
     }
   }
 
-  document.getElementById("unlockBtn").addEventListener("click", unlock);
-  document.getElementById("syncBtn").addEventListener("click", syncToNotion);
-  document.getElementById("applyBtn").addEventListener("click", applyFromNotion);
-  if (token) unlock();
+  document.getElementById("loadBtn").addEventListener("click", loadRichMenu);
+  document.getElementById("reloadBtn").addEventListener("click", loadRichMenu);
+  document.getElementById("saveBtn").addEventListener("click", saveRichMenu);
+  if (token) loadRichMenu();
 </script>
 </body>
 </html>

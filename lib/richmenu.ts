@@ -139,108 +139,6 @@ async function setMemberRichMenuId(id: string): Promise<{ persisted: boolean }> 
 }
 
 // ---------------------------------------------------------------------------
-// Notion 內容編輯：六格選單「各格要連去哪裡」直接在 Notion 資料庫編輯，
-// 不用打開後台網頁一格一格輸入。網頁只保留兩個按鈕：
-//   1) 把目前選單同步到 Notion（第一次使用 / 想重新對齊時按）
-//   2) 套用 Notion 目前內容到 LINE 選單（改完 Notion 後按這個才會真的生效）
-// ---------------------------------------------------------------------------
-const AREA_DB_TITLE = "OOSAYMONEY_RichMenuAreas";
-const LETTERS = ["A", "B", "C", "D", "E", "F"];
-let areaDataSourceIdCache: string | null = null;
-let areaDataSourceUrlCache: string | null = null;
-
-async function findOrCreateAreaDataSourceId(): Promise<{ dataSourceId: string; url: string }> {
-  if (areaDataSourceIdCache) {
-    return { dataSourceId: areaDataSourceIdCache, url: areaDataSourceUrlCache || "" };
-  }
-
-  // 注意：notion.search 的 object 篩選只接受 "page" 或 "data_source"（新版 API），沒有 "database"
-  const search: any = await notion.search({
-    query: AREA_DB_TITLE,
-    filter: { property: "object", value: "data_source" } as any,
-  });
-  const found = (search?.results || []).find(
-    (r: any) => r.object === "data_source" && r.title?.[0]?.plain_text === AREA_DB_TITLE
-  );
-  if (found) {
-    areaDataSourceIdCache = found.id;
-    areaDataSourceUrlCache = found.url || `https://www.notion.so/${String(found.id).replace(/-/g, "")}`;
-    return { dataSourceId: areaDataSourceIdCache, url: areaDataSourceUrlCache };
-  }
-
-  const membersDb: any = await notion.databases.retrieve({ database_id: CONFIG.dbMembers });
-  const created: any = await notion.databases.create({
-    parent: membersDb.parent,
-    title: [{ type: "text", text: { content: AREA_DB_TITLE } }],
-    initial_data_source: {
-      properties: {
-        格子: { title: {} },
-        類型: { select: { options: [{ name: "連結" }, { name: "文字" }] } },
-        內容: { rich_text: {} },
-      },
-    },
-  } as any);
-  const dsId: string = created.data_sources?.[0]?.id || created.id;
-  areaDataSourceIdCache = dsId;
-  areaDataSourceUrlCache = created.url || `https://www.notion.so/${String(dsId).replace(/-/g, "")}`;
-  return { dataSourceId: dsId, url: areaDataSourceUrlCache };
-}
-
-/** 把 LINE 目前選單的 6 格動作，寫進 Notion 資料庫（找不到就自動建立），回傳可打開的 Notion 網址 */
-export async function syncCurrentRichMenuToNotion(): Promise<{ databaseId: string; notionUrl: string }> {
-  const def = await getCurrentRichMenuDefinition();
-  const { dataSourceId: dsId, url } = await findOrCreateAreaDataSourceId();
-
-  for (let i = 0; i < def.areas.length && i < LETTERS.length; i++) {
-    const action: any = def.areas[i].action || {};
-    const letter = LETTERS[i];
-    const type = action.type === "uri" ? "連結" : "文字";
-    const content = action.type === "uri" ? action.uri || "" : action.text || "";
-
-    const existing: any = await notion.dataSources.query({
-      data_source_id: dsId,
-      filter: { property: "格子", title: { equals: letter } } as any,
-    });
-    const properties: any = {
-      格子: { title: [{ text: { content: letter } }] },
-      類型: { select: { name: type } },
-      內容: { rich_text: [{ text: { content } }] },
-    };
-    const page = existing.results?.[0] as any;
-    if (page) {
-      await notion.pages.update({ page_id: page.id, properties });
-    } else {
-      await notion.pages.create({ parent: { data_source_id: dsId } as any, properties });
-    }
-  }
-
-  return { databaseId: dsId, notionUrl: url };
-}
-
-/** 從 Notion 資料庫讀出目前 6 格的內容，轉成 LINE rich menu 的 action 格式 */
-async function buildAreaUpdatesFromNotion(): Promise<Array<{ index: number; action: any }>> {
-  const { dataSourceId: dsId } = await findOrCreateAreaDataSourceId();
-  const resp: any = await notion.dataSources.query({ data_source_id: dsId, page_size: 100 });
-
-  const updates: Array<{ index: number; action: any }> = [];
-  for (const page of resp.results as any[]) {
-    if (page.archived || page.in_trash) continue;
-    const letter = page.properties?.["格子"]?.title?.[0]?.plain_text;
-    const index = LETTERS.indexOf(letter);
-    if (index === -1) continue;
-    const type = page.properties?.["類型"]?.select?.name;
-    const content = page.properties?.["內容"]?.rich_text?.[0]?.plain_text || "";
-    const action = type === "連結" ? { type: "uri", uri: content } : { type: "message", text: content };
-    updates.push({ index, action });
-  }
-
-  if (updates.length === 0) {
-    throw new Error("Notion 設定資料庫是空的，請先按「同步目前選單到 Notion」");
-  }
-  return updates;
-}
-
-// ---------------------------------------------------------------------------
 // 查詢所有已註冊、有 LINE User ID 的會員（用來重新連結選單）
 // ---------------------------------------------------------------------------
 async function findAllMembersWithLineUserId(): Promise<string[]> {
@@ -294,11 +192,8 @@ export async function getCurrentRichMenuDefinition() {
 // 6. 刪除舊選單
 // ---------------------------------------------------------------------------
 export async function applyRichMenuAreaUpdates(
-  areaUpdates?: Array<{ index: number; action: any }>
+  areaUpdates: Array<{ index: number; action: any }>
 ) {
-  const updates =
-    areaUpdates && areaUpdates.length > 0 ? areaUpdates : await buildAreaUpdatesFromNotion();
-
   const oldRichMenuId = await getMemberRichMenuId();
   if (!oldRichMenuId) {
     throw new Error("尚未設定會員選單（環境變數 LINE_RICH_MENU_ID_6 為空）");
@@ -307,7 +202,7 @@ export async function applyRichMenuAreaUpdates(
   const oldDef = await lineApiGet(`/v2/bot/richmenu/${oldRichMenuId}`);
 
   const newAreas = (oldDef.areas as any[]).map((area, i) => {
-    const override = updates.find((u) => u.index === i);
+    const override = areaUpdates.find((u) => u.index === i);
     return override ? { bounds: area.bounds, action: override.action } : area;
   });
 
