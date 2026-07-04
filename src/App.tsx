@@ -13,6 +13,7 @@ import { useLiff } from "@/src/hooks/useLiff";
 // 不論從哪個頁面第一次點擊「加入會員」都能立即顯示，不受當下
 // 網路速度影響。
 import { RegisterPage } from "@/src/pages/RegisterPage";
+import { NewsletterPage } from "@/src/pages/NewsletterPage";
 
 type EBState = { hasError: boolean };
 class ErrorBoundary extends Component<{ children: ReactNode }, EBState> {
@@ -205,6 +206,9 @@ export default function MainApp() {
             </Route>
             <Route path="/register">
               <PageTransition><RegisterPage onBack={goBack} onTerms={() => navigate("/terms")} onSubmitSuccess={() => handleLogin("newMember")} /></PageTransition>
+            </Route>
+            <Route path="/newsletter">
+              <PageTransition><NewsletterPage onBack={goBack} /></PageTransition>
             </Route>
             <Route path="/terms">
               <PageTransition><TermsPage onBack={goBack} /></PageTransition>
