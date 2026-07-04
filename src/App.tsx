@@ -129,6 +129,15 @@ export default function MainApp() {
     }
   }, [location, navigate]);
 
+  // 修法：AnimatePresence 搭配 mode="wait" 在「頁面掛載後的第一次」路由切換時，
+  // 有機率吃掉那次的進出場動畫排程，導致畫面卡在舊頁面沒有切換（使用者點擊
+  // 「前往註冊 / 登入」等按鈕，網址列變了，畫面卻停在原地，看起來像沒反應
+  // 或空白）。改用獨立的 useEffect 監聽 location 變化來捲動置頂，不再依賴
+  // AnimatePresence 的 onExitComplete，降低對其內部排程時機的依賴。
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
   const handlePublic = (key: string) => {
     if (key === "login") { navigate("/register"); return; } // or we can keep login modal, but new users go to register
     navigate(`/${key}`);
@@ -162,7 +171,7 @@ export default function MainApp() {
       <div className="flex-1 w-full bg-[#f8f8f6]">
         <ErrorBoundary>
         <Suspense fallback={<div className="p-10 text-center text-slate-400 font-medium">載入中…</div>}>
-        <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
+        <AnimatePresence>
           <Switch location={location} key={location}>
             <Route path="/">
               <PageTransition><PublicGrid onSelect={handlePublic} /></PageTransition>
