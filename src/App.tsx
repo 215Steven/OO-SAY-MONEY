@@ -1,9 +1,38 @@
-import { useState, useEffect, lazy, Suspense, ReactNode, ComponentType } from "react";
+import { useState, useEffect, lazy, Suspense, ReactNode, ComponentType, Component } from "react";
 import { useLocation, Route, Switch } from "wouter";
 import { AnimatePresence, motion } from "motion/react";
 import { THEMES, ROLE_META } from "@/src/constants/roles";
 import { LoginModal } from "@/src/components/LoginModal";
 import { useLiff } from "@/src/hooks/useLiff";
+
+type EBState = { hasError: boolean };
+class ErrorBoundary extends Component<{ children: ReactNode }, EBState> {
+  state: EBState = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error: unknown, info: unknown) {
+    console.error("頁面渲染錯誤，已攔截避免白屏:", error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-10 text-center min-h-[100dvh] flex flex-col items-center justify-center gap-4">
+          <h2 className="text-[18px] font-serif font-bold text-warm-gray-800">頁面發生問題</h2>
+          <p className="text-[13px] text-warm-gray-500">請重新整理或稍後再試一次</p>
+          <button
+            onClick={() => { this.setState({ hasError: false }); window.location.reload(); }}
+            className="mt-2 py-3 px-6 bg-teal-base text-white cursor-pointer font-medium tracking-widest text-[13px] uppercase rounded-2xl"
+          >
+            重新整理
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // 頁面採 lazy 載入做 code splitting，改善 LIFF 首屏載入速度
 const lazyPage = <T extends Record<string, any>>(
@@ -39,14 +68,14 @@ const PageTransition = ({ children }: { children: ReactNode }) => (
 
 const RouteWithRegister = ({ component: Component, goBack, navigate, handleLogin, ...props }: any) => {
   const [showReg, setShowReg] = useState(false);
-  
+
   if (showReg) {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="min-h-[100dvh]">
-        <RegisterPage 
-          onBack={() => { window.scrollTo(0, 0); setShowReg(false); }} 
-          onTerms={() => navigate("/terms")} 
-          onSubmitSuccess={() => { setShowReg(false); handleLogin("newMember"); }} 
+        <RegisterPage
+          onBack={() => { window.scrollTo(0, 0); setShowReg(false); }}
+          onTerms={() => navigate("/terms")}
+          onSubmitSuccess={() => { setShowReg(false); handleLogin("newMember"); }}
         />
       </motion.div>
     );
@@ -54,12 +83,12 @@ const RouteWithRegister = ({ component: Component, goBack, navigate, handleLogin
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="min-h-[100dvh]">
-       <Component 
-         onBack={goBack} 
-         {...props} 
-         onJoin={() => { window.scrollTo(0, 0); setShowReg(true); }} 
-         onComplete={() => { window.scrollTo(0, 0); setShowReg(true); }} 
-         onLogin={() => { window.scrollTo(0, 0); setShowReg(true); }} 
+       <Component
+         onBack={goBack}
+         {...props}
+         onJoin={() => { window.scrollTo(0, 0); setShowReg(true); }}
+         onComplete={() => { window.scrollTo(0, 0); setShowReg(true); }}
+         onLogin={() => { window.scrollTo(0, 0); setShowReg(true); }}
        />
     </motion.div>
   );
@@ -69,7 +98,7 @@ export default function MainApp() {
   const [location, navigate] = useLocation();
   const [role, setRole] = useState<string | null>(null);
   const [modal, setModal] = useState(false);
-  
+
   const { isReady, profile, isMockMode, getAccessToken } = useLiff();
 
   // Handle Notion validation and LINE rich menu (身分由後端依 access token 驗證)
@@ -91,7 +120,7 @@ export default function MainApp() {
     const params = new URLSearchParams(window.location.search);
     const urlRole = params.get("role");
     const urlPath = params.get("path");
-    
+
     if (urlRole && ROLE_META[urlRole]) {
       setRole(urlRole);
       if (location === "/") navigate("/dashboard", { replace: true });
@@ -105,12 +134,12 @@ export default function MainApp() {
     navigate(`/${key}`);
   };
 
-  const handleLogin = (r: string) => { 
-    setRole(r); 
-    setModal(false); 
+  const handleLogin = (r: string) => {
+    setRole(r);
+    setModal(false);
     // Simulate updating URL so copy-pasting the link opens the correct role
     window.history.replaceState({}, "", `?role=${r}`);
-    navigate("/dashboard"); 
+    navigate("/dashboard");
   };
 
   const handleRoleSelect = (key: string) => {
@@ -131,6 +160,7 @@ export default function MainApp() {
 
 
       <div className="flex-1 w-full bg-[#f8f8f6]">
+        <ErrorBoundary>
         <Suspense fallback={<div className="p-10 text-center text-slate-400 font-medium">載入中…</div>}>
         <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
           <Switch location={location} key={location}>
@@ -196,6 +226,7 @@ export default function MainApp() {
           </Switch>
         </AnimatePresence>
         </Suspense>
+        </ErrorBoundary>
       </div>
 
       {modal && <LoginModal onClose={() => setModal(false)} onLogin={handleLogin} />}
