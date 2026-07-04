@@ -42,18 +42,21 @@ async function lineApiDelete(path: string): Promise<void> {
 // 找不到 / 尚未設定 Notion 時，一律 fallback 回 env（LINE_RICH_MENU_ID_6）。
 // ---------------------------------------------------------------------------
 const SETTINGS_DB_TITLE = "OOSAYMONEY_AppSettings";
-let settingsDatabaseIdCache: string | null = null;
+let settingsDataSourceIdCache: string | null = null;
 
-async function findOrCreateSettingsDatabaseId(): Promise<string> {
-  if (settingsDatabaseIdCache) return settingsDatabaseIdCache;
+async function findOrCreateSettingsDataSourceId(): Promise<string> {
+  if (settingsDataSourceIdCache) return settingsDataSourceIdCache;
 
+  // 注意：notion.search 的 object 篩選只接受 "page" 或 "data_source"（新版 API），沒有 "database"
   const search: any = await notion.search({
     query: SETTINGS_DB_TITLE,
-    filter: { property: "object", value: "database" } as any,
+    filter: { property: "object", value: "data_source" } as any,
   });
-  const found = (search?.results || []).find((r: any) => r.object === "database");
+  const found = (search?.results || []).find(
+    (r: any) => r.object === "data_source" && r.title?.[0]?.plain_text === SETTINGS_DB_TITLE
+  );
   if (found) {
-    settingsDatabaseIdCache = found.id;
+    settingsDataSourceIdCache = found.id;
     return found.id;
   }
 
@@ -69,15 +72,15 @@ async function findOrCreateSettingsDatabaseId(): Promise<string> {
       },
     },
   } as any);
-  settingsDatabaseIdCache = created.id;
-  return created.id;
+  const dsId: string = created.data_sources?.[0]?.id || created.id;
+  settingsDataSourceIdCache = dsId;
+  return dsId;
 }
 
 async function getSetting(key: string): Promise<string | null> {
   if (!CONFIG.notionApiKey) return null;
   try {
-    const dbId = await findOrCreateSettingsDatabaseId();
-    const dsId = await resolveDataSourceId(dbId);
+    const dsId = await findOrCreateSettingsDataSourceId();
     const resp: any = await notion.dataSources.query({
       data_source_id: dsId,
       filter: { property: "Key", title: { equals: key } } as any,
@@ -93,8 +96,7 @@ async function getSetting(key: string): Promise<string | null> {
 }
 
 async function setSetting(key: string, value: string): Promise<void> {
-  const dbId = await findOrCreateSettingsDatabaseId();
-  const dsId = await resolveDataSourceId(dbId);
+  const dsId = await findOrCreateSettingsDataSourceId();
   const resp: any = await notion.dataSources.query({
     data_source_id: dsId,
     filter: { property: "Key", title: { equals: key } } as any,
@@ -144,19 +146,26 @@ async function setMemberRichMenuId(id: string): Promise<{ persisted: boolean }> 
 // ---------------------------------------------------------------------------
 const AREA_DB_TITLE = "OOSAYMONEY_RichMenuAreas";
 const LETTERS = ["A", "B", "C", "D", "E", "F"];
-let areaDatabaseIdCache: string | null = null;
+let areaDataSourceIdCache: string | null = null;
+let areaDataSourceUrlCache: string | null = null;
 
-async function findOrCreateAreaDatabaseId(): Promise<string> {
-  if (areaDatabaseIdCache) return areaDatabaseIdCache;
+async function findOrCreateAreaDataSourceId(): Promise<{ dataSourceId: string; url: string }> {
+  if (areaDataSourceIdCache) {
+    return { dataSourceId: areaDataSourceIdCache, url: areaDataSourceUrlCache || "" };
+  }
 
+  // 注意：notion.search 的 object 篩選只接受 "page" 或 "data_source"（新版 API），沒有 "database"
   const search: any = await notion.search({
     query: AREA_DB_TITLE,
-    filter: { property: "object", value: "database" } as any,
+    filter: { property: "object", value: "data_source" } as any,
   });
-  const found = (search?.results || []).find((r: any) => r.object === "database");
+  const found = (search?.results || []).find(
+    (r: any) => r.object === "data_source" && r.title?.[0]?.plain_text === AREA_DB_TITLE
+  );
   if (found) {
-    areaDatabaseIdCache = found.id;
-    return found.id;
+    areaDataSourceIdCache = found.id;
+    areaDataSourceUrlCache = found.url || `https://www.notion.so/${String(found.id).replace(/-/g, "")}`;
+    return { dataSourceId: areaDataSourceIdCache, url: areaDataSourceUrlCache };
   }
 
   const membersDb: any = await notion.databases.retrieve({ database_id: CONFIG.dbMembers });
@@ -171,15 +180,16 @@ async function findOrCreateAreaDatabaseId(): Promise<string> {
       },
     },
   } as any);
-  areaDatabaseIdCache = created.id;
-  return created.id;
+  const dsId: string = created.data_sources?.[0]?.id || created.id;
+  areaDataSourceIdCache = dsId;
+  areaDataSourceUrlCache = created.url || `https://www.notion.so/${String(dsId).replace(/-/g, "")}`;
+  return { dataSourceId: dsId, url: areaDataSourceUrlCache };
 }
 
 /** 把 LINE 目前選單的 6 格動作，寫進 Notion 資料庫（找不到就自動建立），回傳可打開的 Notion 網址 */
 export async function syncCurrentRichMenuToNotion(): Promise<{ databaseId: string; notionUrl: string }> {
   const def = await getCurrentRichMenuDefinition();
-  const dbId = await findOrCreateAreaDatabaseId();
-  const dsId = await resolveDataSourceId(dbId);
+  const { dataSourceId: dsId, url } = await findOrCreateAreaDataSourceId();
 
   for (let i = 0; i < def.areas.length && i < LETTERS.length; i++) {
     const action: any = def.areas[i].action || {};
@@ -204,13 +214,12 @@ export async function syncCurrentRichMenuToNotion(): Promise<{ databaseId: strin
     }
   }
 
-  return { databaseId: dbId, notionUrl: `https://www.notion.so/${dbId.replace(/-/g, "")}` };
+  return { databaseId: dsId, notionUrl: url };
 }
 
 /** 從 Notion 資料庫讀出目前 6 格的內容，轉成 LINE rich menu 的 action 格式 */
 async function buildAreaUpdatesFromNotion(): Promise<Array<{ index: number; action: any }>> {
-  const dbId = await findOrCreateAreaDatabaseId();
-  const dsId = await resolveDataSourceId(dbId);
+  const { dataSourceId: dsId } = await findOrCreateAreaDataSourceId();
   const resp: any = await notion.dataSources.query({ data_source_id: dsId, page_size: 100 });
 
   const updates: Array<{ index: number; action: any }> = [];
