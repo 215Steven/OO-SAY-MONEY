@@ -76,6 +76,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
     if (!formData.lineUserId) return alert('LINE 帳號尚未連線完成，請稍候再試。');
     if (!formData.identity) return alert('請選擇您怎麼認識我們');
     if (formData.newsletter && !formData.email) return alert('請填寫 Email 以接收電子報');
+    if (formData.newsletter && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(formData.email)) return alert('Email 格式不正確，請重新確認');
     if (!formData.terms) return alert('請確認服務條款與隱私權政策');
 
     // 姓名以 LINE 顯示名稱記錄，其他聯絡資料日後補填

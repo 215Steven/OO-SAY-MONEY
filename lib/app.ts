@@ -2,6 +2,7 @@ import express, { type Request, type Response } from "express";
 import { CONFIG } from "./config.js";
 import { notion, resolveDataSourceId, findMembersByLineUserId } from "./notion.js";
 import { lineClient, verifyWebhookSignature, getVerifiedUserId } from "./line.js";
+import { isValidEmail, upsertMailerliteSubscriber } from "./mailerlite.js";
 
 export const app = express();
 
@@ -145,6 +146,12 @@ app.post("/api/register", async (req: Request, res: Response) => {
     const { identity, name, phone, birthday, email, newsletter, registerSource } =
       req.body || {};
 
+    // 有勾電子報時檢查 email 格式（最終驗證由 MailerLite double opt-in 確認信完成）
+    if (newsletter && (!email || !isValidEmail(String(email)))) {
+      res.status(400).json({ error: "Email 格式不正確，請重新確認" });
+      return;
+    }
+
     if (CONFIG.notionApiKey) {
       const dataSourceId = await resolveDataSourceId(CONFIG.dbMembers);
       const existing = await findMembersByLineUserId(userId);
@@ -204,6 +211,11 @@ app.post("/api/register", async (req: Request, res: Response) => {
       await lineClient
         .linkRichMenuIdToUser(userId, CONFIG.lineRichMenuMemberId)
         .catch((e) => console.error("Link menu failed:", e));
+    }
+
+    // 電子報：同步到 MailerLite（double opt-in 確認信由 MailerLite 寄出）
+    if (newsletter && email) {
+      await upsertMailerliteSubscriber(String(email), String(name || ""));
     }
 
     res.json({ status: "ok" });

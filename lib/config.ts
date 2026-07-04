@@ -9,6 +9,9 @@ export const CONFIG = {
   lineRichMenuMemberId: process.env.LINE_RICH_MENU_ID_6 || "",
   // 管理端點（/api/admin/*）的存取密鑰；未設定時管理端點一律拒絕
   adminToken: process.env.ADMIN_TOKEN || "",
+  // MailerLite 電子報整合（未設定時自動略過，不影響註冊）
+  mailerliteApiKey: process.env.MAILERLITE_API_KEY || "",
+  mailerliteGroupId: process.env.MAILERLITE_GROUP_ID || "",
   notionApiKey: process.env.NOTION_API_KEY || "",
   dbMembers:
     process.env.NOTION_DATABASE_ID_MEMBERS ||
