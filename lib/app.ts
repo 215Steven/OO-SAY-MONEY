@@ -3,7 +3,12 @@ import { CONFIG } from "./config.js";
 import { notion, resolveDataSourceId, findMembersByLineUserId } from "./notion.js";
 import { lineClient, verifyWebhookSignature, getVerifiedUserId } from "./line.js";
 import { isValidEmail, upsertMailerliteSubscriber } from "./mailerlite.js";
-import { getMemberRichMenuId, getCurrentRichMenuDefinition, applyRichMenuAreaUpdates } from "./richmenu.js";
+import {
+  getMemberRichMenuId,
+  getCurrentRichMenuDefinition,
+  applyRichMenuAreaUpdates,
+  syncCurrentRichMenuToNotion,
+} from "./richmenu.js";
 import { RICHMENU_ADMIN_HTML } from "./richmenuAdminHtml.js";
 
 export const app = express();
@@ -382,6 +387,28 @@ app.post("/api/admin/richmenu", async (req: Request, res: Response) => {
     res.json({ status: "ok", ...result });
   } catch (error) {
     serverError(res, "/api/admin/richmenu", error);
+  }
+});
+
+// 把目前選單同步到 Notion（第一次使用 / 想重新對齊真實狀態時按）
+app.get("/api/admin/richmenu/sync-to-notion", async (req: Request, res: Response) => {
+  try {
+    if (!requireAdmin(req, res)) return;
+    const result = await syncCurrentRichMenuToNotion();
+    res.json({ status: "ok", ...result });
+  } catch (error) {
+    serverError(res, "/api/admin/richmenu/sync-to-notion", error);
+  }
+});
+
+// 套用 Notion 目前內容到 LINE 選單（改完 Notion 後按這個才會真的生效）
+app.post("/api/admin/richmenu/apply", async (req: Request, res: Response) => {
+  try {
+    if (!requireAdmin(req, res)) return;
+    const result = await applyRichMenuAreaUpdates();
+    res.json({ status: "ok", ...result });
+  } catch (error) {
+    serverError(res, "/api/admin/richmenu/apply", error);
   }
 });
 
