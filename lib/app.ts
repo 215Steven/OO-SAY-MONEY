@@ -3,6 +3,8 @@ import { CONFIG } from "./config.js";
 import { notion, resolveDataSourceId, findMembersByLineUserId } from "./notion.js";
 import { lineClient, verifyWebhookSignature, getVerifiedUserId } from "./line.js";
 import { isValidEmail, upsertMailerliteSubscriber } from "./mailerlite.js";
+import { getMemberRichMenuId, getCurrentRichMenuDefinition, applyRichMenuAreaUpdates } from "./richmenu.js";
+import { RICHMENU_ADMIN_HTML } from "./richmenuAdminHtml.js";
 
 export const app = express();
 
@@ -28,6 +30,16 @@ async function requireUser(req: Request, res: Response): Promise<string | null> 
     res.status(401).json({ error: "Unauthorized: invalid or missing LINE access token" });
   }
   return userId;
+}
+
+/** 管理端點共用前置：驗證 ADMIN_TOKEN，失敗回 403 */
+function requireAdmin(req: Request, res: Response): boolean {
+  const token = (req.query.token as string) || req.get("x-admin-token") || "";
+  if (!CONFIG.adminToken || token !== CONFIG.adminToken) {
+    res.status(403).json({ error: "Forbidden" });
+    return false;
+  }
+  return true;
 }
 
 // ---------------------------------------------------------------------------
@@ -118,9 +130,10 @@ app.get("/api/check-member", async (req: Request, res: Response) => {
     }
 
     if (CONFIG.lineChannelAccessToken) {
-      if (isMember && CONFIG.lineRichMenuMemberId) {
+      const richMenuId = await getMemberRichMenuId();
+      if (isMember && richMenuId) {
         await lineClient
-          .linkRichMenuIdToUser(userId, CONFIG.lineRichMenuMemberId)
+          .linkRichMenuIdToUser(userId, richMenuId)
           .catch((e) => console.error("Link menu failed:", e));
       } else {
         await lineClient
@@ -207,10 +220,13 @@ app.post("/api/register", async (req: Request, res: Response) => {
       }
     }
 
-    if (CONFIG.lineChannelAccessToken && CONFIG.lineRichMenuMemberId) {
-      await lineClient
-        .linkRichMenuIdToUser(userId, CONFIG.lineRichMenuMemberId)
-        .catch((e) => console.error("Link menu failed:", e));
+    if (CONFIG.lineChannelAccessToken) {
+      const richMenuId = await getMemberRichMenuId();
+      if (richMenuId) {
+        await lineClient
+          .linkRichMenuIdToUser(userId, richMenuId)
+          .catch((e) => console.error("Link menu failed:", e));
+      }
     }
 
     // 電子報：同步到 MailerLite（double opt-in 確認信由 MailerLite 寄出）
@@ -320,11 +336,7 @@ app.get("/api/insurance", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 app.get("/api/admin/unlink/:lineUserId", async (req: Request, res: Response) => {
   try {
-    const token = (req.query.token as string) || req.get("x-admin-token") || "";
-    if (!CONFIG.adminToken || token !== CONFIG.adminToken) {
-      res.status(403).send("Forbidden");
-      return;
-    }
+    if (!requireAdmin(req, res)) return;
 
     const { lineUserId } = req.params;
     await lineClient.unlinkRichMenuIdFromUser(lineUserId);
@@ -334,6 +346,42 @@ app.get("/api/admin/unlink/:lineUserId", async (req: Request, res: Response) => 
   } catch (err) {
     console.error("Admin unlink error:", err);
     res.status(500).send("<h1>❌ 解除綁定失敗</h1>");
+  }
+});
+
+// ---------------------------------------------------------------------------
+// 7. 管理端點：會員六格選單後台（需 ADMIN_TOKEN）
+// 讀取/修改目前會員選單的每格動作；儲存時會自動重建選單（LINE 選單建立後
+// 無法原地編輯）、複製原圖、重新連結所有現有會員，並把新選單 ID 存進
+// Notion，讓下次修改立即生效、不需要改 Vercel 環境變數或重新部署。
+// ---------------------------------------------------------------------------
+app.get("/api/admin/richmenu-ui", (req: Request, res: Response) => {
+  res.set("Content-Type", "text/html; charset=utf-8");
+  res.send(RICHMENU_ADMIN_HTML);
+});
+
+app.get("/api/admin/richmenu", async (req: Request, res: Response) => {
+  try {
+    if (!requireAdmin(req, res)) return;
+    const data = await getCurrentRichMenuDefinition();
+    res.json({ status: "ok", ...data });
+  } catch (error) {
+    serverError(res, "/api/admin/richmenu", error);
+  }
+});
+
+app.post("/api/admin/richmenu", async (req: Request, res: Response) => {
+  try {
+    if (!requireAdmin(req, res)) return;
+    const { areas } = req.body || {};
+    if (!Array.isArray(areas)) {
+      res.status(400).json({ error: "areas 為必填陣列" });
+      return;
+    }
+    const result = await applyRichMenuAreaUpdates(areas);
+    res.json({ status: "ok", ...result });
+  } catch (error) {
+    serverError(res, "/api/admin/richmenu", error);
   }
 });
 
