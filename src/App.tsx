@@ -4,6 +4,15 @@ import { motion } from "motion/react";
 import { THEMES, ROLE_META } from "@/src/constants/roles";
 import { LoginModal } from "@/src/components/LoginModal";
 import { useLiff } from "@/src/hooks/useLiff";
+// 修法：RegisterPage 改為「直接」引入（不再 lazy load）。
+// 從 故事起點／解鎖更多／錢去哪了 等子頁面點擊「加入會員」時，是透過
+// RouteWithRegister 內部的 showReg state 切換顯示 RegisterPage，
+// 網址（location）並未改變，Switch 不會重新掛載。此時若 RegisterPage
+// 還是第一次要被載入（lazy chunk 尚未下載完成），在行動網路較慢時
+// 會有明顯延遲，畫面近似白屏。改成一開始就跟主程式一起打包載入，
+// 不論從哪個頁面第一次點擊「加入會員」都能立即顯示，不受當下
+// 網路速度影響。
+import { RegisterPage } from "@/src/pages/RegisterPage";
 
 type EBState = { hasError: boolean };
 class ErrorBoundary extends Component<{ children: ReactNode }, EBState> {
@@ -51,7 +60,6 @@ const TemplatePage = lazyPage(() => import("@/src/pages/TemplatePage"), "Templat
 const QuizPage = lazyPage(() => import("@/src/pages/QuizPage"), "QuizPage");
 const DefensePage = lazyPage(() => import("@/src/pages/DefensePage"), "DefensePage");
 const BlueprintPage = lazyPage(() => import("@/src/pages/BlueprintPage"), "BlueprintPage");
-const RegisterPage = lazyPage(() => import("@/src/pages/RegisterPage"), "RegisterPage");
 const TermsPage = lazyPage(() => import("@/src/pages/TermsPage"), "TermsPage");
 
 const PageTransition = ({ children }: { children: ReactNode }) => (
