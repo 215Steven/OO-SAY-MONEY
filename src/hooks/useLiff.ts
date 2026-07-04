@@ -19,8 +19,10 @@ export const useLiff = () => {
     const initializeLiff = async () => {
       // --- If in iframe (like AI Studio preview), force mock mode to prevent LINE login block ---
       const isInIframe = window.self !== window.top;
-      
-      if (isInIframe) {
+      // --- Debug escape hatch: ?mock=1 forces mock mode even at top level, for diagnosing render issues without LINE login ---
+      const forceMock = new URLSearchParams(window.location.search).get('mock') === '1';
+
+      if (isInIframe || forceMock) {
         setIsMockMode(true);
         setIsReady(true);
         setTimeout(() => {
@@ -32,11 +34,11 @@ export const useLiff = () => {
         }, 800);
         return;
       }
-      
+
       try {
         await liff.init({ liffId });
         setIsReady(true);
-        
+
         if (liff.isLoggedIn()) {
           const userProfile = await liff.getProfile();
           setProfile(userProfile);
@@ -59,7 +61,7 @@ export const useLiff = () => {
         setError(err.message);
         setIsMockMode(true);
         setIsReady(true);
-        
+
         // Auto mock profile if init fails
         setTimeout(() => {
           setProfile({
