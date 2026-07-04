@@ -1,6 +1,6 @@
 import { useState, useEffect, lazy, Suspense, ReactNode, ComponentType, Component } from "react";
 import { useLocation, Route, Switch } from "wouter";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import { THEMES, ROLE_META } from "@/src/constants/roles";
 import { LoginModal } from "@/src/components/LoginModal";
 import { useLiff } from "@/src/hooks/useLiff";
@@ -171,7 +171,11 @@ export default function MainApp() {
       <div className="flex-1 w-full bg-[#f8f8f6]">
         <ErrorBoundary>
         <Suspense fallback={<div className="p-10 text-center text-slate-400 font-medium">載入中…</div>}>
-        <AnimatePresence>
+          {/* 修法：AnimatePresence 在路由切換時偶爾會讓「離場」的舊頁面卡在
+              DOM 中沒有真正移除（畫面卡在舊頁面下方，需要往下捲動才看得到
+              新頁面內容，看起來就像沒反應／空白）。改直接渲染 Switch，讓
+              React 的 key={location} 機制立即掛載/卸載頁面，不再依賴
+              framer-motion 的離場動畫完成時機來決定舊頁面何時真正移除。*/}
           <Switch location={location} key={location}>
             <Route path="/">
               <PageTransition><PublicGrid onSelect={handlePublic} /></PageTransition>
@@ -233,7 +237,6 @@ export default function MainApp() {
               </PageTransition>
             </Route>
           </Switch>
-        </AnimatePresence>
         </Suspense>
         </ErrorBoundary>
       </div>
