@@ -5,20 +5,32 @@ import { useLiff } from "@/src/hooks/useLiff";
 import { authHeaders } from "@/src/constants/liff";
 
 export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () => void, onTerms: () => void, onSubmitSuccess: () => void }) => {
+  const defaultFormData = {
+    identity: '',
+    name: '',
+    phone: '',
+    birthday: '',
+    email: '',
+    newsletter: false,
+    terms: false,
+    lineUserId: '',
+    lineDisplayName: '',
+    linePictureUrl: ''
+  };
+
   const [formData, setFormData] = useState(() => {
-    const saved = localStorage.getItem('registerData');
-    return saved ? JSON.parse(saved) : {
-      identity: '',
-      name: '',
-      phone: '',
-      birthday: '',
-      email: '',
-      newsletter: false,
-      terms: false,
-      lineUserId: '',
-      lineDisplayName: '',
-      linePictureUrl: ''
-    };
+    try {
+      const saved = localStorage.getItem('registerData');
+      if (!saved) return defaultFormData;
+      const parsed = JSON.parse(saved);
+      // 舊版資料格式可能缺少欄位或型別不符，與預設值合併避免下游操作出錯
+      return { ...defaultFormData, ...parsed };
+    } catch (e) {
+      // 舊資料損毀（非合法 JSON）時不應讓整頁白屏，清除後改用預設值
+      console.error("讀取本地註冊資料失敗，已重置", e);
+      localStorage.removeItem('registerData');
+      return defaultFormData;
+    }
   });
 
   const [submitting, setSubmitting] = useState(false);
