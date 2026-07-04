@@ -7,6 +7,7 @@ const LIFF_ID_BY_PATH: Array<{ match: string[]; id: string }> = [
   { match: ["/quiz"], id: "2007659354-EofSbRGu" },
   { match: ["/unlock"], id: "2007659354-ktfXFigk" },
   { match: ["/appointment"], id: "2007659354-okKabZ27" },
+  { match: ["/newsletter"], id: "2007659354-AoL4SPyn" },
 ];
 
 const DEFAULT_LIFF_ID = "2007659354-RMhoJzrA"; // fallback（解鎖更多）
