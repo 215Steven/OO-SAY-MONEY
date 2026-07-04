@@ -225,6 +225,30 @@ app.post("/api/register", async (req: Request, res: Response) => {
 });
 
 // ---------------------------------------------------------------------------
+// 3b. 電子報訂閱（獨立入口，不需要加入會員，僅同步到 MailerLite）
+// ---------------------------------------------------------------------------
+app.post("/api/newsletter", async (req: Request, res: Response) => {
+  try {
+    const { email, name } = req.body || {};
+
+    if (!email || !isValidEmail(String(email))) {
+      res.status(400).json({ error: "Email 格式不正確，請重新確認" });
+      return;
+    }
+
+    const ok = await upsertMailerliteSubscriber(String(email), String(name || ""));
+    if (!ok) {
+      res.status(400).json({ error: "訂閱失敗，請確認 Email 或稍後再試一次" });
+      return;
+    }
+
+    res.json({ status: "ok" });
+  } catch (error) {
+    serverError(res, "/api/newsletter", error);
+  }
+});
+
+// ---------------------------------------------------------------------------
 // 4. 預約
 // ---------------------------------------------------------------------------
 app.post("/api/reservations", async (req: Request, res: Response) => {
