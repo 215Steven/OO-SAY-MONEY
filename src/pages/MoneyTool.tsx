@@ -164,6 +164,11 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
   const liabRatio = totalAssets > 0 ? (totalLiab / totalAssets) : (totalLiab > 0 ? 1 : 0);
   const investRatio = totalAssets > 0 ? (invest / totalAssets) : 0;
 
+  // 償還債務率：每月負債還款 / 月收入，是「流量」指標，跟負債比（總負債/總資產，
+  // 「存量」指標）互補——負債比健康的人，也可能每月被高利率負債壓得喘不過氣
+  const debtSvcRatio = income > 0 ? (debt / income) : (debt > 0 ? 1 : 0);
+  const debtSvcPct = Math.round(debtSvcRatio * 100);
+
   const passivePct = fixedExp > 0 ? Math.round((passive / fixedExp) * 100) : 0;
   const cappedPassivePct = Math.min(passivePct, 100);
 
@@ -232,12 +237,14 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
   const mEf = Math.min(1, efMonths / 6); // 6個月為 1
   const mLiab = Math.max(0, Math.min(1, (0.6 - liabRatio) / 0.2)); // 0.4 以下為 1，0.6 以上為 0
   const mInv = Math.min(1, investRatio / 0.2); // 20% 為 1
+  const mDebtSvc = Math.max(0, Math.min(1, (0.6 - debtSvcRatio) / 0.2)); // 0.4 以下為 1，0.6 以上為 0
 
   const metricsList = [
     { pct: mExp, icon: '💸', name: '收支比', weak: `固定支出佔收入 ${expRatePct}%，偏高。每月可動用空間不足`, strong: `收支結構健康，固定支出控制得宜` },
     { pct: mEf, icon: '🛡️', name: '緊急預備金', weak: `緊急預備金約 ${Math.round(efMonths * 10) / 10} 個月，建議補足至 6 個月`, strong: `緊急預備金充足。可以開始思考如何讓資金更積極配置` },
     { pct: mLiab, icon: '📉', name: '負債比', weak: `負債比 ${Math.round(liabRatio * 100)}%，偏高。優先降低高利率負債`, strong: `負債比健康。財務彈性佳，適合進一步規劃資產配置` },
     { pct: mInv, icon: '📈', name: '投資比例', weak: `投資佔總資產 ${Math.round(investRatio * 100)}%，偏低。資金複利效果尚未啟動`, strong: `投資比例不錯。進一步優化配置結構可放大報酬` },
+    { pct: mDebtSvc, icon: '💳', name: '償還債務率', weak: `每月負債還款佔收入 ${debtSvcPct}%，偏高。若含信用卡或信用貸款等高利率負債，建議優先償還`, strong: `每月還款壓力健康，財務彈性佳` },
   ];
   if (insRate > 15) metricsList.push({ pct: Math.max(0, 1 - (insRate - 15) / 10), icon: '🔍', name: '保費比例', weak: `保費佔收入 ${insRate}%，偏高。建議檢視是否有重疊保單`, strong: '' });
   else if (insRate <= 0 && insurance === 0) metricsList.push({ pct: 0.2, icon: '🛡️', name: '保費', weak: `尚未填寫保險狀態。保障缺口是最常被忽略的風險`, strong: '' });
@@ -263,17 +270,27 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
     {
       name: '收支比', desc: '固定支出 / 月收入，建議低於 60%',
       val: expRatePct, format: (v:any) => v + '%', target: 60, ok: 60, warn: 75, isReverse: true,
+      bands: '綠燈 ≤60%．黃燈 60–75%．紅燈 ＞75%',
       note: (v:any) => v <= 50 ? '支出結構健康，每月有充裕結餘' : v <= 60 ? `支出比 ${v}%，尚可，仍有空間` : v <= 75 ? `支出比 ${v}%，偏高，建議檢視可調整項目` : `支出比 ${v}%，過高，收支平衡需優先處理`,
     },
     {
       name: '緊急預備金', desc: '建議至少 6 個月固定支出',
       val: Math.round(efMonths * 10) / 10, format: (v:any) => v + ' 個月', target: 6, ok: 6, warn: 3, isReverse: false,
+      bands: '綠燈 ≥6 個月．黃燈 3–6 個月．紅燈 ＜3 個月',
       note: (v:any) => v >= 6 ? '充足，能應對突發收入中斷' : v >= 3 ? `約 ${v} 個月，建議補足至 6 個月` : `約 ${v} 個月，偏低，優先補強`,
     },
     {
       name: '負債比', desc: '負債 / 總資產，建議低於 40%',
       val: Math.round(liabRatio * 100), format: (v:any) => v + '%', target: 40, ok: 40, warn: 60, isReverse: true,
+      bands: '綠燈 ≤40%．黃燈 40–60%．紅燈 ＞60%',
       note: (v:any) => v <= 40 ? '負債比健康，財務彈性佳' : v <= 60 ? `負債比 ${v}%，中等，留意還款壓力` : `負債比 ${v}%，偏高，建議優先降低`,
+    },
+    {
+      name: '償還債務率',
+      desc: '每月負債還款 / 月收入，建議低於 40%（與負債比互補的流量指標）',
+      val: debtSvcPct, format: (v:any) => v + '%', target: 40, ok: 40, warn: 60, isReverse: true,
+      bands: '綠燈 ≤40%．黃燈 40–60%．紅燈 ＞60%',
+      note: (v:any) => v <= 40 ? '每月還款壓力在合理範圍內' : v <= 60 ? `每月還款佔收入 ${v}%，偏高，留意是否有信用卡或信用貸款等高利率負債` : `每月還款佔收入 ${v}%，過高，建議優先檢視並償還高利率負債（如信用卡、信貸）`,
     },
     {
       name: '投資比例',
@@ -281,6 +298,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
         ? '投資資產 / 總資產，建議 20% 以上（房地產計入總資產，但不計入投資部位，有房產者數值會偏低）'
         : '投資資產 / 總資產，建議 20% 以上',
       val: Math.round(investRatio * 100), format: (v:any) => v + '%', target: 20, ok: 20, warn: 10, isReverse: false,
+      bands: '綠燈 ≥20%．黃燈 10–20%．紅燈 ＜10%',
       note: (v:any) => v >= 20 ? '投資比例良好，複利累積中' : v >= 10 ? `投資比 ${v}%，尚可，逐步提高` : v === 0 ? '資金全在現金，複利未啟動' : `投資比 ${v}%，建議啟動配置`,
     },
   ];
@@ -664,6 +682,9 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
                     <div className="text-[11px] text-warm-gray-500">目前：<span className={`font-bold ${textC} text-[13px] ml-1`}>{m.format(val)}</span></div>
                     <div className={`text-[10px] font-medium tracking-wide text-right w-[160px] ${textC}`}>{m.note(val)}</div>
                   </div>
+                  {m.bands && (
+                    <div className="text-[9px] text-warm-gray-400 tracking-wide mt-2 pt-2 border-t border-warm-gray-50 text-right">{m.bands}</div>
+                  )}
                 </div>
               );
             })}
