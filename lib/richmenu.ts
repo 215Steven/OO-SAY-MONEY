@@ -239,13 +239,21 @@ export async function applyRichMenuAreaUpdates(
   // 重新連結所有現有會員到新選單
   const memberIds = await findAllMembersWithLineUserId();
   let relinked = 0;
-  const failed: string[] = [];
+  const failed: Array<{ userId: string; reason: string }> = [];
   for (const userId of memberIds) {
     try {
       await lineClient.linkRichMenuIdToUser(userId, newRichMenuId);
       relinked++;
-    } catch {
-      failed.push(userId);
+    } catch (e: any) {
+      // LINE 常見失敗原因：使用者已封鎖／取消追蹤官方帳號（404），
+      // 或 Notion 存的 LINE User ID 本身有誤。把細節記下來方便排查。
+      const status = e?.status;
+      const body = e?.body ? (typeof e.body === "string" ? e.body : JSON.stringify(e.body)) : "";
+      const reason = [status ? `HTTP ${status}` : null, body || e?.message || String(e)]
+        .filter(Boolean)
+        .join("：");
+      console.warn(`重新連結會員選單失敗 (userId=${userId})：`, reason);
+      failed.push({ userId, reason });
     }
   }
 
@@ -264,7 +272,7 @@ export async function applyRichMenuAreaUpdates(
     newRichMenuId,
     totalMembers: memberIds.length,
     relinked,
-    failedUserIds: failed,
+    failedUsers: failed,
     settingPersistedToNotion: persisted,
     oldRichMenuDeleted: oldDeleted,
   };

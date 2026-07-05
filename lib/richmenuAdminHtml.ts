@@ -138,9 +138,14 @@ export const RICHMENU_ADMIN_HTML = `<!DOCTYPE html>
       if (!res.ok) throw new Error(data.error || ("HTTP " + res.status));
       let msg = "套用成功！\\n新選單 ID：" + data.newRichMenuId +
         "\\n已重新連結會員：" + data.relinked + " / " + data.totalMembers +
-        (data.failedUserIds && data.failedUserIds.length ? ("\\n連結失敗：" + data.failedUserIds.length + " 位") : "") +
         "\\n設定已" + (data.settingPersistedToNotion ? "自動存到 Notion，之後可直接在此頁再次修改" : "無法寫入 Notion，請手動更新 Vercel 環境變數 LINE_RICH_MENU_ID_6 = " + data.newRichMenuId);
-      statusEl.innerHTML = '<div class="status ok">' + msg + '</div>';
+      if (data.failedUsers && data.failedUsers.length) {
+        msg += "\\n\\n連結失敗（" + data.failedUsers.length + " 位）：";
+        data.failedUsers.forEach(function (f) {
+          msg += "\\n・" + f.userId + " → " + f.reason;
+        });
+      }
+      statusEl.innerHTML = '<div class="status ' + (data.failedUsers && data.failedUsers.length ? 'err' : 'ok') + '">' + msg + '</div>';
     } catch (e) {
       statusEl.innerHTML = '<div class="status err">套用失敗：' + e.message + '</div>';
     } finally {
