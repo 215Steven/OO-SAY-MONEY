@@ -9,7 +9,14 @@ import {
   applyRichMenuAreaUpdates,
 } from "./richmenu.js";
 import { RICHMENU_ADMIN_HTML } from "./richmenuAdminHtml.js";
-import { isValidQuizType, pushQuizResultMessage } from "./quiz.js";
+import {
+  isValidQuizType,
+  pushQuizResultMessage,
+  stashPendingQuizResult,
+  getPendingQuizResult,
+  buildQuizResultFlex,
+  QUIZ_RESULT_TRIGGER_TEXT,
+} from "./quiz.js";
 
 export const app = express();
 
@@ -67,6 +74,23 @@ app.post("/api/webhook", async (req: Request, res: Response) => {
         const text: string = isText ? event.message.text : event.postback?.data || "";
         const userId: string | undefined = event.source?.userId;
         if (!userId) return;
+
+        // 測驗結果觸發：QuizPage 用 liff.sendMessages() 送出這句話換一個
+        // 免費的 replyToken，這裡查回剛才暫存的結果並用 reply 回精美結果卡
+        // （不計入官方帳號每月推播則數）。跟會員身分無關，要在下面的會員
+        // 檢查「之前」處理完並 return，避免被會員檢查攔截、回錯訊息。
+        if (isText && text === QUIZ_RESULT_TRIGGER_TEXT) {
+          const pending = await getPendingQuizResult(userId).catch(() => null);
+          if (pending) {
+            await lineClient
+              .replyMessage({
+                replyToken: event.replyToken,
+                messages: [buildQuizResultFlex(pending.winner, pending.subType) as any],
+              })
+              .catch((e) => console.error("Quiz result reply failed:", e));
+          }
+          return;
+        }
 
         // [自動化機制] 檢查使用者是否還在 Notion 會員資料庫中
         let isMember = true;
@@ -270,21 +294,33 @@ app.post("/api/newsletter", async (req: Request, res: Response) => {
 });
 
 // ---------------------------------------------------------------------------
-// 3c. 測驗結果回傳到 LINE 對話（推播 Flex Message，見 lib/quiz.ts）
+// 3c. 測驗結果回傳到 LINE 對話（見 lib/quiz.ts）
+// 優先走免費管道：前端先呼叫這支 API 把結果暫存起來，再嘗試
+// liff.sendMessages() 觸發 webhook 換免費的 reply；只有在那個管道不可用
+// （例如非一對一聊天室情境開啟）時，前端才會帶 wantPush:true 再呼叫一次，
+// 這裡才會用 pushMessage（計入每月推播則數）當備援送出。
 // ---------------------------------------------------------------------------
 app.post("/api/quiz-result", async (req: Request, res: Response) => {
   try {
     const userId = await requireUser(req, res);
     if (!userId) return;
 
-    const { winner, subType } = req.body || {};
+    const { winner, subType, wantPush } = req.body || {};
     if (!isValidQuizType(winner)) {
       res.status(400).json({ error: "winner 參數不正確" });
       return;
     }
     const validSub = isValidQuizType(subType) ? subType : null;
 
-    const sent = await pushQuizResultMessage(userId, winner, validSub);
+    await stashPendingQuizResult(userId, winner, validSub).catch((e) =>
+      console.warn("暫存測驗結果失敗：", e?.message || e)
+    );
+
+    let sent = false;
+    if (wantPush) {
+      sent = await pushQuizResultMessage(userId, winner, validSub);
+    }
+
     res.json({ status: "ok", sent });
   } catch (error) {
     serverError(res, "/api/quiz-result", error);

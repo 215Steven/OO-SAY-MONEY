@@ -1,6 +1,13 @@
 import { lineClient } from "./line.js";
+import { getSetting, setSetting } from "./richmenu.js";
 
 export type QuizTypeKey = "guard" | "enjoy" | "anxiety" | "plan";
+
+// 使用者做完測驗後，前端會用 liff.sendMessages() 送出這句話（顯示在使用者
+// 自己的對話泡泡），藉此觸發一個真正的 webhook message 事件、換到免費的
+// replyToken，我們再用 reply 回一張結果卡（不計入官方帳號每月推播則數）。
+// 這個常數同時也寫死在 src/pages/QuizPage.tsx，兩邊要保持一致。
+export const QUIZ_RESULT_TRIGGER_TEXT = "我做完了 90 秒財務性格測驗！";
 
 // 這兩個連結對應 src/constants/liff.ts 裡 /quiz、/appointment 的 LIFF ID，
 // 沿用前端 QuizPage.tsx 既有的分享連結，維持單一事實來源的精神
@@ -53,7 +60,7 @@ function buildResultUrl(winner: QuizTypeKey, subType?: QuizTypeKey | null): stri
   return `${QUIZ_LIFF_URL}?r=${encodeURIComponent(r)}`;
 }
 
-function buildQuizResultFlex(winner: QuizTypeKey, subType?: QuizTypeKey | null) {
+export function buildQuizResultFlex(winner: QuizTypeKey, subType?: QuizTypeKey | null) {
   const main = QUIZ_TYPES[winner];
   const sub = subType ? QUIZ_TYPES[subType] : null;
 
@@ -141,4 +148,27 @@ export async function pushQuizResultMessage(
     console.warn("推播測驗結果訊息失敗：", e?.message || e);
     return false;
   }
+}
+
+/**
+ * 暫存「這個使用者最新一次的測驗結果」，供 webhook 收到
+ * QUIZ_RESULT_TRIGGER_TEXT 觸發訊息時查回來用免費的 reply 回覆。
+ * 沿用既有的 Notion 設定資料庫（OOSAYMONEY_AppSettings）當簡易 KV store。
+ */
+export async function stashPendingQuizResult(
+  userId: string,
+  winner: QuizTypeKey,
+  subType?: QuizTypeKey | null
+): Promise<void> {
+  await setSetting(`quizResult:${userId}`, subType ? `${winner}-${subType}` : winner);
+}
+
+export async function getPendingQuizResult(
+  userId: string
+): Promise<{ winner: QuizTypeKey; subType: QuizTypeKey | null } | null> {
+  const raw = await getSetting(`quizResult:${userId}`);
+  if (!raw) return null;
+  const [w, s] = raw.split("-");
+  if (!isValidQuizType(w)) return null;
+  return { winner: w, subType: isValidQuizType(s) ? s : null };
 }

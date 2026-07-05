@@ -77,7 +77,8 @@ async function findOrCreateSettingsDataSourceId(): Promise<string> {
   return dsId;
 }
 
-async function getSetting(key: string): Promise<string | null> {
+/** 通用鍵值設定讀寫，供 lib/quiz.ts 暫存「使用者最新一次測驗結果」共用 */
+export async function getSetting(key: string): Promise<string | null> {
   if (!CONFIG.notionApiKey) return null;
   try {
     const dsId = await findOrCreateSettingsDataSourceId();
@@ -95,7 +96,7 @@ async function getSetting(key: string): Promise<string | null> {
   }
 }
 
-async function setSetting(key: string, value: string): Promise<void> {
+export async function setSetting(key: string, value: string): Promise<void> {
   const dsId = await findOrCreateSettingsDataSourceId();
   const resp: any = await notion.dataSources.query({
     data_source_id: dsId,
