@@ -2,9 +2,11 @@ import { Ic } from "@/src/components/Icons";
 import { motion } from "motion/react";
 
 export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
+  // 順序調整：測驗放第一格，先讓使用者感受到「這跟我有關」的需求感，
+  // 再帶到品牌故事、最後才是解鎖更多，符合先痛點、後信任、再轉換的順序。
   const items = [
+    { key:"quiz",   label:"錢去哪了", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"money", sub:"90 秒財務性格測驗" },
     { key:"story",  label:"故事起點", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"info",  sub:"自我介紹" },
-    { key:"quiz",   label:"錢去哪了", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"money", sub:"測驗" },
     { key:"unlock", label:"解鎖更多", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"star",  sub:"簡述會員頁的六格網頁" },
   ];
   return (
