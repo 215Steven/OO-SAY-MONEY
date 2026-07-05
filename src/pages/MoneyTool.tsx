@@ -19,31 +19,55 @@ interface MoneyToolProps {
   onBook: () => void;
 }
 
+// 範例資料與空白資料完全分開管理，避免使用者忘記清除示例數據，
+// 就用假資料產生一份看起來很正式的「健檢報告」。
+const DEMO_DATA: MoneyForm = {
+  a_cash: 80, a_invest: 30, a_property: 0,
+  l_mortgage: 0, l_other: 5,
+  i_active: 75000, i_passive: 5000,
+  e_living: 20000, e_housing: 18000, e_debt: 3000, e_insurance: 4000,
+  e_dca: 10000
+};
+const EMPTY_DATA: MoneyForm = {
+  a_cash: '', a_invest: '', a_property: '',
+  l_mortgage: '', l_other: '',
+  i_active: '', i_passive: '',
+  e_living: '', e_housing: '', e_debt: '', e_insurance: '',
+  e_dca: ''
+};
+const WIZARD_TITLES = ["資產與負債", "每月收入", "每月支出", "定期定額與總覽"];
+
 export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
-  const [step, setStep] = useState(0); // 0 = inputs, 1 = report
-  const [isDemo, setIsDemo] = useState(true);
-  const [data, setData] = useState<MoneyForm>({
-    a_cash: 80, a_invest: 30, a_property: 0,
-    l_mortgage: 0, l_other: 5,
-    i_active: 75000, i_passive: 5000,
-    e_living: 20000, e_housing: 18000, e_debt: 3000, e_insurance: 4000,
-    e_dca: 10000
-  });
+  // screen：choice（先選看範例還是自己填）→ wizard（分 4 步填寫）→ report（健檢結果，維持單頁滑動）
+  const [screen, setScreen] = useState<"choice" | "wizard" | "report">("choice");
+  const [wizardStep, setWizardStep] = useState(0); // 0~3，共 4 步
+  const [isDemo, setIsDemo] = useState(false);
+  const [data, setData] = useState<MoneyForm>(EMPTY_DATA);
 
   const set = (k: string, v: string) => {
-    if (isDemo) clearDemo();
     setData(d => ({ ...d, [k]: v }));
   };
 
-  const clearDemo = () => {
+  const startDemo = () => {
+    setIsDemo(true);
+    setData(DEMO_DATA);
+    setScreen("report");
+  };
+  const startReal = () => {
     setIsDemo(false);
-    setData({
-      a_cash: '', a_invest: '', a_property: '',
-      l_mortgage: '', l_other: '',
-      i_active: '', i_passive: '',
-      e_living: '', e_housing: '', e_debt: '', e_insurance: '',
-      e_dca: ''
-    });
+    setData(EMPTY_DATA);
+    setWizardStep(0);
+    setScreen("wizard");
+  };
+  const nextWizardStep = () => {
+    window.scrollTo(0, 0);
+    if (wizardStep >= WIZARD_TITLES.length - 1) { setScreen("report"); return; }
+    setWizardStep(s => s + 1);
+  };
+  const prevWizardStep = () => {
+    window.scrollTo(0, 0);
+    if (wizardStep <= 0) { setScreen("choice"); return; }
+    setWizardStep(s => s - 1);
   };
 
   const cash = Number(data.a_cash) || 0;
@@ -259,164 +283,203 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
     window.open(`https://line.me/R/oaMessage/@oosaymoney/?${encoded}`, '_blank');
   };
 
-  if (step === 0) {
+  if (screen === "choice") {
     return (
-      <div className="min-h-[100dvh] bg-warm-gray-50 flex flex-col items-center pb-20 relative">
+      <div className="min-h-[100dvh] bg-warm-gray-50 flex flex-col items-center justify-center pb-20 px-5 relative">
+        <div className="w-full max-w-sm mx-auto flex flex-col items-center text-center gap-6">
+          <div className="inline-flex items-center gap-2 bg-cyan-soft/50 border border-teal-soft/80 px-4 py-1.5 rounded-full">
+            <Ic n="trend" size={14} color="#0d9488" />
+            <span className="text-[11px] font-bold text-teal-base tracking-widest uppercase">財務健康評估</span>
+          </div>
+          <h1 className="text-[28px] font-serif font-bold text-warm-gray-800 leading-snug tracking-wider">您的錢，<br/><span className="text-teal-base">有在替您工作嗎？</span></h1>
+          <p className="text-[13px] text-warm-gray-800/80 tracking-wide font-normal">分 4 個步驟填入大概數字，就能產生個人化財務健檢報告。<br/>估算即可，不需要精確數字。</p>
+
+          <div className="w-full flex flex-col gap-3 mt-2">
+            <button onClick={startReal} className="w-full bg-teal-base text-white border border-teal-base py-5 rounded-2xl text-[14px] font-bold tracking-widest uppercase cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2 shadow-md">
+              開始填寫我的健檢 <Ic n="arrowRight" size={18} color="currentColor" />
+            </button>
+            <button onClick={startDemo} className="w-full bg-white text-warm-gray-700 border border-warm-gray-200 py-4 rounded-2xl text-[13px] font-medium tracking-widest cursor-pointer hover:bg-warm-gray-100 transition-colors">
+              先看看範例報告長什麼樣子
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === "wizard") {
+    return (
+      <div className="min-h-[100dvh] bg-warm-gray-50 flex flex-col items-center pb-28 relative">
         <div className="bg-white border-b border-warm-gray-200 w-full pt-12 pb-6 px-6 sticky top-0 z-30 shrink-0">
-          <div className="max-w-sm mx-auto flex items-center justify-center">
-            <div className="text-[14px] font-medium tracking-widest text-warm-gray-800 uppercase">Step 1：財務資訊現況</div>
+          <div className="max-w-sm mx-auto flex flex-col items-center gap-4">
+            <div className="text-[12px] font-medium tracking-widest text-warm-gray-800 bg-warm-gray-50 rounded-2xl border border-warm-gray-200 px-4 py-2">
+              第 {wizardStep + 1} 步 <span className="text-warm-gray-300 mx-1">/</span> {WIZARD_TITLES.length} · {WIZARD_TITLES[wizardStep]}
+            </div>
+            <div className="flex gap-2 w-full">
+              {WIZARD_TITLES.map((_, i) => (
+                <div key={i} className={`h-[3px] flex-1 rounded-full overflow-hidden relative ${i < wizardStep ? 'bg-teal-base' : 'bg-[#D6D3D1]'}`}>
+                  {i === wizardStep && <motion.div initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: 0.5 }} className="absolute inset-0 bg-teal-base" />}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="px-5 w-full max-w-sm mx-auto relative z-10 pt-6 flex flex-col gap-8">
-          
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-cyan-soft/50 border border-teal-soft/80 px-4 py-1.5 rounded-full mb-5">
-              <Ic n="trend" size={14} color="#0d9488" />
-              <span className="text-[11px] font-bold text-teal-base tracking-widest uppercase">財務健康評估</span>
-            </div>
-            <h1 className="text-[28px] font-serif font-bold text-warm-gray-800 leading-snug tracking-wider mb-3">您的錢，<br/><span className="text-teal-base">有在替您工作嗎？</span></h1>
-            <p className="text-[13px] text-warm-gray-800/80 tracking-wide font-normal">填入以下數字，即時產生個人化財務健檢報告。<br/>估算即可，不需要精確數字。</p>
-          </div>
+        <div className="px-5 w-full max-w-sm mx-auto relative z-10 pt-6 flex flex-col gap-6">
 
-          {isDemo && (
-            <div className="bg-[#0369a1] text-white p-5 rounded-2xl flex flex-col gap-3 relative overflow-hidden shadow-sm">
-              <div className="text-[13px] font-medium leading-relaxed z-10">
-                <span className="bg-white/20 px-2 py-0.5 rounded text-[11px] font-bold tracking-widest mr-2 uppercase">示例模式</span> 
-                顯示「月薪 8 萬」示例數據。
+          {wizardStep === 0 && (
+            <div className="bg-white border border-warm-gray-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-warm-gray-200">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="text-[16px] font-serif font-bold text-warm-gray-800 tracking-wider">第一部分 · 資產概況</div>
+                </div>
+                <div className="text-[12px] text-warm-gray-600 font-normal">填入大約金額（單位：萬元）</div>
               </div>
-              <button onClick={clearDemo} className="bg-white text-[#0284c7] font-bold text-[12px] py-2.5 px-4 rounded-xl shadow-sm text-center tracking-widest uppercase cursor-pointer hover:bg-cyan-50 z-10">
-                清除內容，填入我的數字
-              </button>
+              <div className="p-5 flex flex-col gap-4">
+                <div className="text-[12px] font-bold tracking-widest text-teal-base uppercase pb-1 border-b border-warm-gray-100 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-teal-base"/> 資產</div>
+                <div className="grid grid-cols-2 gap-3">
+                  <InputBox label="現金存款" hint="活存、定存" value={data.a_cash} onChange={(e:any)=>set("a_cash",e.target.value)} unit="萬" />
+                  <InputBox label="投資部位" hint="股票、基金" value={data.a_invest} onChange={(e:any)=>set("a_invest",e.target.value)} unit="萬" />
+                  <div className="col-span-2">
+                    <InputBox label="房地產估值" hint="自住與投資市值" value={data.a_property} onChange={(e:any)=>set("a_property",e.target.value)} unit="萬" />
+                  </div>
+                </div>
+
+                <div className="text-[12px] font-bold tracking-widest text-rose-500 uppercase pb-1 border-b border-warm-gray-100 flex items-center gap-2 mt-2"><span className="w-1.5 h-1.5 rounded-full bg-rose-500"/> 負債</div>
+                <div className="grid grid-cols-2 gap-3">
+                  <InputBox label="房貸餘額" value={data.l_mortgage} onChange={(e:any)=>set("l_mortgage",e.target.value)} unit="萬" />
+                  <InputBox label="其他負債" hint="信貸、信卡" value={data.l_other} onChange={(e:any)=>set("l_other",e.target.value)} unit="萬" />
+                </div>
+
+                <div className="flex bg-warm-gray-50 rounded-xl p-4 gap-4 mt-2">
+                  <div className="flex-1">
+                    <div className="text-[10px] tracking-widest text-warm-gray-600 mb-1 font-medium">淨資產</div>
+                    <div className={`text-[18px] font-serif font-bold ${netWorth>=0?'text-teal-base':'text-rose-500'}`}>{fmt(netWorth)}<span className="text-[11px] font-normal ml-1">萬</span></div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
-          <div className="bg-white border border-warm-gray-200 rounded-2xl shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-warm-gray-200">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="text-[16px] font-serif font-bold text-warm-gray-800 tracking-wider">第一部分 · 資產概況</div>
+          {wizardStep === 1 && (
+            <div className="bg-white border border-warm-gray-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-warm-gray-200">
+                <div className="text-[16px] font-serif font-bold text-warm-gray-800 tracking-wider">第二部分 · 每月收入</div>
+                <div className="text-[12px] text-warm-gray-600 font-normal mt-2">薪水、股息、租金等（單位：元）</div>
               </div>
-              <div className="text-[12px] text-warm-gray-600 font-normal">填入大約金額（單位：萬元）</div>
-            </div>
-            <div className="p-5 flex flex-col gap-4">
-              <div className="text-[12px] font-bold tracking-widest text-teal-base uppercase pb-1 border-b border-warm-gray-100 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-teal-base"/> 資產</div>
-              <div className="grid grid-cols-2 gap-3">
-                <InputBox label="現金存款" hint="活存、定存" value={data.a_cash} onChange={(e:any)=>set("a_cash",e.target.value)} unit="萬" />
-                <InputBox label="投資部位" hint="股票、基金" value={data.a_invest} onChange={(e:any)=>set("a_invest",e.target.value)} unit="萬" />
-                <div className="col-span-2">
-                  <InputBox label="房地產估值" hint="自住與投資市值" value={data.a_property} onChange={(e:any)=>set("a_property",e.target.value)} unit="萬" />
-                </div>
-              </div>
-
-              <div className="text-[12px] font-bold tracking-widest text-rose-500 uppercase pb-1 border-b border-warm-gray-100 flex items-center gap-2 mt-2"><span className="w-1.5 h-1.5 rounded-full bg-rose-500"/> 負債</div>
-              <div className="grid grid-cols-2 gap-3">
-                <InputBox label="房貸餘額" value={data.l_mortgage} onChange={(e:any)=>set("l_mortgage",e.target.value)} unit="萬" />
-                <InputBox label="其他負債" hint="信貸、信卡" value={data.l_other} onChange={(e:any)=>set("l_other",e.target.value)} unit="萬" />
-              </div>
-
-              <div className="flex bg-warm-gray-50 rounded-xl p-4 gap-4 mt-2">
-                <div className="flex-1">
-                  <div className="text-[10px] tracking-widest text-warm-gray-600 mb-1 font-medium">淨資產</div>
-                  <div className={`text-[18px] font-serif font-bold ${netWorth>=0?'text-teal-base':'text-rose-500'}`}>{fmt(netWorth)}<span className="text-[11px] font-normal ml-1">萬</span></div>
+              <div className="p-5 flex flex-col gap-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <InputBox label="主動收入" hint="薪水、獎金等" value={data.i_active} onChange={(e:any)=>set("i_active",e.target.value)} unit="元" />
+                  <InputBox label="被動收入" hint="股息、租金等" value={data.i_passive} onChange={(e:any)=>set("i_passive",e.target.value)} unit="元" highlight />
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
-          <div className="bg-white border border-warm-gray-200 rounded-2xl shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-warm-gray-200">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="text-[16px] font-serif font-bold text-warm-gray-800 tracking-wider">第二部分 · 每月收支</div>
+          {wizardStep === 2 && (
+            <div className="bg-white border border-warm-gray-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-warm-gray-200">
+                <div className="text-[16px] font-serif font-bold text-warm-gray-800 tracking-wider">第三部分 · 每月固定支出</div>
+                <div className="text-[12px] text-warm-gray-600 font-normal mt-2">每個月固定要付的錢（單位：元）</div>
               </div>
-              <div className="text-[12px] text-warm-gray-600 font-normal">收入與支出流向（單位：元）</div>
+              <div className="p-5 flex flex-col gap-4">
+                <div className="text-[12px] font-bold tracking-widest text-alert-orange uppercase pb-1 border-b border-warm-gray-100 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-alert-orange"/> 固定支出</div>
+                <div className="grid grid-cols-2 gap-3">
+                  <InputBox label="生活費" hint="飲食、娛樂" value={data.e_living} onChange={(e:any)=>set("e_living",e.target.value)} unit="元" />
+                  <InputBox label="住居費" hint="房租/房貸" value={data.e_housing} onChange={(e:any)=>set("e_housing",e.target.value)} unit="元" />
+                  <InputBox label="債務月付" hint="車、信貸" value={data.e_debt} onChange={(e:any)=>set("e_debt",e.target.value)} unit="元" />
+                  <InputBox label="保費" hint="年繳÷12" value={data.e_insurance} onChange={(e:any)=>set("e_insurance",e.target.value)} unit="元" />
+                </div>
+              </div>
             </div>
-            <div className="p-5 flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-3">
-                <InputBox label="主動收入" hint="薪水、獎金等" value={data.i_active} onChange={(e:any)=>set("i_active",e.target.value)} unit="元" />
-                <InputBox label="被動收入" hint="股息、租金等" value={data.i_passive} onChange={(e:any)=>set("i_passive",e.target.value)} unit="元" highlight />
+          )}
+
+          {wizardStep === 3 && (
+            <div className="bg-white border border-warm-gray-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-warm-gray-200">
+                <div className="text-[16px] font-serif font-bold text-warm-gray-800 tracking-wider">第四部分 · 定期定額與總覽</div>
+                <div className="text-[12px] text-warm-gray-600 font-normal mt-2">最後一步，順便看看目前的收支總覽</div>
               </div>
-
-              <div className="text-[12px] font-bold tracking-widest text-alert-orange uppercase pb-1 border-b border-warm-gray-100 flex items-center gap-2 mt-2"><span className="w-1.5 h-1.5 rounded-full bg-alert-orange"/> 固定支出</div>
-              <div className="grid grid-cols-2 gap-3">
-                <InputBox label="生活費" hint="飲食、娛樂" value={data.e_living} onChange={(e:any)=>set("e_living",e.target.value)} unit="元" />
-                <InputBox label="住居費" hint="房租/房貸" value={data.e_housing} onChange={(e:any)=>set("e_housing",e.target.value)} unit="元" />
-                <InputBox label="債務月付" hint="車、信貸" value={data.e_debt} onChange={(e:any)=>set("e_debt",e.target.value)} unit="元" />
-                <InputBox label="保費" hint="年繳÷12" value={data.e_insurance} onChange={(e:any)=>set("e_insurance",e.target.value)} unit="元" />
-              </div>
-
-              <div className="flex flex-col bg-cyan-soft/10 border border-teal-soft/80 p-4 rounded-xl mt-2">
-                <div className="text-[12px] font-bold tracking-widest text-[#7c3aed] uppercase pb-2 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]"/> 定時定額 / 投資存錢
-                </div>
-                <InputBox label="每月投資" hint="基金、ETF定存" value={data.e_dca} onChange={(e:any)=>set("e_dca",e.target.value)} unit="元" highlight />
-              </div>
-
-              <div className="bg-white border-2 border-warm-gray-100 rounded-2xl p-5 mt-4 flex flex-col gap-3 shadow-sm">
-                <div className="flex justify-between items-center pb-2 border-b border-warm-gray-50">
-                  <span className="text-[13px] font-medium text-warm-gray-800 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-teal-base" />主動收入</span>
-                  <span className="text-[14px] font-serif font-bold text-teal-base">+ {fmt(active)} 元</span>
-                </div>
-                <div className="flex justify-between items-center pb-2 border-b border-warm-gray-50">
-                  <span className="text-[13px] font-medium text-warm-gray-800 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]" />被動收入</span>
-                  <span className={`text-[14px] font-serif font-bold ${passive > 0 ? 'text-[#7c3aed]' : 'text-warm-gray-400'}`}>{passive > 0 ? `+ ${fmt(passive)} 元` : '尚未填入'}</span>
-                </div>
-                <div className="flex justify-between items-center bg-cyan-soft/40 px-3 py-2 rounded-lg -mx-1">
-                  <span className="text-[12px] font-bold text-warm-gray-600">月收入合計</span>
-                  <span className="text-[15px] font-serif font-bold text-teal-base">+ {fmt(income)} 元</span>
-                </div>
-
-                <div className="h-1" />
-
-                <div className="flex justify-between items-center pb-2 border-b border-warm-gray-50">
-                  <span className="text-[13px] font-medium text-warm-gray-800 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-alert-orange" />固定支出合計</span>
-                  <span className="text-[14px] font-serif font-bold text-alert-orange">- {fmt(fixedExp)} 元</span>
-                </div>
-
-                <div className="flex justify-between items-center pt-2 pb-3 border-b-2 border-warm-gray-100">
-                  <span className="text-[14px] font-bold text-warm-gray-800">月結餘</span>
-                  <span className={`text-[18px] font-serif font-bold ${surplus>=0?'text-teal-base':'text-rose-500'}`}>{surplus>=0?'':'-'}{fmt(Math.abs(surplus))} 元 <span className={`text-[13px] font-bold ml-1 ${surplus>=0?'text-teal-base':'text-rose-500'}`}>({savRate}%)</span></span>
-                </div>
-
-                <div className="h-2" />
-
-                <div className="flex justify-between items-center bg-[#f5f3ff] px-3 py-2 rounded-lg -mx-1">
-                  <span className="text-[12px] font-bold text-[#7c3aed] flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]" />定時定額 (從結餘撥出) <span className="bg-[#ede9fe] text-[#7c3aed] px-1.5 py-0.5 rounded text-[10px] font-bold ml-1 hidden sm:inline-block">主動理財</span>
-                  </span>
-                  <span className={`text-[14px] font-serif font-bold ${dca > 0 ? 'text-[#7c3aed]' : 'text-warm-gray-400'}`}>{dca > 0 ? `- ${fmt(dca)} 元` : '尚未設定'}</span>
-                </div>
-
-                <div className="flex justify-between items-center pt-2">
-                  <span className="text-[13px] font-medium text-warm-gray-500 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-warm-gray-300" />閒置結餘 (尚未配置)</span>
-                  <span className={`text-[14px] font-serif font-bold ${idle>=0?'text-warm-gray-500':'text-rose-500'}`}>{idle>=0 ? `${fmt(idle)} 元` : `⚠️ 超支 ${fmt(Math.abs(idle))} 元`}</span>
-                </div>
-              </div>
-
-              {/* 理財動能卡 */}
-              <div className="bg-[#f5f3ff] border border-[#d8b4fe] rounded-2xl p-5 mt-2 flex flex-col md:flex-row items-center justify-between gap-5 relative overflow-hidden shadow-sm">
-                <div className="absolute top-0 right-0 p-4 opacity-5 text-[80px] -mt-6">📈</div>
-                <div className="flex items-center gap-4 relative z-10 w-full">
-                  <div className="text-[28px] shrink-0">📈</div>
-                  <div className="flex-1 text-left">
-                    <div className="text-[13px] font-bold text-[#7c3aed] mb-1">理財動能</div>
-                    <div className="text-[12px] text-[#6d28d9] leading-relaxed">{momTxt}</div>
+              <div className="p-5 flex flex-col gap-4">
+                <div className="flex flex-col bg-cyan-soft/10 border border-teal-soft/80 p-4 rounded-xl">
+                  <div className="text-[12px] font-bold tracking-widest text-[#7c3aed] uppercase pb-2 flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]"/> 定時定額 / 投資存錢
                   </div>
-                  <div className="text-[26px] font-serif font-bold text-[#7c3aed] tracking-tight whitespace-nowrap shrink-0">{momPct}</div>
+                  <InputBox label="每月投資" hint="基金、ETF定存" value={data.e_dca} onChange={(e:any)=>set("e_dca",e.target.value)} unit="元" highlight />
+                </div>
+
+                <div className="bg-white border-2 border-warm-gray-100 rounded-2xl p-5 mt-2 flex flex-col gap-3 shadow-sm">
+                  <div className="flex justify-between items-center pb-2 border-b border-warm-gray-50">
+                    <span className="text-[13px] font-medium text-warm-gray-800 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-teal-base" />主動收入</span>
+                    <span className="text-[14px] font-serif font-bold text-teal-base">+ {fmt(active)} 元</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-2 border-b border-warm-gray-50">
+                    <span className="text-[13px] font-medium text-warm-gray-800 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]" />被動收入</span>
+                    <span className={`text-[14px] font-serif font-bold ${passive > 0 ? 'text-[#7c3aed]' : 'text-warm-gray-400'}`}>{passive > 0 ? `+ ${fmt(passive)} 元` : '尚未填入'}</span>
+                  </div>
+                  <div className="flex justify-between items-center bg-cyan-soft/40 px-3 py-2 rounded-lg -mx-1">
+                    <span className="text-[12px] font-bold text-warm-gray-600">月收入合計</span>
+                    <span className="text-[15px] font-serif font-bold text-teal-base">+ {fmt(income)} 元</span>
+                  </div>
+
+                  <div className="h-1" />
+
+                  <div className="flex justify-between items-center pb-2 border-b border-warm-gray-50">
+                    <span className="text-[13px] font-medium text-warm-gray-800 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-alert-orange" />固定支出合計</span>
+                    <span className="text-[14px] font-serif font-bold text-alert-orange">- {fmt(fixedExp)} 元</span>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-2 pb-3 border-b-2 border-warm-gray-100">
+                    <span className="text-[14px] font-bold text-warm-gray-800">月結餘</span>
+                    <span className={`text-[18px] font-serif font-bold ${surplus>=0?'text-teal-base':'text-rose-500'}`}>{surplus>=0?'':'-'}{fmt(Math.abs(surplus))} 元 <span className={`text-[13px] font-bold ml-1 ${surplus>=0?'text-teal-base':'text-rose-500'}`}>({savRate}%)</span></span>
+                  </div>
+
+                  <div className="h-2" />
+
+                  <div className="flex justify-between items-center bg-[#f5f3ff] px-3 py-2 rounded-lg -mx-1">
+                    <span className="text-[12px] font-bold text-[#7c3aed] flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]" />定時定額 (從結餘撥出) <span className="bg-[#ede9fe] text-[#7c3aed] px-1.5 py-0.5 rounded text-[10px] font-bold ml-1 hidden sm:inline-block">主動理財</span>
+                    </span>
+                    <span className={`text-[14px] font-serif font-bold ${dca > 0 ? 'text-[#7c3aed]' : 'text-warm-gray-400'}`}>{dca > 0 ? `- ${fmt(dca)} 元` : '尚未設定'}</span>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-2">
+                    <span className="text-[13px] font-medium text-warm-gray-500 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-warm-gray-300" />閒置結餘 (尚未配置)</span>
+                    <span className={`text-[14px] font-serif font-bold ${idle>=0?'text-warm-gray-500':'text-rose-500'}`}>{idle>=0 ? `${fmt(idle)} 元` : `⚠️ 超支 ${fmt(Math.abs(idle))} 元`}</span>
+                  </div>
+                </div>
+
+                {/* 理財動能卡 */}
+                <div className="bg-[#f5f3ff] border border-[#d8b4fe] rounded-2xl p-5 mt-2 flex flex-col md:flex-row items-center justify-between gap-5 relative overflow-hidden shadow-sm">
+                  <div className="absolute top-0 right-0 p-4 opacity-5 text-[80px] -mt-6">📈</div>
+                  <div className="flex items-center gap-4 relative z-10 w-full">
+                    <div className="text-[28px] shrink-0">📈</div>
+                    <div className="flex-1 text-left">
+                      <div className="text-[13px] font-bold text-[#7c3aed] mb-1">理財動能</div>
+                      <div className="text-[12px] text-[#6d28d9] leading-relaxed">{momTxt}</div>
+                    </div>
+                    <div className="text-[26px] font-serif font-bold text-[#7c3aed] tracking-tight whitespace-nowrap shrink-0">{momPct}</div>
+                  </div>
                 </div>
               </div>
-              
             </div>
-          </div>
+          )}
 
-          <button onClick={() => setStep(1)} className="w-full bg-teal-base text-white border border-teal-base py-5 rounded-2xl text-[14px] font-bold tracking-widest uppercase cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2 shadow-md">
-            產生健檢報告 <Ic n="arrowRight" size={18} color="currentColor" />
+        </div>
+
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-warm-gray-200 px-5 py-4 flex gap-3 max-w-[430px] mx-auto z-40">
+          <button onClick={prevWizardStep} className="flex-1 bg-white text-warm-gray-700 border border-warm-gray-200 py-4 rounded-2xl text-[13px] font-bold tracking-widest uppercase cursor-pointer hover:bg-warm-gray-50 transition-colors">
+            上一步
+          </button>
+          <button onClick={nextWizardStep} className="flex-[2] bg-teal-base text-white border border-teal-base py-4 rounded-2xl text-[13px] font-bold tracking-widest uppercase cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2">
+            {wizardStep === WIZARD_TITLES.length - 1 ? '產生健檢報告' : '下一步'} <Ic n="arrowRight" size={16} color="currentColor" />
           </button>
         </div>
       </div>
     );
   }
 
-  // --- STEP 1: REPORT ---
+  // --- 健檢結果（screen === "report"，維持單頁滑動閱讀，不拆步驟） ---
   return (
     <div className="min-h-[100dvh] bg-warm-gray-50 flex flex-col items-center pb-20 relative">
       <div className="bg-white border-b border-warm-gray-200 w-full pt-12 pb-6 px-6 sticky top-0 z-30 shrink-0 shadow-sm">
@@ -426,6 +489,18 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
       </div>
 
       <div className="px-5 w-full max-w-sm mx-auto relative z-10 pt-6 flex flex-col gap-6">
+
+        {isDemo && (
+          <div className="bg-[#0369a1] text-white p-4 rounded-2xl flex flex-col gap-3 shadow-sm">
+            <div className="text-[12px] font-medium leading-relaxed">
+              <span className="bg-white/20 px-2 py-0.5 rounded text-[11px] font-bold tracking-widest mr-2 uppercase">範例報告</span>
+              以下顯示的是「月薪 8 萬」的示例數據，不是您的真實狀況。
+            </div>
+            <button onClick={startReal} className="bg-white text-[#0284c7] font-bold text-[12px] py-2.5 px-4 rounded-xl shadow-sm text-center tracking-widest uppercase cursor-pointer hover:bg-cyan-50">
+              填入我的數字，產生真實報告
+            </button>
+          </div>
+        )}
 
         {/* Floating / Hero Score */}
         <div className="bg-white border border-warm-gray-200 rounded-3xl p-8 flex flex-col items-center text-center shadow-md relative overflow-hidden">
