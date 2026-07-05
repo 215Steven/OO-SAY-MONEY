@@ -9,6 +9,7 @@ import {
   applyRichMenuAreaUpdates,
 } from "./richmenu.js";
 import { RICHMENU_ADMIN_HTML } from "./richmenuAdminHtml.js";
+import { isValidQuizType, pushQuizResultMessage } from "./quiz.js";
 
 export const app = express();
 
@@ -265,6 +266,28 @@ app.post("/api/newsletter", async (req: Request, res: Response) => {
     res.json({ status: "ok" });
   } catch (error) {
     serverError(res, "/api/newsletter", error);
+  }
+});
+
+// ---------------------------------------------------------------------------
+// 3c. 測驗結果回傳到 LINE 對話（推播 Flex Message，見 lib/quiz.ts）
+// ---------------------------------------------------------------------------
+app.post("/api/quiz-result", async (req: Request, res: Response) => {
+  try {
+    const userId = await requireUser(req, res);
+    if (!userId) return;
+
+    const { winner, subType } = req.body || {};
+    if (!isValidQuizType(winner)) {
+      res.status(400).json({ error: "winner 參數不正確" });
+      return;
+    }
+    const validSub = isValidQuizType(subType) ? subType : null;
+
+    const sent = await pushQuizResultMessage(userId, winner, validSub);
+    res.json({ status: "ok", sent });
+  } catch (error) {
+    serverError(res, "/api/quiz-result", error);
   }
 });
 
