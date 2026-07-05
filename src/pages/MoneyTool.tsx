@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Ic } from "@/src/components/Icons";
 import { InputBox } from "@/src/components/ui/InputBox";
 import { motion } from "motion/react";
@@ -37,16 +37,58 @@ const EMPTY_DATA: MoneyForm = {
 };
 const WIZARD_TITLES = ["資產與負債", "每月收入", "每月支出", "定期定額與總覽"];
 
+// 草稿只在「真實填寫」流程中自動存到本機（demo 資料不需要），
+// 讓使用者填到一半離開，回來還能接著填，避免長表單的中途流失。
+const DRAFT_KEY = "oosaymoney_moneytool_draft_v1";
+function loadDraft(): { data: MoneyForm; wizardStep: number } | null {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || !parsed.data) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+function clearDraft() {
+  try { localStorage.removeItem(DRAFT_KEY); } catch {}
+}
+
+// 「萬」單位的資產／負債欄位，若填入數字大到不合理（例如把「元」打成「萬」），
+// 提醒使用者確認單位，避免算出離譜的健檢結果卻沒發現。
+const WAN_FIELDS: Array<{ key: keyof MoneyForm; label: string }> = [
+  { key: "a_cash", label: "現金存款" },
+  { key: "a_invest", label: "投資部位" },
+  { key: "a_property", label: "房地產估值" },
+  { key: "l_mortgage", label: "房貸餘額" },
+  { key: "l_other", label: "其他負債" },
+];
+const isImplausibleWan = (v: number | string) => {
+  const n = Number(v);
+  return Number.isFinite(n) && n > 100000;
+};
+
 export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
   // screen：choice（先選看範例還是自己填）→ wizard（分 4 步填寫）→ report（健檢結果，維持單頁滑動）
   const [screen, setScreen] = useState<"choice" | "wizard" | "report">("choice");
   const [wizardStep, setWizardStep] = useState(0); // 0~3，共 4 步
   const [isDemo, setIsDemo] = useState(false);
   const [data, setData] = useState<MoneyForm>(EMPTY_DATA);
+  const [hasDraft, setHasDraft] = useState<boolean>(() => !!loadDraft());
 
   const set = (k: string, v: string) => {
     setData(d => ({ ...d, [k]: v }));
   };
+
+  // 進入 wizard 且非 demo 時，每次資料變動就同步存一份草稿到本機
+  useEffect(() => {
+    if (screen !== "wizard" || isDemo) return;
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ data, wizardStep }));
+      setHasDraft(true);
+    } catch {}
+  }, [data, wizardStep, screen, isDemo]);
 
   const startDemo = () => {
     setIsDemo(true);
@@ -54,14 +96,29 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
     setScreen("report");
   };
   const startReal = () => {
+    clearDraft();
+    setHasDraft(false);
     setIsDemo(false);
     setData(EMPTY_DATA);
     setWizardStep(0);
     setScreen("wizard");
   };
+  const continueDraft = () => {
+    const draft = loadDraft();
+    if (!draft) return;
+    setIsDemo(false);
+    setData(draft.data);
+    setWizardStep(draft.wizardStep || 0);
+    setScreen("wizard");
+  };
   const nextWizardStep = () => {
     window.scrollTo(0, 0);
-    if (wizardStep >= WIZARD_TITLES.length - 1) { setScreen("report"); return; }
+    if (wizardStep >= WIZARD_TITLES.length - 1) {
+      clearDraft();
+      setHasDraft(false);
+      setScreen("report");
+      return;
+    }
     setWizardStep(s => s + 1);
   };
   const prevWizardStep = () => {
@@ -79,6 +136,14 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
   const totalAssets = cash + invest + property;
   const totalLiab = mortgage + lOther;
   const netWorth = totalAssets - totalLiab;
+
+  // 資料填寫完整度：共 12 項欄位，空白欄位計算時視為 0，
+  // 讓使用者知道報告的精準度跟自己填了多少有關
+  const TOTAL_FIELDS = 12;
+  const filledFieldsCount = Object.values(data).filter(v => v !== "" && v !== null && v !== undefined).length;
+
+  // 資產／負債欄位若出現不合理的大數字，提醒可能把「元」誤填成「萬」
+  const wanWarnFields = WAN_FIELDS.filter(f => isImplausibleWan(data[f.key]));
 
   const active = Number(data.i_active) || 0;
   const passive = Number(data.i_passive) || 0;
@@ -211,7 +276,10 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
       note: (v:any) => v <= 40 ? '負債比健康，財務彈性佳' : v <= 60 ? `負債比 ${v}%，中等，留意還款壓力` : `負債比 ${v}%，偏高，建議優先降低`,
     },
     {
-      name: '投資比例', desc: '投資資產 / 總資產，建議 20% 以上',
+      name: '投資比例',
+      desc: property > 0
+        ? '投資資產 / 總資產，建議 20% 以上（房地產計入總資產，但不計入投資部位，有房產者數值會偏低）'
+        : '投資資產 / 總資產，建議 20% 以上',
       val: Math.round(investRatio * 100), format: (v:any) => v + '%', target: 20, ok: 20, warn: 10, isReverse: false,
       note: (v:any) => v >= 20 ? '投資比例良好，複利累積中' : v >= 10 ? `投資比 ${v}%，尚可，逐步提高` : v === 0 ? '資金全在現金，複利未啟動' : `投資比 ${v}%，建議啟動配置`,
     },
@@ -268,9 +336,12 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
     `📊 我的財務健檢｜OO SAY MONEY`,
     `━━━━━━━━━━━━━━━`,
     `整體評分：${score} 分（${status.replace(/^[^\s]+\s/, '')}）`,
+    `淨資產：${fmt(netWorth)} 萬（總資產 ${fmt(totalAssets)} 萬－總負債 ${fmt(totalLiab)} 萬）`,
+    `　現金 ${fmt(cash)} 萬｜投資 ${fmt(invest)} 萬｜房地產 ${fmt(property)} 萬`,
     `主動收入：${fmt(active)} 元／月`,
-    `被動收入：${fmt(passive)} 元／月`,
-    `被動收入覆蓋率：${passivePct}%`,
+    `被動收入：${fmt(passive)} 元／月（覆蓋固定支出 ${passivePct}%）`,
+    `每月固定支出：${fmt(fixedExp)} 元`,
+    `每月定期定額：${fmt(dca)} 元`,
     `緊急預備金：${Math.round(efMonths*10)/10} 個月`,
     `負債比：${Math.round(liabRatio*100)}%`,
     `投資比例：${Math.round(investRatio*100)}%`,
@@ -295,8 +366,13 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
           <p className="text-[13px] text-warm-gray-800/80 tracking-wide font-normal">分 4 個步驟填入大概數字，就能產生個人化財務健檢報告。<br/>估算即可，不需要精確數字。</p>
 
           <div className="w-full flex flex-col gap-3 mt-2">
+            {hasDraft && (
+              <button onClick={continueDraft} className="w-full bg-cyan-soft/40 text-teal-base border border-teal-soft py-4 rounded-2xl text-[13px] font-bold tracking-widest cursor-pointer hover:bg-cyan-soft/60 transition-colors flex items-center justify-center gap-2">
+                繼續上次填到一半的健檢 <Ic n="arrowRight" size={16} color="currentColor" />
+              </button>
+            )}
             <button onClick={startReal} className="w-full bg-teal-base text-white border border-teal-base py-5 rounded-2xl text-[14px] font-bold tracking-widest uppercase cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2 shadow-md">
-              開始填寫我的健檢 <Ic n="arrowRight" size={18} color="currentColor" />
+              {hasDraft ? "重新開始填寫" : "開始填寫我的健檢"} <Ic n="arrowRight" size={18} color="currentColor" />
             </button>
             <button onClick={startDemo} className="w-full bg-white text-warm-gray-700 border border-warm-gray-200 py-4 rounded-2xl text-[13px] font-medium tracking-widest cursor-pointer hover:bg-warm-gray-100 transition-colors">
               先看看範例報告長什麼樣子
@@ -357,6 +433,12 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
                     <div className={`text-[18px] font-serif font-bold ${netWorth>=0?'text-teal-base':'text-rose-500'}`}>{fmt(netWorth)}<span className="text-[11px] font-normal ml-1">萬</span></div>
                   </div>
                 </div>
+
+                {wanWarnFields.length > 0 && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-[11px] text-amber-800 leading-relaxed">
+                    ⚠️「{wanWarnFields.map(f => f.label).join('、')}」填入的數字看起來非常大，這裡的單位是「萬元」，是否不小心把「元」當成「萬」填了？請確認一下。
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -509,12 +591,38 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
             {score}
           </div>
           <div className="text-[11px] text-warm-gray-500 font-medium tracking-widest mb-6 border-b border-warm-gray-100 pb-4">估算區間 {Math.max(0,score-8)} - {Math.min(100,score+8)}</div>
-          
+
           <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full font-bold text-[13px] tracking-widest border ${borderClass} ${bgClass} ${colorClass} mb-2`}>
             {status}
           </div>
           <div className="text-[12px] text-warm-gray-600 font-normal tracking-wide leading-relaxed">{sub}</div>
+
+          <div className="text-[10px] text-warm-gray-400 font-normal tracking-wide leading-relaxed mt-4 pt-4 border-t border-warm-gray-100 w-full">
+            評分由「收支比、緊急預備金、負債比、投資比例」四項加權估算，僅供初步參考，不構成正式財務或投資建議。
+          </div>
         </div>
+
+        {/* 資產總覽 */}
+        <div className="bg-white border border-warm-gray-200 rounded-2xl p-5 shadow-sm grid grid-cols-3 gap-2 text-center">
+          <div>
+            <div className="text-[10px] text-warm-gray-500 font-medium mb-1 tracking-wide">總資產</div>
+            <div className="text-[15px] font-serif font-bold text-warm-gray-800">{fmt(totalAssets)}<span className="text-[10px] font-normal ml-0.5">萬</span></div>
+          </div>
+          <div className="border-x border-warm-gray-100">
+            <div className="text-[10px] text-warm-gray-500 font-medium mb-1 tracking-wide">總負債</div>
+            <div className="text-[15px] font-serif font-bold text-warm-gray-800">{fmt(totalLiab)}<span className="text-[10px] font-normal ml-0.5">萬</span></div>
+          </div>
+          <div>
+            <div className="text-[10px] text-warm-gray-500 font-medium mb-1 tracking-wide">淨資產</div>
+            <div className={`text-[15px] font-serif font-bold ${netWorth>=0?'text-teal-base':'text-rose-500'}`}>{fmt(netWorth)}<span className="text-[10px] font-normal ml-0.5">萬</span></div>
+          </div>
+        </div>
+
+        {!isDemo && filledFieldsCount < TOTAL_FIELDS && (
+          <div className="bg-warm-gray-100 border border-warm-gray-200 rounded-xl px-4 py-3 text-[11px] text-warm-gray-600 leading-relaxed">
+            已填寫 {filledFieldsCount} / {TOTAL_FIELDS} 項資料，其餘欄位計算時以 0 處理，實際狀況可能有落差。
+          </div>
+        )}
 
         {/* 弱點提示 */}
         <div className={`border ${isWeakGood ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-[#fffdf5]'} rounded-xl p-5 flex items-start gap-4 shadow-sm`}>
