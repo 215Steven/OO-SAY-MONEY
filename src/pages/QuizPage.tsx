@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Ic } from "@/src/components/Icons";
 import { useLocation } from "wouter";
 import liff from "@line/liff";
+import { authHeaders } from "@/src/constants/liff";
 
 // 測驗的 LIFF 永久連結（分享給朋友用）
 const QUIZ_LIFF_URL = "https://liff.line.me/2007659354-EofSbRGu";
@@ -230,12 +231,28 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
   const [step, setStep] = useState(0); // 0: welcome, 1-8: questions, 9: loading, 10: result
   const [answers, setAnswers] = useState<string[]>([]);
   const [loadMsg, setLoadMsg] = useState(0);
+  // 從 LINE 推播的「查看完整結果」連結（?r=guard-plan）打開時，
+  // 直接還原當時的結果，不必重新作答一次。
+  const [resultOverride, setResultOverride] = useState<{ winner: string; subType?: string } | null>(null);
+  const sentResultRef = useRef(false);
 
   const MSGS = [
     { t: "正在分析您的財務性格…", s: "根據您的 8 個選擇，\n我們正在比對最適合的方向" },
     { t: "分析完成", s: "正在為您準備個人化洞察…" },
     { t: "即將揭曉！", s: "您的財務性格結果出爐了" }
   ];
+
+  // 讀取分享／推播連結帶入的結果（?r=主屬性 或 ?r=主屬性-副屬性）
+  useEffect(() => {
+    const r = new URLSearchParams(window.location.search).get("r");
+    if (!r) return;
+    const [w, s] = r.split("-");
+    if (TYPES[w]) {
+      sentResultRef.current = true; // 這是回看結果，不是剛完成測驗，不需要再推播一次
+      setResultOverride({ winner: w, subType: TYPES[s] ? s : undefined });
+      setStep(10);
+    }
+  }, []);
 
   // Auto-progress loading screen
   useEffect(() => {
@@ -255,6 +272,22 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
     }
   }, [step]);
 
+  // 測驗真正完成、進到結果頁時，把結果推播到使用者與官方帳號的對話中
+  // （只做一次；若是透過分享連結直接開啟結果頁，上面已把 ref 標記過，不會重複推播）
+  useEffect(() => {
+    if (step !== 10 || sentResultRef.current) return;
+    sentResultRef.current = true;
+    const { winner, subType } = calculateResult();
+    fetch("/api/quiz-result", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+      body: JSON.stringify({ winner, subType: subType || null }),
+    }).catch(() => {
+      // 推播失敗不影響結果頁顯示，安靜失敗即可
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
+
   const handleSelect = (idx: number, type: string) => {
     const newAns = [...answers];
     newAns[idx] = type;
@@ -264,6 +297,12 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
 
   const calculateResult = () => {
     const counts: Record<string, number> = { guard: 0, enjoy: 0, anxiety: 0, plan: 0 };
+
+    // 透過分享／推播連結直接開啟結果頁：沒有真實作答紀錄，直接還原當時的結果
+    if (resultOverride) {
+      return { winner: resultOverride.winner, subType: resultOverride.subType, counts };
+    }
+
     answers.forEach(t => { if (t) counts[t]++; });
 
     let sorted = Object.keys(counts).sort((a,b) => counts[b] - counts[a]);
@@ -461,26 +500,29 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
               <div className="text-[14.5px] leading-[1.75] text-warm-gray-800">{main.nextStep}</div>
             </div>
 
-            <div className="bg-white rounded-[14px] p-5 mb-2.5 shadow-[0_1px_8px_rgba(0,0,0,0.05)] border border-black/5">
-              <div className="text-[11px] font-extrabold text-warm-gray-400 tracking-[0.1em] uppercase mb-2.5">你的性格分佈</div>
-              <div className="mt-1 flex flex-col gap-2">
-                {Object.keys(barColors).map(k => (
-                  <div key={k} className="flex items-center gap-2.5">
-                    <div className="text-[11.5px] text-warm-gray-800 font-bold w-[56px] shrink-0 tracking-tight">{barLabels[k]}</div>
-                    <div className="flex-1 h-[7px] bg-warm-gray-200 rounded-full overflow-hidden">
-                      <motion.div 
-                        initial={{ width: 0 }} 
-                        animate={{ width: `${pctMap[k] || 0}%` }} 
-                        transition={{ duration: 1.1, ease: 'easeOut', delay: 0.3 }}
-                        className="h-full rounded-full" 
-                        style={{ backgroundColor: k === winner ? barColors[k] : `${barColors[k]}88` }} 
-                      />
+            {/* 從分享／推播連結直接開啟結果頁時沒有真實作答紀錄，性格分佈圖沒有意義，先隱藏 */}
+            {!resultOverride && (
+              <div className="bg-white rounded-[14px] p-5 mb-2.5 shadow-[0_1px_8px_rgba(0,0,0,0.05)] border border-black/5">
+                <div className="text-[11px] font-extrabold text-warm-gray-400 tracking-[0.1em] uppercase mb-2.5">你的性格分佈</div>
+                <div className="mt-1 flex flex-col gap-2">
+                  {Object.keys(barColors).map(k => (
+                    <div key={k} className="flex items-center gap-2.5">
+                      <div className="text-[11.5px] text-warm-gray-800 font-bold w-[56px] shrink-0 tracking-tight">{barLabels[k]}</div>
+                      <div className="flex-1 h-[7px] bg-warm-gray-200 rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${pctMap[k] || 0}%` }}
+                          transition={{ duration: 1.1, ease: 'easeOut', delay: 0.3 }}
+                          className="h-full rounded-full"
+                          style={{ backgroundColor: k === winner ? barColors[k] : `${barColors[k]}88` }}
+                        />
+                      </div>
+                      <div className="text-[12px] text-warm-gray-500 font-bold w-[32px] text-right shrink-0">{pctMap[k] || 0}%</div>
                     </div>
-                    <div className="text-[12px] text-warm-gray-500 font-bold w-[32px] text-right shrink-0">{pctMap[k] || 0}%</div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* CTA Zone */}
@@ -490,9 +532,14 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
               
               <div className="text-[14px] text-teal-soft/90 font-bold mb-2 tracking-wide relative z-10">恭喜你完成測驗</div>
               <h3 className="text-[16px] font-serif font-bold text-[#FFD166] mb-3 tracking-wide relative z-10">你的結果，可以變成一個實際的計劃</h3>
-              <p className="text-[14px] text-white/90 font-normal mb-8 leading-relaxed relative z-10">
+              <p className="text-[14px] text-white/90 font-normal mb-3 leading-relaxed relative z-10">
                 {main.ctaNote}
               </p>
+              {!resultOverride && (
+                <p className="text-[12px] text-teal-soft/80 font-normal mb-5 leading-relaxed relative z-10 flex items-center gap-1.5">
+                  <Ic n="check" size={12} color="currentColor" /> 結果已同步傳送到你與我們的 LINE 對話
+                </p>
+              )}
               
               <div className="w-16 h-[1px] bg-white/20 mb-8 relative z-10" />
 
@@ -527,7 +574,14 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
             </div>
 
             <div className="text-center mt-6">
-              <button onClick={() => setStep(0)} className="text-warm-gray-400 text-[12px] underline font-normal hover:text-warm-gray-600 transition-colors">
+              <button onClick={() => {
+                // 清掉分享連結帶入的舊結果與網址參數，重新測驗才會用新答案算結果、也才會再次推播
+                setResultOverride(null);
+                sentResultRef.current = false;
+                setAnswers([]);
+                window.history.replaceState({}, "", window.location.pathname);
+                setStep(0);
+              }} className="text-warm-gray-400 text-[12px] underline font-normal hover:text-warm-gray-600 transition-colors">
                 重新測驗
               </button>
             </div>
