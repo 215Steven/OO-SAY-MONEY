@@ -8,6 +8,11 @@ import { authHeaders } from "@/src/constants/liff";
 // 測驗的 LIFF 永久連結（分享給朋友用）
 const QUIZ_LIFF_URL = "https://liff.line.me/2007659354-EofSbRGu";
 
+// 做完測驗時送出這句話換免費的 replyToken，用來觸發後端回覆結果卡
+// （不計入官方帳號每月推播則數）。這個字串同時寫死在 lib/quiz.ts，
+// 兩邊要保持一致。
+const QUIZ_RESULT_TRIGGER_TEXT = "我做完了 90 秒財務性格測驗！";
+
 /** 分享測驗結果給朋友（LINE 內用 shareTargetPicker，其他環境複製連結） */
 async function shareQuizResult(mainName: string, subName: string, color: string) {
   const flexMessage = {
@@ -272,19 +277,44 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
     }
   }, [step]);
 
-  // 測驗真正完成、進到結果頁時，把結果推播到使用者與官方帳號的對話中
-  // （只做一次；若是透過分享連結直接開啟結果頁，上面已把 ref 標記過，不會重複推播）
+  // 測驗真正完成、進到結果頁時，把結果送回使用者與官方帳號的對話中
+  // （只做一次；若是透過分享連結直接開啟結果頁，上面已把 ref 標記過，不會重複觸發）
+  //
+  // 優先順序：
+  // 1. 先呼叫後端把結果暫存起來（不論哪種送法都需要）
+  // 2. 嘗試 liff.sendMessages() 送出觸發句：這是免費的，但只有 LIFF 是從
+  //    一對一聊天室情境（utou，例如點選單開啟）才可用
+  // 3. 上面失敗或不支援時，退回會計入官方帳號每月推播則數的 push，
+  //    確保無論如何使用者都拿得到結果
   useEffect(() => {
     if (step !== 10 || sentResultRef.current) return;
     sentResultRef.current = true;
     const { winner, subType } = calculateResult();
-    fetch("/api/quiz-result", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...authHeaders() },
-      body: JSON.stringify({ winner, subType: subType || null }),
-    }).catch(() => {
-      // 推播失敗不影響結果頁顯示，安靜失敗即可
-    });
+    const body = { winner, subType: subType || null };
+
+    const postQuizResult = (extra: Record<string, unknown>) =>
+      fetch("/api/quiz-result", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ ...body, ...extra }),
+      }).catch(() => {
+        // 失敗不影響結果頁顯示，安靜失敗即可
+      });
+
+    (async () => {
+      await postQuizResult({ wantPush: false }); // 先暫存，讓等一下的免費 reply 查得到
+
+      try {
+        const ctx = liff.isInClient() && typeof (liff as any).getContext === "function"
+          ? (liff as any).getContext()
+          : null;
+        if (ctx?.type !== "utou") throw new Error("非一對一聊天室情境，跳過免費管道");
+        await liff.sendMessages([{ type: "text", text: QUIZ_RESULT_TRIGGER_TEXT }]);
+      } catch {
+        // 免費管道不可用：退回付費 push，確保結果一定送得到
+        await postQuizResult({ wantPush: true });
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
 
