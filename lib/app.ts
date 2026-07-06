@@ -364,7 +364,49 @@ app.post("/api/reservations", async (req: Request, res: Response) => {
 
 // ---------------------------------------------------------------------------
 // 5. 查詢自己的保單（身分一律以 token 為準）
+//
+// Notion「保單」資料庫實際欄位（曾用暫時性除錯端點確認過，非猜測）：
+// 每一列代表「一位家庭成員」，不是一張保單。核心欄位：
+//   姓名（title，格式like「Steven - 本人」）、成員姓名（該成員本名）、
+//   稱謂（本人／配偶／子女）、年齡、負責顧問、最後更新、LINE UserID。
+// 另外四大類保障，各自有「狀態／說明／備註」三欄：
+//   壽險狀態／壽險說明／壽險備註
+//   醫療狀態／醫療說明／醫療備註
+//   投資狀態／投資說明／投資備註（＋投資教育_標題）
+//   產險狀態／產險說明／產險_備註（注意備註欄位名稱底線位置不一致，是資料庫既有欄位，不可自行更名）
 // ---------------------------------------------------------------------------
+const INSURANCE_CATEGORIES = [
+  { key: "life", label: "壽險", statusProp: "壽險狀態", descProp: "壽險說明", noteProp: "壽險備註" },
+  { key: "medical", label: "醫療", statusProp: "醫療狀態", descProp: "醫療說明", noteProp: "醫療備註" },
+  { key: "invest", label: "投資", statusProp: "投資狀態", descProp: "投資說明", noteProp: "投資備註" },
+  { key: "property", label: "產險", statusProp: "產險狀態", descProp: "產險說明", noteProp: "產險_備註" },
+] as const;
+
+function richText(page: any, prop: string): string {
+  return page.properties?.[prop]?.rich_text?.[0]?.plain_text || "";
+}
+function selectValue(page: any, prop: string): string {
+  return page.properties?.[prop]?.select?.name || "";
+}
+
+function mapInsuranceRow(page: any) {
+  return {
+    id: page.id,
+    name: richText(page, "成員姓名") || page.properties?.["姓名"]?.title?.[0]?.plain_text || "",
+    relation: selectValue(page, "稱謂"),
+    age: page.properties?.["年齡"]?.number ?? null,
+    advisor: richText(page, "負責顧問"),
+    lastUpdated: page.properties?.["最後更新"]?.date?.start || "",
+    categories: INSURANCE_CATEGORIES.map((c) => ({
+      key: c.key,
+      label: c.label,
+      status: selectValue(page, c.statusProp),
+      desc: richText(page, c.descProp),
+      note: richText(page, c.noteProp),
+    })),
+  };
+}
+
 app.get("/api/insurance", async (req: Request, res: Response) => {
   try {
     const userId = await requireUser(req, res);
@@ -378,15 +420,12 @@ app.get("/api/insurance", async (req: Request, res: Response) => {
     const dataSourceId = await resolveDataSourceId(CONFIG.dbInsurance);
     const response = await notion.dataSources.query({
       data_source_id: dataSourceId,
-      filter: { property: "LineUserID", rich_text: { equals: userId } },
+      filter: { property: "LINE UserID", rich_text: { equals: userId } },
     });
 
-    const data = response.results.map((page: any) => ({
-      id: page.id,
-      policyName: page.properties["PolicyName"]?.title?.[0]?.text?.content || "",
-      coverage: page.properties["Coverage"]?.rich_text?.[0]?.text?.content || "",
-      status: page.properties["Status"]?.select?.name || "",
-    }));
+    const data = response.results
+      .filter((p: any) => !p.archived && !p.in_trash)
+      .map(mapInsuranceRow);
 
     res.json({ status: "ok", data });
   } catch (error) {
@@ -394,49 +433,77 @@ app.get("/api/insurance", async (req: Request, res: Response) => {
   }
 });
 
-// ---------------------------------------------------------------------------
-// 5b. 暫時性除錯端點：查詢指定 Notion 資料庫的實際欄位名稱與型別
-// （需 ADMIN_TOKEN），確認要接「我的保障」核身功能前，資料庫實際有哪些欄位可用。
-// ---------------------------------------------------------------------------
-app.get("/api/admin/db-schema", async (req: Request, res: Response) => {
+/** 確保「保單」資料庫有生日／手機欄位，沒有就自動建立（供核身比對與補寫用） */
+async function ensureInsuranceIdentityFields(dataSourceId: string) {
   try {
-    if (!requireAdmin(req, res)) return;
-    const key = String(req.query.db || "insurance");
-    const dbId =
-      key === "members"
-        ? CONFIG.dbMembers
-        : key === "reservations"
-        ? CONFIG.dbReservations
-        : CONFIG.dbInsurance;
-    const dataSourceId = await resolveDataSourceId(dbId);
-    const ds: any = await (notion as any).dataSources.retrieve({ data_source_id: dataSourceId });
-    const properties = Object.entries(ds.properties || {}).map(([name, def]: [string, any]) => ({
-      name,
-      type: def.type,
-    }));
+    await (notion as any).dataSources.update({
+      data_source_id: dataSourceId,
+      properties: { 生日: { rich_text: {} }, 手機: { rich_text: {} } },
+    });
+  } catch (e: any) {
+    console.warn("確保保單資料庫生日／手機欄位失敗（可能已存在或權限不足）：", e?.message || e);
+  }
+}
 
-    let sample: any[] | undefined;
-    if (req.query.sample) {
-      const resp: any = await notion.dataSources.query({ data_source_id: dataSourceId, page_size: 5 });
-      sample = resp.results.map((page: any) => {
-        const out: Record<string, any> = { id: page.id };
-        for (const [name, val] of Object.entries(page.properties || {})) {
-          const v: any = val;
-          if (v.type === "title") out[name] = v.title?.[0]?.plain_text ?? "";
-          else if (v.type === "rich_text") out[name] = v.rich_text?.[0]?.plain_text ?? "";
-          else if (v.type === "select") out[name] = v.select?.name ?? null;
-          else if (v.type === "number") out[name] = v.number ?? null;
-          else if (v.type === "date") out[name] = v.date?.start ?? null;
-          else if (v.type === "checkbox") out[name] = v.checkbox;
-          else out[name] = `(${v.type})`;
-        }
-        return out;
-      });
+// 手機號碼比對時忽略空白、破折號等格式差異，只比對數字本身
+function normalizePhone(v: string): string {
+  return (v || "").replace(/\D/g, "");
+}
+
+// ---------------------------------------------------------------------------
+// 5b. 核身比對：使用者填入姓名／生日／手機，找不到自己保單資料時使用。
+// 核對成功後把 LINE UserID 補寫回對應保單資料（同時補上生日／手機，若原本是空的），
+// 之後就能直接用 LINE UserID 查詢，不用再重複核身。
+// ---------------------------------------------------------------------------
+app.post("/api/insurance/verify", async (req: Request, res: Response) => {
+  try {
+    const userId = await requireUser(req, res);
+    if (!userId) return;
+
+    const name = String(req.body?.name || "").trim();
+    const birthday = String(req.body?.birthday || "").trim();
+    const phone = String(req.body?.phone || "").trim();
+    if (!name || !birthday || !phone) {
+      res.status(400).json({ error: "請填寫姓名、生日與手機" });
+      return;
     }
 
-    res.json({ status: "ok", db: key, properties, sample });
+    if (!CONFIG.notionApiKey) {
+      res.json({ status: "ok", matched: 0 });
+      return;
+    }
+
+    const dataSourceId = await resolveDataSourceId(CONFIG.dbInsurance);
+    await ensureInsuranceIdentityFields(dataSourceId);
+
+    const response = await notion.dataSources.query({
+      data_source_id: dataSourceId,
+      filter: { property: "成員姓名", rich_text: { equals: name } },
+    });
+
+    const normalizedPhone = normalizePhone(phone);
+    const candidates = response.results.filter((p: any) => {
+      if (p.archived || p.in_trash) return false;
+      const existingBirthday = richText(p, "生日");
+      const existingPhone = richText(p, "手機");
+      // 該筆資料若已填生日／手機，必須完全比對相符；若原本是空的，先允許核對通過
+      // （代表顧問尚未補齊資料），核對成功後會順便補寫這兩個欄位。
+      const birthdayOk = !existingBirthday || existingBirthday === birthday;
+      const phoneOk = !existingPhone || normalizePhone(existingPhone) === normalizedPhone;
+      return birthdayOk && phoneOk;
+    });
+
+    for (const page of candidates as any[]) {
+      const props: any = {};
+      props["LINE UserID"] = { rich_text: [{ text: { content: userId } }] };
+      if (!richText(page, "生日")) props["生日"] = { rich_text: [{ text: { content: birthday } }] };
+      if (!richText(page, "手機")) props["手機"] = { rich_text: [{ text: { content: phone } }] };
+      await notion.pages.update({ page_id: page.id, properties: props });
+    }
+
+    res.json({ status: "ok", matched: candidates.length });
   } catch (error) {
-    serverError(res, "/api/admin/db-schema", error);
+    serverError(res, "/api/insurance/verify", error);
   }
 });
 
