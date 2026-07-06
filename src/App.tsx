@@ -60,6 +60,7 @@ const MoneyTool = lazyPage(() => import("@/src/pages/MoneyTool"), "MoneyTool");
 const TemplatePage = lazyPage(() => import("@/src/pages/TemplatePage"), "TemplatePage");
 const QuizPage = lazyPage(() => import("@/src/pages/QuizPage"), "QuizPage");
 const DefensePage = lazyPage(() => import("@/src/pages/DefensePage"), "DefensePage");
+const ProtectionPage = lazyPage(() => import("@/src/pages/ProtectionPage"), "ProtectionPage");
 const BlueprintPage = lazyPage(() => import("@/src/pages/BlueprintPage"), "BlueprintPage");
 const TermsPage = lazyPage(() => import("@/src/pages/TermsPage"), "TermsPage");
 
@@ -225,7 +226,7 @@ export default function MainApp() {
             <Route path="/tool">
               <PageTransition><MoneyTool onBack={goBack} onBook={() => navigate("/appointment")} /></PageTransition>
             </Route>
-            <Route path="/defense"><PageTransition><DefensePage onBack={goBack} role={role} /></PageTransition></Route>
+            <Route path="/defense"><PageTransition><DefensePage onBack={goBack} /></PageTransition></Route>
             <Route path="/blueprint"><PageTransition><BlueprintPage onBack={goBack} role={role} /></PageTransition></Route>
             <Route path="/inspire"><PageTransition><TemplatePage title="理財靈感" desc="知識與文章" onBack={goBack} /></PageTransition></Route>
             <Route path="/story">
@@ -235,7 +236,7 @@ export default function MainApp() {
             <Route path="/plan"><PageTransition><TemplatePage title="啟富計劃" desc="我的財務規劃" onBack={goBack} /></PageTransition></Route>
             <Route path="/notes"><PageTransition><TemplatePage title="理財筆記" desc="文章與資源" onBack={goBack} /></PageTransition></Route>
             <Route path="/value"><PageTransition><TemplatePage title="核心價值" desc="服務理念" onBack={goBack} /></PageTransition></Route>
-            <Route path="/protection"><PageTransition><TemplatePage title="我的保障" desc="保單管理" onBack={goBack} /></PageTransition></Route>
+            <Route path="/protection"><PageTransition><ProtectionPage onBack={goBack} /></PageTransition></Route>
             <Route path="/demo"><PageTransition><TemplatePage title="範例操作" desc="示範流程" onBack={goBack} /></PageTransition></Route>
             <Route path="/config"><PageTransition><TemplatePage title="多重配置" desc="資產配置方案" onBack={goBack} /></PageTransition></Route>
             <Route path="/about-us"><PageTransition><TemplatePage title="認識我們" desc="品牌介紹" onBack={goBack} /></PageTransition></Route>
