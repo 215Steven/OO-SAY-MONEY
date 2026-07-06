@@ -1,8 +1,6 @@
 import { Ic } from "@/src/components/Icons";
 import { motion, AnimatePresence } from "motion/react";
-import { useState, useEffect } from "react";
-import liff from '@line/liff';
-import { getLiffIdForPath, authHeaders } from "@/src/constants/liff";
+import { useState } from "react";
 
 const DEFENSE_SECTIONS = [
 
@@ -70,94 +68,19 @@ const WHY_STATS = [
   { num: "20年", text: "一張買錯的保單，二十年後可能讓你多花數十萬、卻什麼都沒保到" }
 ];
 
-const MOCK_CLIENT_DATA = {
-  name: "林小華",
-  advisor: "Steven & Annie",
-  updated: "2026/04/15",
-  members: [
-    {
-      name: "林小華",
-      label: "本人",
-      type: "adult",
-      coverage: [
-        { label: "壽險保障", detail: "足夠", status: "ok", note: "保額 1,000 萬" },
-        { label: "實支實付", detail: "缺口", status: "gap", note: "額度偏低，建議補強第二家" },
-        { label: "重大疾病", detail: "極缺", status: "none", note: "完全無保障，風險極高" },
-        { label: "車險/產險", detail: "未知", status: "unknown", note: "尚未匯入保單" }
-      ]
-    },
-    {
-      name: "王大明",
-      label: "配偶",
-      type: "adult",
-      coverage: [
-        { label: "壽險保障", detail: "需補足", status: "gap", note: "房貸增長，建議補強定期壽險" },
-        { label: "實支實付", detail: "足夠", status: "ok", note: "雙實支保障完整" },
-        { label: "重大疾病", detail: "足夠", status: "ok", note: "保額 200 萬" },
-      ]
-    },
-    {
-      name: "林小寶",
-      label: "子女",
-      type: "child",
-      age: 3,
-      coverage: [
-        { label: "實支實付", detail: "足夠", status: "ok", note: "新生兒保單完整" },
-        { label: "意外保障", detail: "足夠", status: "ok", note: "意外醫療完整" },
-      ]
-    }
-  ]
-};
-
-const STATUS_MAP: Record<string, { icon: string, textColor: string, bgClass: string, borderClass: string }> = {
-  ok: { icon: "✓", textColor: "text-emerald-600", bgClass: "bg-emerald-100", borderClass: "border-emerald-500" },
-  gap: { icon: "!", textColor: "text-amber-500", bgClass: "bg-amber-100", borderClass: "border-amber-400" },
-  none: { icon: "✕", textColor: "text-rose-500", bgClass: "bg-rose-100", borderClass: "border-rose-400" },
-  unknown: { icon: "?", textColor: "text-slate-400", bgClass: "bg-slate-200", borderClass: "border-slate-300" }
-};
-
-export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: string | null }) => {
+// 這頁是給所有人看的通用保險衛教內容，不涉及任何個人資料。
+// 若要查自己名下的實際保單，請到「我的保障」（/protection），
+// 那頁會依登入者身分抓 Notion 裡的真實保單資料。
+export const DefensePage = ({ onBack }: { onBack: () => void }) => {
   const [openSection, setOpenSection] = useState<string | null>("life");
-  const [activeMemberIdx, setActiveMemberIdx] = useState(0);
-
-  // Coverage data from Notion via lineUserId
-  const [coverageData, setCoverageData] = useState(null);
-  const [coverageLoading, setCoverageLoading] = useState(true);
-  const [lineUserId, setLineUserId] = useState('');
-
-  useEffect(() => {
-    const loadCoverage = async () => {
-      try {
-        const liffId = getLiffIdForPath();
-        if (liffId) {
-          await liff.init({ liffId });
-          if (liff.isLoggedIn()) {
-            const p = await liff.getProfile();
-            setLineUserId(p.userId || '');
-          }
-        }
-        // 身分由後端依 access token 驗證，只回傳自己的保單
-        const res = await fetch('/api/insurance', { headers: authHeaders() });
-        if (res.ok) setCoverageData(await res.json());
-      } catch (e: any) {
-        console.warn('Coverage fetch failed:', e.message);
-      } finally {
-        setCoverageLoading(false);
-      }
-    };
-    loadCoverage();
-  }, []);
 
   const toggleSection = (id: string) => {
     setOpenSection(prev => prev === id ? null : id);
   };
-  
-  const isClient = role === "client";
-  const activeMember = MOCK_CLIENT_DATA.members[activeMemberIdx];
 
   return (
     <div className="min-h-screen bg-warm-gray-50 font-sans pb-10">
-      
+
       <div className="pt-12 pb-10 px-6 relative z-10 w-full max-w-sm mx-auto border-b border-warm-gray-200 mb-8 shrink-0 bg-white">
 
 
@@ -171,91 +94,19 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
       </div>
 
       <div className="px-5 w-full max-w-sm mx-auto relative z-10">
-        
-        {isClient && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-            <div className="bg-teal-base p-6 text-white mb-8 rounded-2xl shadow-sm border border-transparent relative overflow-hidden shrink-0">
-               <div className="flex items-center gap-5 relative z-10">
-                 <div className="w-14 h-14 bg-white text-warm-gray-800 flex items-center justify-center font-serif font-bold text-[24px] shrink-0 border border-warm-gray-200 rounded-full">
-                   {MOCK_CLIENT_DATA.name.charAt(0)}
-                 </div>
-                 <div>
-                   <div className="font-serif font-bold text-[18px] tracking-wider">{MOCK_CLIENT_DATA.name}，你好 👋</div>
-                   <div className="text-[12px] text-warm-gray-200 mt-2 font-normal tracking-widest">家庭共 {MOCK_CLIENT_DATA.members.length} 位成員的保障狀況</div>
-                 </div>
-               </div>
-            </div>
 
-            <div className="text-[10px] font-medium text-warm-gray-800 tracking-[0.2em] mb-6 flex items-center justify-center gap-2 uppercase">
-               <span className="w-1.5 h-1.5 bg-teal-base rounded-full" />
-               家庭保障總覽
-               <span className="w-1.5 h-1.5 bg-teal-base rounded-full" />
-            </div>
-
-            <div className="flex gap-3 overflow-x-auto pb-4 mb-6 scrollbar-hide snap-x">
-              {MOCK_CLIENT_DATA.members.map((m, i) => (
-                 <button key={i} onClick={() => setActiveMemberIdx(i)}
-                    className={`flex items-center gap-3 px-4 py-3 whitespace-nowrap transition-colors border rounded-full snap-center cursor-pointer ${activeMemberIdx === i ? 'border-teal-base bg-teal-base text-white shadow-md' : 'border-warm-gray-200 bg-white text-warm-gray-600 hover:bg-warm-gray-50 shadow-sm'}`}
-                 >
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-serif font-bold transition-colors ${activeMemberIdx === i ? 'bg-white text-warm-gray-800' : 'bg-warm-gray-100 text-warm-gray-800'}`}>
-                       {m.name.charAt(0)}
-                    </div>
-                    <span className="text-[13px] tracking-widest">{m.label}</span>
-                    {m.type === 'child' && (
-                       <span className={`text-[11px] px-2 py-0.5 font-medium ml-1 ${activeMemberIdx === i ? 'bg-[#49405E] text-white' : 'bg-[#EAEAE6] text-warm-gray-800/80'}`}>{m.age}歲</span>
-                    )}
-                 </button>
-              ))}
-            </div>
-
-            <div className="bg-white p-6 border border-warm-gray-200 rounded-2xl shadow-sm relative overflow-hidden">
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                 {activeMember.coverage.map((item, i) => {
-                    const statusMap: Record<string, { icon: string, textColor: string, bgClass: string, borderClass: string }> = {
-                        ok: { icon: "✓", textColor: "text-warm-gray-800", bgClass: "bg-warm-gray-100", borderClass: "border-teal-base" },
-                        gap: { icon: "!", textColor: "text-warm-gray-600", bgClass: "bg-warm-gray-50", borderClass: "border-[#8B8A88]" },
-                        none: { icon: "✕", textColor: "text-warm-gray-800/80", bgClass: "bg-[#EAEAE6]", borderClass: "border-[#555]" },
-                        unknown: { icon: "?", textColor: "text-warm-gray-400", bgClass: "bg-white", borderClass: "border-warm-gray-200" }
-                    };
-                    const status = statusMap[item.status] || statusMap.unknown;
-                    return (
-                       <div key={i} className={`p-4 border-l-[3px] bg-warm-gray-50 ${status.borderClass}`}>
-                          <div className="text-[10px] font-medium text-warm-gray-600 mb-3 tracking-[0.2em] uppercase">{item.label}</div>
-                          <div className={`text-[13px] font-medium flex items-center gap-2 mb-3 tracking-wider ${status.textColor}`}>
-                            {item.detail}
-                          </div>
-                          {item.note && <div className="text-[12px] text-warm-gray-800/80 font-normal leading-loose tracking-wide">{item.note}</div>}
-                       </div>
-                    )
-                 })}
+        {/* Intro Notice */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
+           <div className="bg-white border border-warm-gray-200 p-10 text-center relative overflow-hidden rounded-2xl shadow-sm">
+              <div className="w-16 h-16 bg-warm-gray-100 flex items-center justify-center mx-auto mb-6 border border-warm-gray-200">
+                 <Ic n="user" size={24} color="#2D2D2A" />
               </div>
-              
-              <div className="flex flex-col gap-4 mt-2 border-t border-warm-gray-200 pt-6">
-                 <div className="flex items-center justify-between text-[12px] font-normal text-warm-gray-600 tracking-widest uppercase">
-                    <div className="flex items-center gap-2">負責顧問: <span className="text-warm-gray-800 font-medium">{MOCK_CLIENT_DATA.advisor}</span></div>
-                 </div>
-                 <div className="text-[10px] text-warm-gray-400 font-normal tracking-widest uppercase mt-2">
-                   最後更新: {MOCK_CLIENT_DATA.updated}
-                 </div>
+              <div className="text-[20px] font-serif font-bold text-warm-gray-800 mb-4 tracking-widest">了解你的保障缺口</div>
+              <div className="text-[13px] text-warm-gray-800/80 font-normal leading-loose max-w-[240px] mx-auto tracking-wide">
+                透過下方保險說明了解你可能缺少什麼，<br/>再預約免費諮詢讓我們幫你分析。
               </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Guest View Notice */}
-        {!isClient && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
-             <div className="bg-white border border-warm-gray-200 p-10 text-center relative overflow-hidden rounded-2xl shadow-sm">
-                <div className="w-16 h-16 bg-warm-gray-100 flex items-center justify-center mx-auto mb-6 border border-warm-gray-200">
-                   <Ic n="user" size={24} color="#2D2D2A" />
-                </div>
-                <div className="text-[20px] font-serif font-bold text-warm-gray-800 mb-4 tracking-widest">了解你的保障缺口</div>
-                <div className="text-[13px] text-warm-gray-800/80 font-normal leading-loose max-w-[240px] mx-auto tracking-wide">
-                  透過下方保險說明了解你可能缺少什麼，<br/>再預約免費諮詢讓我們幫你分析。
-                </div>
-             </div>
-          </motion.div>
-        )}
+           </div>
+        </motion.div>
 
         {/* Why matters section */}
         <div className="mb-12">
@@ -281,14 +132,14 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
             保險地圖
             <span className="w-1.5 h-1.5 bg-teal-base rounded-full" />
           </div>
-          
+
           <div className="flex flex-col gap-4">
             {DEFENSE_SECTIONS.map((section, i) => {
               const isOpen = openSection === section.id;
               return (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-                  key={section.id} 
+                  key={section.id}
                   className={`bg-white rounded-2xl transition-colors duration-300 overflow-hidden border ${isOpen ? 'border-teal-base' : 'border-warm-gray-200 hover:border-warm-gray-300'}`}
                 >
                   <div onClick={() => toggleSection(section.id)} className={`p-5 flex items-center justify-between cursor-pointer transition-colors ${isOpen ? 'bg-warm-gray-50' : 'hover:bg-warm-gray-50'}`}>
@@ -305,10 +156,10 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
                        <Ic n="arrowRight" size={16} color="currentColor" />
                     </div>
                   </div>
-                  
+
                   <AnimatePresence>
                     {isOpen && (
-                      <motion.div 
+                      <motion.div
                         initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
                         className="overflow-hidden bg-warm-gray-50"
                       >
@@ -321,7 +172,7 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
                                </div>
                              ))}
                            </div>
-                           
+
                            <div className="bg-white border border-warm-gray-200 p-5 relative overflow-hidden rounded-2xl shadow-sm">
                              <div className="absolute left-0 top-0 bottom-0 w-1 bg-teal-base" />
                              <div className="text-[10px] font-medium text-warm-gray-800 mb-3 pl-3 tracking-widest uppercase flex items-center gap-2">
@@ -349,14 +200,14 @@ export const DefensePage = ({ onBack, role }: { onBack: () => void, role?: strin
              <div className="text-[13px] text-warm-gray-800/80 font-normal mb-8 leading-loose tracking-wide">
                不確定自己保了什麼、缺了什麼？<br/>與我們預約，20分鐘幫你看清楚
              </div>
-             
+
              <button onClick={() => window.open('https://line.me/R/ti/p/@oosaymoney', '_blank')} className="no-underline flex items-center justify-center gap-3 bg-teal-base text-white w-full py-4 text-[13px] font-medium tracking-widest transition-colors hover:bg-cyan-base cursor-pointer border border-transparent uppercase mb-6 rounded-2xl shadow-sm">
                <Ic n="star" size={16} color="currentColor" /> 加入 LINE 聯繫顧問
              </button>
              <div className="text-[10px] text-warm-gray-600 font-normal tracking-[0.2em] uppercase">✨ 免費諮詢 · 無推銷壓力</div>
           </div>
         </motion.div>
-        
+
       </div>
     </div>
   );
