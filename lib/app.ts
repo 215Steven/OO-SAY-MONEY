@@ -414,7 +414,27 @@ app.get("/api/admin/db-schema", async (req: Request, res: Response) => {
       name,
       type: def.type,
     }));
-    res.json({ status: "ok", db: key, properties });
+
+    let sample: any[] | undefined;
+    if (req.query.sample) {
+      const resp: any = await notion.dataSources.query({ data_source_id: dataSourceId, page_size: 5 });
+      sample = resp.results.map((page: any) => {
+        const out: Record<string, any> = { id: page.id };
+        for (const [name, val] of Object.entries(page.properties || {})) {
+          const v: any = val;
+          if (v.type === "title") out[name] = v.title?.[0]?.plain_text ?? "";
+          else if (v.type === "rich_text") out[name] = v.rich_text?.[0]?.plain_text ?? "";
+          else if (v.type === "select") out[name] = v.select?.name ?? null;
+          else if (v.type === "number") out[name] = v.number ?? null;
+          else if (v.type === "date") out[name] = v.date?.start ?? null;
+          else if (v.type === "checkbox") out[name] = v.checkbox;
+          else out[name] = `(${v.type})`;
+        }
+        return out;
+      });
+    }
+
+    res.json({ status: "ok", db: key, properties, sample });
   } catch (error) {
     serverError(res, "/api/admin/db-schema", error);
   }
