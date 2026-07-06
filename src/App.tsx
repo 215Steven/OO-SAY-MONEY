@@ -104,12 +104,38 @@ const RouteWithRegister = ({ component: Component, goBack, navigate, handleLogin
   );
 };
 
+// 修法：原本「讀取網址列 ?role=/?path= 深連結」是在 useEffect 裡才處理，
+// 也就是要等第一次畫面（首頁）渲染完成之後，才會讀參數並呼叫 navigate()
+// 跳轉，使用者因此會先看到一瞬間的首頁，才被換成目標頁面（LINE 選單點進來
+// 常見的「先閃首頁」問題）。改成用 useState 的 lazy initializer，在元件
+// 第一次執行、還沒畫出任何畫面之前，就同步讀出 ?role=/?path= 參數，讓
+// Switch 第一次渲染就直接選中目標頁面，不再需要等 useEffect 才切換。
+type DeepLink = { type: "role"; value: string } | { type: "path"; value: string } | null;
+
+function parseDeepLink(): DeepLink {
+  const params = new URLSearchParams(window.location.search);
+  const urlRole = params.get("role");
+  const urlPath = params.get("path");
+  if (urlRole && ROLE_META[urlRole]) return { type: "role", value: urlRole };
+  if (urlPath) return { type: "path", value: urlPath };
+  return null;
+}
+
 export default function MainApp() {
+  const [deepLink] = useState<DeepLink>(() => parseDeepLink());
   const [location, navigate] = useLocation();
-  const [role, setRole] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(() => (deepLink?.type === "role" ? deepLink.value : null));
   const [modal, setModal] = useState(false);
 
   const { isReady, profile, isMockMode, getAccessToken } = useLiff();
+
+  // 第一次渲染實際要顯示哪一頁：如果目前 wouter 的 location 還是「/」
+  // （代表 router 尚未來得及套用深連結），且有解析出深連結，就直接改用
+  // 深連結指定的目標路徑；router 一旦透過下面的 useEffect 追上，location
+  // 本身就會等於目標路徑，這個判斷就不會再介入，不會造成二次切換或閃爍。
+  const effectiveLocation = location === "/" && deepLink
+    ? (deepLink.type === "role" ? "/dashboard" : deepLink.value)
+    : location;
 
   // Handle Notion validation and LINE rich menu (身分由後端依 access token 驗證)
   useEffect(() => {
@@ -125,19 +151,16 @@ export default function MainApp() {
     }
   }, [isReady, profile?.userId, isMockMode]);
 
-  // Read ?role=xxx or ?path=xxx from URL to simulate deep link from LINE Rich Menu
+  // 讓 wouter 內部的 location 追上深連結目標（僅需在掛載時處理一次，
+  // 因為深連結只會在頁面第一次載入時從網址列讀到），這樣瀏覽器網址列、
+  // 上一頁/下一頁行為才會跟畫面顯示的頁面一致。
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const urlRole = params.get("role");
-    const urlPath = params.get("path");
-
-    if (urlRole && ROLE_META[urlRole]) {
-      setRole(urlRole);
-      if (location === "/") navigate("/dashboard", { replace: true });
-    } else if (urlPath) {
-       navigate(urlPath, { replace: true });
+    if (!deepLink) return;
+    if (location === "/") {
+      navigate(deepLink.type === "role" ? "/dashboard" : deepLink.value, { replace: true });
     }
-  }, [location, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 修法：AnimatePresence 搭配 mode="wait" 在「頁面掛載後的第一次」路由切換時，
   // 有機率吃掉那次的進出場動畫排程，導致畫面卡在舊頁面沒有切換（使用者點擊
@@ -186,7 +209,7 @@ export default function MainApp() {
               新頁面內容，看起來就像沒反應／空白）。改直接渲染 Switch，讓
               React 的 key={location} 機制立即掛載/卸載頁面，不再依賴
               framer-motion 的離場動畫完成時機來決定舊頁面何時真正移除。*/}
-          <Switch location={location} key={location}>
+          <Switch location={effectiveLocation} key={effectiveLocation}>
             <Route path="/">
               <PageTransition><PublicGrid onSelect={handlePublic} /></PageTransition>
             </Route>
