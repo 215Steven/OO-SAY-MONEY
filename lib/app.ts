@@ -395,6 +395,32 @@ app.get("/api/insurance", async (req: Request, res: Response) => {
 });
 
 // ---------------------------------------------------------------------------
+// 5b. 暫時性除錯端點：查詢指定 Notion 資料庫的實際欄位名稱與型別
+// （需 ADMIN_TOKEN），確認要接「我的保障」核身功能前，資料庫實際有哪些欄位可用。
+// ---------------------------------------------------------------------------
+app.get("/api/admin/db-schema", async (req: Request, res: Response) => {
+  try {
+    if (!requireAdmin(req, res)) return;
+    const key = String(req.query.db || "insurance");
+    const dbId =
+      key === "members"
+        ? CONFIG.dbMembers
+        : key === "reservations"
+        ? CONFIG.dbReservations
+        : CONFIG.dbInsurance;
+    const dataSourceId = await resolveDataSourceId(dbId);
+    const ds: any = await (notion as any).dataSources.retrieve({ data_source_id: dataSourceId });
+    const properties = Object.entries(ds.properties || {}).map(([name, def]: [string, any]) => ({
+      name,
+      type: def.type,
+    }));
+    res.json({ status: "ok", db: key, properties });
+  } catch (error) {
+    serverError(res, "/api/admin/db-schema", error);
+  }
+});
+
+// ---------------------------------------------------------------------------
 // 6. 管理端點：解除 rich menu 綁定（需 ADMIN_TOKEN）
 // ---------------------------------------------------------------------------
 app.get("/api/admin/unlink/:lineUserId", async (req: Request, res: Response) => {
