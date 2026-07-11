@@ -61,6 +61,7 @@ const TemplatePage = lazyPage(() => import("@/src/pages/TemplatePage"), "Templat
 const QuizPage = lazyPage(() => import("@/src/pages/QuizPage"), "QuizPage");
 const DefensePage = lazyPage(() => import("@/src/pages/DefensePage"), "DefensePage");
 const ProtectionPage = lazyPage(() => import("@/src/pages/ProtectionPage"), "ProtectionPage");
+const InspirePage = lazyPage(() => import("@/src/pages/InspirePage"), "InspirePage");
 const BlueprintPage = lazyPage(() => import("@/src/pages/BlueprintPage"), "BlueprintPage");
 const TermsPage = lazyPage(() => import("@/src/pages/TermsPage"), "TermsPage");
 
@@ -246,7 +247,7 @@ export default function MainApp() {
             </Route>
             <Route path="/defense"><PageTransition><DefensePage onBack={goBack} /></PageTransition></Route>
             <Route path="/blueprint"><PageTransition><BlueprintPage onBack={goBack} role={role} /></PageTransition></Route>
-            <Route path="/inspire"><PageTransition><TemplatePage title="理財靈感" desc="知識與文章" onBack={goBack} /></PageTransition></Route>
+            <Route path="/inspire"><PageTransition><InspirePage onBack={goBack} /></PageTransition></Route>
             <Route path="/story">
               <PageTransition><RouteWithRegister component={AboutPage} goBack={goBack} navigate={navigate} handleLogin={handleLogin} /></PageTransition>
             </Route>
