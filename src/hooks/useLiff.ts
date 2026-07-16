@@ -58,10 +58,17 @@ function ensureLiffInitialized() {
   if (initStarted) return;
   initStarted = true;
 
-  // 紀錄入口的 URL，確保 liff.login() 有合乎 LINE 後台設定的回傳網址 (Endpoint URL)
-  if (!sessionStorage.getItem("entryUrl")) {
-    sessionStorage.setItem("entryUrl", window.location.href);
-  }
+  // 紀錄入口的 URL，確保 liff.login() 有合乎 LINE 後台設定的回傳網址 (Endpoint URL)。
+  // 修法：這裡原本用「若尚未設定過才寫入」的方式，只在同一個 LINE 對話 session 裡
+  // 記錄「第一次」進站的網址。但每次點擊 LINE 選單的不同分頁，其實都是全新的一次
+  // 網頁載入（sessionStorage 卻會跨這些「各自獨立的載入」延續下來），於是後面幾次
+  // 點擊時，entryUrl 一直卡在最早那一頁的網址，沒有跟著更新成「這次」使用者真正要
+  // 去的分頁。如果這次載入剛好觸發 liff.login() 重新登入導頁，登入後就會被送回
+  // 「舊的那一頁」，而不是這次真正要去的分頁，畫面上就會先閃過不對的頁面才跳轉。
+  // 改成「每次載入都覆蓋成當下網址」：由於此時（見下方 resolveDeepLink 的同步
+  // history.replaceState 邏輯）網址列已經是這次真正要去的目標頁，之後若真的需要
+  // liff.login() 導頁，也才能正確地被送回「這一次」使用者要去的分頁。
+  sessionStorage.setItem("entryUrl", window.location.href);
 
   const liffId = getLiffIdForPath();
 
