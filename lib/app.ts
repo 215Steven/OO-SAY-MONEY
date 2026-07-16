@@ -561,4 +561,5 @@ app.post("/api/admin/richmenu", async (req: Request, res: Response) => {
   }
 });
 
+// redeploy trigger: 套用新的 ADMIN_TOKEN 環境變數
 export default app;
