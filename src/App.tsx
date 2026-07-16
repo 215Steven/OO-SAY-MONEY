@@ -207,7 +207,21 @@ export default function MainApp() {
               framer-motion 的離場動畫完成時機來決定舊頁面何時真正移除。*/}
           <Switch location={location} key={location}>
             <Route path="/">
-              <PageTransition><PublicGrid onSelect={handlePublic} /></PageTransition>
+              {/* 修法：這裡原本不管 LIFF 是否準備好，只要網址列 pathname 是 "/" 就直接
+                  顯示首頁（PublicGrid）。但實測發現：LINE 選單分頁連結（例如 ?path=/tool）
+                  在某些情況下（例如需要重新驗證登入）會先經過 LIFF 自己內部的一段導頁流程，
+                  這段過程有極短暫的瞬間，網址列 pathname 真的就是 "/"（不是我們自己的
+                  程式邏輯錯誤，而是 LIFF SDK 內部處理登入導頁的過程），於是使用者會看到
+                  一閃而過的首頁內容，才跳到真正要去的分頁。
+                  修法：在 isReady（LIFF 初始化真正完成，包含它自己內部可能的導頁流程都
+                  已經走完）之前，"/" 這個路由一律先顯示跟其他頁面一樣的「載入中」文字，
+                  不去渲染 PublicGrid 的實際內容。這樣即使網址列曾經瞬間變成 "/"，畫面上
+                  也不會出現首頁的文字內容，等真正確定會停留在首頁時才顯示。 */}
+              {isReady || isMockMode ? (
+                <PageTransition><PublicGrid onSelect={handlePublic} /></PageTransition>
+              ) : (
+                <div className="p-10 text-center text-slate-400 font-medium">載入中…</div>
+              )}
             </Route>
             <Route path="/about">
               <PageTransition><RouteWithRegister component={AboutPage} goBack={goBack} navigate={navigate} handleLogin={handleLogin} /></PageTransition>
