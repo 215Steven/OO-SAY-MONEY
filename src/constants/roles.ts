@@ -1,7 +1,7 @@
 export const THEMES: Record<string, any> = {
-  public:    { bg:"#F8F8F6", card:"#FFFFFF", accent:"#2D2D2A", text:"#2D2D2A", muted:"#8B8A88", surface:"#F2F2F0" },
-  newMember: { bg:"#F8F8F6", card:"#FFFFFF", accent:"#3E4E42", text:"#2D2D2A", muted:"#8B8A88", surface:"#F2F2F0" },
-  peer:      { bg:"#FFFFFF", card:"#F8F8F6", accent:"#49405E", text:"#2D2D2A", muted:"#8B8A88", surface:"#F9F9F8" },
+  public:    { bg:"#F4EFE5", card:"#FFFFFF", accent:"#2D2D2A", text:"#2D2D2A", muted:"#8B8A88", surface:"#F2F2F0" },
+  newMember: { bg:"#F4EFE5", card:"#FFFFFF", accent:"#3E4E42", text:"#2D2D2A", muted:"#8B8A88", surface:"#F2F2F0" },
+  peer:      { bg:"#FFFFFF", card:"#F4EFE5", accent:"#49405E", text:"#2D2D2A", muted:"#8B8A88", surface:"#F9F9F8" },
   client:    { bg:"#F2F0EA", card:"#FFFFFF", accent:"#5B4133", text:"#2D2D2A", muted:"#8B8A88", surface:"#EAE8E3" },
 };
 
@@ -15,12 +15,12 @@ export const GRIDS: Record<string, any> = {
   newMember: {
     title: "會員專區", bg: "transparent",
     items: [
-      { key:"defense",    label:"財務防線",   icon:"shield",   bg:"#F8F8F6", accent:"#3E4E42", sub:"保障" },
-      { key:"money_tool", label:"錢的流向",   icon:"money",    bg:"#F8F8F6", accent:"#3E4E42", sub:"財管家" },
-      { key:"appointment",label:"預約聊聊",   icon:"calendar", bg:"#F8F8F6", accent:"#3E4E42", sub:"預約" },
-      { key:"about",      label:"認識我們",   icon:"book",     bg:"#F8F8F6", accent:"#3E4E42", sub:"我們能幫你什麼" },
-      { key:"inspire",    label:"理財靈感",   icon:"star",     bg:"#F8F8F6", accent:"#3E4E42", sub:"理財文章" },
-      { key:"blueprint",  label:"啟富藍圖",   icon:"map",      bg:"#F8F8F6", accent:"#3E4E42", sub:"月配息說明頁" },
+      { key:"defense",    label:"財務防線",   icon:"shield",   bg:"#F4EFE5", accent:"#3E4E42", sub:"保障" },
+      { key:"money_tool", label:"錢的流向",   icon:"money",    bg:"#F4EFE5", accent:"#3E4E42", sub:"財管家" },
+      { key:"appointment",label:"預約聊聊",   icon:"calendar", bg:"#F4EFE5", accent:"#3E4E42", sub:"預約" },
+      { key:"about",      label:"認識我們",   icon:"book",     bg:"#F4EFE5", accent:"#3E4E42", sub:"我們能幫你什麼" },
+      { key:"inspire",    label:"理財靈感",   icon:"star",     bg:"#F4EFE5", accent:"#3E4E42", sub:"理財文章" },
+      { key:"blueprint",  label:"啟富藍圖",   icon:"map",      bg:"#F4EFE5", accent:"#3E4E42", sub:"月配息說明頁" },
     ]
   },
   client: {
@@ -37,12 +37,12 @@ export const GRIDS: Record<string, any> = {
   peer: {
     title: "同業資源中心", bg: "transparent",
     items: [
-      { key:"demo",  label:"範例操作",   icon:"gear",     bg:"#F8F8F6", accent:"#49405E", sub:"示範流程" },
-      { key:"news",  label:"最新資訊",   icon:"info",     bg:"#F8F8F6", accent:"#49405E", sub:"市場動態" },
-      { key:"config",label:"多重配置",   icon:"map",      bg:"#F8F8F6", accent:"#49405E", sub:"資產配置方案" },
-      { key:"about-us", label:"認識我們",   icon:"user",     bg:"#F8F8F6", accent:"#49405E", sub:"品牌介紹" },
-      { key:"book",  label:"預約諮詢",   icon:"calendar", bg:"#F8F8F6", accent:"#49405E", sub:"合作洽談" },
-      { key:"email", label:"訂閱電子報", icon:"mail",     bg:"#F8F8F6", accent:"#49405E", sub:"定期資訊" },
+      { key:"demo",  label:"範例操作",   icon:"gear",     bg:"#F4EFE5", accent:"#49405E", sub:"示範流程" },
+      { key:"news",  label:"最新資訊",   icon:"info",     bg:"#F4EFE5", accent:"#49405E", sub:"市場動態" },
+      { key:"config",label:"多重配置",   icon:"map",      bg:"#F4EFE5", accent:"#49405E", sub:"資產配置方案" },
+      { key:"about-us", label:"認識我們",   icon:"user",     bg:"#F4EFE5", accent:"#49405E", sub:"品牌介紹" },
+      { key:"book",  label:"預約諮詢",   icon:"calendar", bg:"#F4EFE5", accent:"#49405E", sub:"合作洽談" },
+      { key:"email", label:"訂閱電子報", icon:"mail",     bg:"#F4EFE5", accent:"#49405E", sub:"定期資訊" },
     ]
   },
 };
