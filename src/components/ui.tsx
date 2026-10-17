@@ -1,11 +1,11 @@
 import { motion, useInView, animate } from "motion/react";
-import { useEffect, useRef, useState, ReactNode } from "react";
+import { useEffect, useRef, useState, ReactNode, Attributes } from "react";
 
 // 共用動效與小元件（設計系統 v2）
 export const SPRING = { type: "spring", stiffness: 100, damping: 20 } as const;
 
 /** 進入視窗時淡入上移；用 transform/opacity，行動裝置也順 */
-export const Reveal = ({ children, delay = 0, className = "", y = 18 }: { children: ReactNode; delay?: number; className?: string; y?: number }) => (
+export const Reveal = ({ children, delay = 0, className = "", y = 18 }: Attributes & { children: ReactNode; delay?: number; className?: string; y?: number }) => (
   <motion.div
     initial={{ opacity: 0, y }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -34,7 +34,7 @@ export const CountUp = ({ to, suffix = "", className = "" }: { to: number; suffi
 
 /** 品牌簽名：一條緩緩上升的資產曲線，線條自己畫出來 */
 export const MoneyLine = ({ className = "", stroke = "var(--color-brass)" }: { className?: string; stroke?: string }) => (
-  <svg viewBox="0 0 320 90" fill="none" className={className} aria-hidden="true">
+  <svg viewBox="-6 -6 332 102" fill="none" className={className} style={{ overflow: "visible" }} aria-hidden="true">
     <motion.path
       d="M2 78 C 40 74, 62 70, 92 62 S 140 58, 168 44 S 224 40, 252 22 S 296 12, 318 6"
       stroke={stroke}
@@ -54,4 +54,14 @@ export const MoneyLine = ({ className = "", stroke = "var(--color-brass)" }: { c
 
 export const Eyebrow = ({ children, className = "" }: { children: ReactNode; className?: string }) => (
   <div className={`text-[11px] font-medium tracking-[0.28em] uppercase text-warm-gray-600 ${className}`}>{children}</div>
+);
+
+/** 載入畫面：品牌字樣加一條緩緩移動的細線 */
+export const Loading = () => (
+  <div className="min-h-[60dvh] flex flex-col items-center justify-center gap-5" role="status" aria-label="載入中">
+    <div className="font-display text-[12px] font-semibold tracking-[0.3em] text-warm-gray-800">OO SAY MONEY</div>
+    <div className="relative w-24 h-px bg-warm-gray-200 overflow-hidden">
+      <motion.span className="absolute inset-y-0 w-10 bg-brass" initial={{ x: -40 }} animate={{ x: 96 }} transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }} />
+    </div>
+  </div>
 );
