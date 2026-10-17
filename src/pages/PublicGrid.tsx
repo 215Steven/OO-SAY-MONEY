@@ -1,69 +1,108 @@
 import { Ic } from "@/src/components/Icons";
 import { motion } from "motion/react";
+import { MoneyLine, Eyebrow, SPRING } from "@/src/components/ui";
+
+// 順序：先痛點（測驗）、後信任（故事）、再轉換（解鎖更多）
+const items = [
+  { key: "quiz",   no: "01", label: "錢去哪了",  sub: "90 秒財務性格測驗，看見你和錢的關係", tag: "免費" },
+  { key: "story",  no: "02", label: "故事起點",  sub: "認識 Steven & Annie，以及我們做事的方式" },
+  { key: "unlock", no: "03", label: "解鎖更多",  sub: "會員專屬工具與一對一諮詢" },
+];
 
 export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
-  // 順序調整：測驗放第一格，先讓使用者感受到「這跟我有關」的需求感，
-  // 再帶到品牌故事、最後才是解鎖更多，符合先痛點、後信任、再轉換的順序。
-  const items = [
-    { key:"quiz",   label:"錢去哪了", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"money", sub:"90 秒財務性格測驗" },
-    { key:"story",  label:"故事起點", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"info",  sub:"認識 Steven & Annie" },
-    { key:"unlock", label:"解鎖更多", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"star",  sub:"會員專屬工具與一對一諮詢" },
-  ];
   return (
-    <div className="min-h-screen pb-12 flex flex-col relative bg-warm-gray-50 items-center">
-      
-      {/* Header Greeting */}
-      <div className="pt-12 px-6 pb-8 flex flex-col items-center w-full max-w-sm">
-        <div className="w-[72px] h-[72px] bg-white border border-warm-gray-200 rounded-full mx-auto flex items-center justify-center mb-6 shadow-sm">
-           <Ic n="star" size={28} color="var(--color-warm-gray-800)" />
+    <div className="min-h-[100dvh] bg-warm-gray-50 flex flex-col">
+      {/* 頂列 */}
+      <div className="px-6 pt-8 flex items-center justify-between">
+        <div className="font-display text-[13px] font-semibold tracking-[0.22em] text-warm-gray-800">OO SAY MONEY</div>
+        <button
+          onClick={() => onSelect("login")}
+          className="text-[12px] tracking-[0.18em] text-warm-gray-600 border-b border-warm-gray-300 pb-0.5 hover:text-warm-gray-800 hover:border-warm-gray-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-4 focus-visible:ring-offset-warm-gray-50"
+        >
+          會員登入
+        </button>
+      </div>
+
+      {/* Hero：靠左、大字、一條會自己長出來的資產線 */}
+      <div className="px-6 pt-16 pb-10">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.05 }}>
+          <Eyebrow className="mb-6">Financial conversations</Eyebrow>
+        </motion.div>
+        <h1 className="font-serif text-warm-gray-800 leading-[1.12] tracking-[-0.01em]">
+          {["你好，", "歡迎來到"].map((t, i) => (
+            <motion.span key={t} className="block text-[40px] font-semibold" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.12 + i * 0.1 }}>
+              {t}
+            </motion.span>
+          ))}
+          <motion.span className="block text-[44px] font-light italic text-forest mt-1" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.34 }}>
+            OO SAY <span className="font-semibold not-italic">MONEY</span>
+          </motion.span>
+        </h1>
+        <motion.p className="mt-7 text-[15px] leading-[1.9] text-warm-gray-600 max-w-[17rem]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7, duration: 0.8 }}>
+          投資，是對自己最好的承諾。
+        </motion.p>
+        <MoneyLine className="w-full mt-9" />
+      </div>
+
+      {/* 索引式清單：用細線分隔，不用卡片 */}
+      <nav className="px-6 mt-2" aria-label="主要入口">
+        <div className="border-t border-warm-gray-800/80">
+          {items.map((item, i) => (
+            <motion.button
+              key={item.key}
+              onClick={() => onSelect(item.key)}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...SPRING, delay: 0.9 + i * 0.08 }}
+              whileTap={{ scale: 0.985 }}
+              className="group relative w-full text-left flex items-start gap-5 py-7 border-b border-warm-gray-300 outline-none focus-visible:bg-warm-gray-100 overflow-hidden cursor-pointer"
+            >
+              <span className="absolute inset-0 bg-warm-gray-100 origin-left scale-x-0 group-hover:scale-x-100 group-active:scale-x-100 transition-transform duration-500 ease-out" aria-hidden="true" />
+              <span className="relative font-display text-[13px] tnum text-brass pt-2 w-6 shrink-0">{item.no}</span>
+              <span className="relative flex-1">
+                <span className="flex items-center gap-3">
+                  <span className="font-serif text-[24px] font-semibold text-warm-gray-800 tracking-wide">{item.label}</span>
+                  {item.tag && <span className="text-[10px] tracking-[0.2em] text-brass border border-brass/40 px-2 py-0.5 rounded-full">{item.tag}</span>}
+                </span>
+                <span className="block mt-1.5 text-[13px] leading-relaxed text-warm-gray-600">{item.sub}</span>
+              </span>
+              <span className="relative pt-2 text-warm-gray-800 group-hover:translate-x-1.5 transition-transform duration-300">
+                <Ic n="arrow" size={22} color="currentColor" />
+              </span>
+            </motion.button>
+          ))}
         </div>
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center w-full">
-          <div className="text-[28px] font-serif font-bold text-warm-gray-800 leading-snug tracking-wide mb-3">
-            你好，歡迎來到
-            <br/>
-            OO SAY MONEY
-          </div>
-          <div className="text-[14px] text-warm-gray-800/80 leading-relaxed font-normal px-6 tracking-wide">
-             投資，是對自己最好的承諾。
-          </div>
-        </motion.div>
-      </div>
-      
-      {/* 3-Grid Actions */}
-      <div className="px-5 flex flex-col gap-4 w-full max-w-sm pt-4">
-        {items.map((item, i) => (
-          <motion.div 
-            initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 100, damping: 20, delay: i * 0.08 + 0.15 }}
-            key={item.key} onClick={() => onSelect(item.key)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter") onSelect(item.key); }} whileTap={{ scale: 0.98 }}
-            className="outline-none focus-visible:ring-2 focus-visible:ring-teal-base/40 focus-visible:ring-offset-2 bg-white p-6 flex items-center gap-5 border border-teal-soft/80 rounded-2xl hover:border-teal-base/30 hover:shadow-md transition-all cursor-pointer group"
-          >
-            <div className="w-12 h-12 border border-teal-soft bg-cyan-soft/50 rounded-full flex items-center justify-center shrink-0 group-hover:bg-cyan-soft transition-colors">
-              <Ic n={item.icon} size={22} color="var(--color-teal-base)" />
-            </div>
-            <div className="flex-1">
-              <div className="text-[17px] font-serif font-bold text-warm-gray-800 tracking-wide mb-0.5">{item.label}</div>
-              <div className="text-[14px] text-warm-gray-800/70 leading-relaxed">{item.sub}</div>
-            </div>
-            <div className="text-teal-base/40 group-hover:text-alert-orange transition-colors">
-               <Ic n="arrow" size={20} color="currentColor" />
-            </div>
-          </motion.div>
-        ))}
-      </div>
-      
-      {/* Registration CTA */}
-      <div className="px-5 flex flex-col gap-4 w-full max-w-sm">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }} className="bg-teal-base p-8 mt-10 text-center rounded-2xl shadow-lg relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-base/20 rounded-full blur-2xl -mr-10 -mt-10" />
-          <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide relative z-10">開始專屬理財旅程</h3>
-          <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">記錄財務、預約顧問，<br/>取得屬於你的理財藍圖。</p>
-          <button onClick={() => onSelect("login")} className="w-full bg-white text-teal-base py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all flex justify-center items-center gap-2 relative z-10 shadow-sm">
-             免費加入會員
-          </button>
-          <p className="text-[11px] text-teal-soft/70 mt-4 tracking-wide relative z-10">已有帳號？同一個按鈕登入即可</p>
-        </motion.div>
-      </div>
-      <p className="px-8 mt-8 text-[11px] text-warm-gray-500 text-center tracking-wide leading-relaxed max-w-sm">本站內容僅供參考，不構成投資建議。</p>
+      </nav>
+
+      {/* 轉換區塊：深色、顆粒、銅金按鈕 */}
+      <motion.section
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={SPRING}
+        className="grain relative mx-6 mt-14 rounded-[28px] bg-forest text-white overflow-hidden px-7 pt-10 pb-8"
+      >
+        <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
+        <Eyebrow className="!text-brass-soft/80 mb-5 relative z-10">Start here</Eyebrow>
+        <h2 className="relative z-10 font-serif text-[28px] leading-[1.3] font-semibold">
+          開始屬於你的<br />理財旅程
+        </h2>
+        <p className="relative z-10 mt-4 text-[14px] leading-[1.9] text-white/70">
+          記錄財務、預約顧問，<br />取得屬於你的理財藍圖。
+        </p>
+        <motion.button
+          onClick={() => onSelect("login")}
+          whileTap={{ scale: 0.97 }}
+          className="relative z-10 mt-8 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest"
+        >
+          免費加入會員
+        </motion.button>
+        <p className="relative z-10 mt-4 text-[11px] text-white/45 tracking-wide text-center">已有帳號？同一個按鈕登入即可</p>
+      </motion.section>
+
+      <p className="px-8 mt-10 pb-12 text-[11px] text-warm-gray-500 text-center tracking-wide leading-relaxed">
+        本站內容僅供參考，不構成投資建議。
+      </p>
     </div>
   );
 };

@@ -1,114 +1,125 @@
 import { Ic } from "@/src/components/Icons";
 import { motion } from "motion/react";
+import { Fragment } from "react";
 import { useLocation } from "wouter";
+import { Reveal, CountUp, Eyebrow, MoneyLine, SPRING } from "@/src/components/ui";
+
+const principles = [
+  { icon: "shield",  title: "先蓋好地基",         desc: "保障規劃是一切的起點。風險防護到位，才能安心往上走。" },
+  { icon: "trend",   title: "讓錢替你工作",        desc: "資產配置 × 複利效應，加速達到財務自由的時間點。" },
+  { icon: "diamond", title: "舒服走到想去的地方", desc: "不說教、不販賣焦慮。只給你能執行、真的會抵達的路線。" },
+];
 
 export const AboutPage = ({ onBack, onJoin }: any) => {
   const [, navigate] = useLocation();
   return (
-  <div className="min-h-screen pb-12 flex flex-col relative bg-warm-gray-50">
-    
-    <div className="pt-12 px-6 pb-8 flex flex-col items-center">
+    <div className="min-h-[100dvh] bg-warm-gray-50 pb-6">
+      {/* 頂列 */}
+      <div className="px-6 pt-8 flex items-center justify-between">
+        <button onClick={onBack} aria-label="返回" className="flex items-center gap-1 text-[12px] tracking-[0.18em] text-warm-gray-600 hover:text-warm-gray-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-4 focus-visible:ring-offset-warm-gray-50">
+          <Ic n="back" size={16} /> 返回
+        </button>
+        <div className="font-display text-[12px] font-semibold tracking-[0.22em] text-warm-gray-800">OO SAY MONEY</div>
+      </div>
 
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center w-full max-w-sm">
-        <div className="text-[32px] font-serif font-bold text-warm-gray-800 leading-tight tracking-wide mb-5">Steven & Annie</div>
-      </motion.div>
-    </div>
-    
-    <div className="px-5 flex flex-col gap-6 items-center w-full">
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="w-full max-w-sm grid grid-cols-3 gap-3">
-        {[
-          { num: "20年",  label: "深耕財務保險" },
-          { num: "300+",  label: "專屬服務家庭" },
-          { num: "9位數", label: "管理資產規模" },
-        ].map(s => (
-          <div key={s.num} className="bg-white border border-warm-gray-200 py-5 px-1 text-center rounded-2xl shadow-sm hover:border-teal-base/20 transition-all">
-            <div className="text-[20px] font-serif font-bold text-teal-base mb-1">{s.num}</div>
-            <div className="text-[11px] text-warm-gray-800/60 font-medium tracking-widest">{s.label}</div>
-          </div>
-        ))}
-      </motion.div>
+      {/* 名字當主視覺 */}
+      <header className="px-6 pt-14 pb-10">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
+          <Eyebrow className="mb-6">Our story</Eyebrow>
+        </motion.div>
+        <h1 className="font-serif leading-[1.02] tracking-[-0.02em] text-forest">
+          <motion.span className="block text-[56px] font-light italic" initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.1 }}>Steven</motion.span>
+          <motion.span className="block text-[56px] font-semibold pl-10 -mt-1" initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.2 }}>
+            <span className="font-light italic text-brass mr-2">&amp;</span>Annie
+          </motion.span>
+        </h1>
+        <MoneyLine className="w-full mt-8 opacity-90" />
+      </header>
 
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="w-full max-w-sm">
-        <div className="bg-white p-8 border border-teal-soft/80 rounded-2xl relative hover:border-teal-base/30 transition-all shadow-sm">
-          <div className="text-[19px] font-serif font-bold text-warm-gray-800 tracking-wide leading-relaxed mb-5">
-            從等待，到擁有選擇的自由
-          </div>
-          <div className="text-[15px] space-y-4 text-warm-gray-800/80 leading-relaxed font-normal tracking-wide">
-            <p>
-              如果理財只是 Buy and Hold，<br />
-              <span className="text-teal-base">這世界就不需要投資策略和理財書籍了。</span>
-            </p>
-            <p>
-              真正的自由，不是逃離現狀，<br />
-              而是當機會來臨時，<span className="text-teal-base">你有選擇的底氣。</span>
-            </p>
-            <p>
-              我們做的不是單純選標的，<br />
-              而是建構一套能持續滾動、增長的<span className="text-teal-base">現金流系統。</span>
-            </p>
-            <p className="pt-2">
-              這套歷經九位數資產驗證的實戰方法，已經協助許多人從等待走向選擇人生。<br />
-              與其獨自摸索，<br /> 
-              <span className="text-teal-base">不如讓它成為你的財務底層邏輯。</span>
-            </p>
-          </div>
+      {/* 數字：細線分欄，不用卡片 */}
+      <Reveal>
+        <div className="mx-6 grid grid-cols-3 border-y border-warm-gray-800/80 divide-x divide-warm-gray-300">
+          {[
+            { node: <CountUp to={20} suffix="年" />, label: "深耕財務保險" },
+            { node: <CountUp to={300} suffix="+" />, label: "專屬服務家庭" },
+            { node: <span className="tnum">9 位數</span>, label: "管理資產規模" },
+          ].map((s, i) => (
+            <div key={i} className="py-6 px-3 first:pl-0">
+              <div className="font-display text-[28px] font-medium text-forest leading-none">{s.node}</div>
+              <div className="mt-2 text-[11px] tracking-[0.12em] text-warm-gray-600">{s.label}</div>
+            </div>
+          ))}
         </div>
-      </motion.div>
+      </Reveal>
 
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }} className="w-full max-w-sm flex flex-col gap-4">
-        {[
-          { icon:"shield",  title:"先蓋好地基",         desc:"保障規劃是一切的起點。風險防護到位，才能安心往上走。" },
-          { icon:"trend",   title:"讓錢替你工作",        desc:"資產配置 × 複利效應，加速達到財務自由的時間點。" },
-          { icon:"diamond", title:"舒服走到想去的地方", desc:"不說教、不販賣焦慮。只給你能執行、真的會抵達的路線。" },
-        ].map(item => (
-          <div key={item.title} className="bg-white border border-warm-gray-200 p-6 rounded-2xl shadow-sm hover:border-teal-soft group transition-all">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 border border-warm-gray-200 bg-warm-gray-50 group-hover:bg-cyan-soft group-hover:border-teal-soft/50 rounded-full flex items-center justify-center shrink-0 transition-colors">
-                <Ic n={item.icon} size={18} color="currentColor" className="text-warm-gray-800 group-hover:text-teal-base transition-colors" />
+      {/* 宣言：大字、逐段浮現 */}
+      <section className="px-6 pt-16">
+        <Reveal><Eyebrow className="mb-6">Manifesto</Eyebrow></Reveal>
+        <Reveal>
+          <h2 className="font-serif text-[30px] leading-[1.35] font-semibold text-warm-gray-800">
+            從等待，<br />到擁有<span className="text-brass">選擇</span>的自由
+          </h2>
+        </Reveal>
+        <div className="mt-10 space-y-8 text-[16px] leading-[2] text-warm-gray-600 max-w-[22rem]">
+          <Reveal><p>如果理財只是 Buy and Hold，<span className="text-warm-gray-800">這世界就不需要投資策略和理財書籍了。</span></p></Reveal>
+          <Reveal><p>真正的自由，不是逃離現狀，而是當機會來臨時，<span className="text-warm-gray-800">你有選擇的底氣。</span></p></Reveal>
+          <Reveal><p>我們做的不是單純選標的，而是建構一套能持續滾動、增長的<span className="text-warm-gray-800">現金流系統。</span></p></Reveal>
+          <Reveal><p>這套歷經九位數資產驗證的實戰方法，已經協助許多人從等待走向選擇人生。與其獨自摸索，不如讓它成為你的<span className="text-warm-gray-800">財務底層邏輯。</span></p></Reveal>
+        </div>
+      </section>
+
+      {/* 三個做法：編號清單 */}
+      <section className="px-6 pt-20">
+        <Reveal><Eyebrow className="mb-4">How we work</Eyebrow></Reveal>
+        <div className="border-t border-warm-gray-800/80">
+          {principles.map((p, i) => (
+            <Fragment key={p.title}><Reveal delay={i * 0.05}>
+              <div className="flex gap-5 py-7 border-b border-warm-gray-300">
+                <span className="font-display text-[13px] tnum text-brass pt-1.5 w-6 shrink-0">0{i + 1}</span>
+                <div>
+                  <div className="font-serif text-[21px] font-semibold text-warm-gray-800 tracking-wide">{p.title}</div>
+                  <p className="mt-2 text-[14px] leading-[1.9] text-warm-gray-600">{p.desc}</p>
+                </div>
               </div>
-              <div className="text-[17px] font-serif font-bold text-warm-gray-800 tracking-wide">{item.title}</div>
-            </div>
-            <div className="text-[14px] text-warm-gray-800/70 leading-relaxed font-normal tracking-wide pl-[52px]">
-              {item.desc}
-            </div>
-          </div>
-        ))}
-      </motion.div>
-
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }} className="w-full max-w-sm bg-white border border-warm-gray-200 p-6 rounded-2xl shadow-sm">
-        <div className="text-[17px] font-serif font-bold text-warm-gray-800 mb-6 tracking-wide flex items-center gap-3">
-           <div className="w-9 h-9 bg-warm-gray-50 border border-warm-gray-200 rounded-full flex items-center justify-center"><Ic n="user" size={16} color="var(--color-warm-gray-800)" /></div>
-           在這裡找到我們
+            </Reveal></Fragment>
+          ))}
         </div>
-        <div className="flex gap-4">
-          <a href="https://www.facebook.com/oosayhi" target="_blank" rel="noopener noreferrer" className="flex-1 no-underline">
-            <div className="bg-warm-gray-50 border border-warm-gray-200 py-5 px-3 text-center rounded-xl transition-all hover:border-teal-soft hover:bg-cyan-soft/50 group">
-              <div className="mb-3 flex justify-center"><Ic n="user" size={24} color="var(--color-teal-base)" /></div>
-              <div className="text-[13px] font-bold text-warm-gray-800 group-hover:text-teal-base tracking-widest transition-colors">FB 粉專</div>
-            </div>
-          </a>
-          <a href="https://oosayhi.com" target="_blank" rel="noopener noreferrer" className="flex-1 no-underline">
-            <div className="bg-warm-gray-50 border border-warm-gray-200 py-5 px-3 text-center rounded-xl transition-all hover:border-teal-soft hover:bg-cyan-soft/50 group">
-              <div className="mb-3 flex justify-center"><Ic n="book" size={24} color="var(--color-teal-base)" /></div>
-              <div className="text-[13px] font-bold text-warm-gray-800 group-hover:text-teal-base tracking-widest transition-colors">部落格</div>
-            </div>
-          </a>
-        </div>
-      </motion.div>
+      </section>
 
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.5 }} className="w-full max-w-sm mt-4 mb-6">
-        <div className="bg-teal-base p-8 flex flex-col justify-center items-center text-center rounded-2xl shadow-lg relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-base/20 rounded-full blur-2xl -mr-10 -mt-10" />
-          <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide relative z-10">想了解更多？</h3>
-          <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">加入會員，了解讓錢替你工作的做法</p>
-          <button onClick={onJoin} className="outline-none focus-visible:ring-2 focus-visible:ring-teal-base/40 focus-visible:ring-offset-2 w-full bg-white text-teal-base py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft active:scale-[0.98] transition-all flex justify-center items-center gap-2 shadow-sm relative z-10">
-             加入會員
+      {/* 連結 */}
+      <Reveal className="px-6 pt-16">
+        <Eyebrow className="mb-4">Find us</Eyebrow>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { href: "https://www.facebook.com/oosayhi", label: "FB 粉專", icon: "user" },
+            { href: "https://oosayhi.com", label: "部落格", icon: "book" },
+          ].map((l) => (
+            <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className="group no-underline flex items-center justify-between rounded-2xl border border-warm-gray-300 px-4 py-4 hover:bg-warm-gray-100 hover:border-warm-gray-800/40 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/50">
+              <span className="flex items-center gap-2.5 text-[14px] font-medium text-warm-gray-800 tracking-wide"><Ic n={l.icon} size={18} color="var(--color-brass)" />{l.label}</span>
+              <span className="text-warm-gray-500 group-hover:translate-x-1 transition-transform"><Ic n="arrow" size={16} color="currentColor" /></span>
+            </a>
+          ))}
+        </div>
+      </Reveal>
+
+      {/* CTA */}
+      <Reveal className="px-6 pt-16">
+        <section className="grain relative rounded-[28px] bg-forest text-white overflow-hidden px-7 pt-10 pb-8">
+          <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
+          <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">想了解更多？</h2>
+          <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">加入會員，了解讓錢替你工作的做法。</p>
+          <motion.button onClick={onJoin} whileTap={{ scale: 0.97 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+            免費加入會員
+          </motion.button>
+          <button onClick={() => navigate("/appointment")} className="relative z-10 mt-2 w-full py-3 text-[13px] tracking-[0.15em] text-white/75 hover:text-white transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full">
+            想先聊聊？預約免費諮詢
           </button>
-          <button onClick={() => navigate("/appointment")} className="outline-none focus-visible:ring-2 focus-visible:ring-teal-base/40 focus-visible:ring-offset-2 mt-3 text-white/90 py-3 text-[13px] tracking-widest cursor-pointer hover:text-white transition-colors relative z-10">想先聊聊？預約免費諮詢</button>
-        </div>
-      </motion.div>
-      <p className="px-8 mb-10 text-[11px] text-warm-gray-500 text-center tracking-wide leading-relaxed max-w-sm">以上為過往服務經驗，不代表未來結果，內容不構成投資建議。</p>
+        </section>
+      </Reveal>
+
+      <p className="px-8 mt-10 pb-10 text-[11px] text-warm-gray-500 text-center tracking-wide leading-relaxed">
+        以上為過往服務經驗，不代表未來結果，內容不構成投資建議。
+      </p>
     </div>
-  </div>
   );
 };
