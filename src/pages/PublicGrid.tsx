@@ -42,6 +42,9 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
           投資，是對自己最好的承諾。
         </motion.p>
         <MoneyLine className="w-full mt-9" />
+        <div className="mt-3 flex justify-between text-[10px] tracking-[0.22em] text-warm-gray-500 uppercase">
+          <span>今天</span><span>有選擇的自由</span>
+        </div>
       </div>
 
       {/* 索引式清單：用細線分隔，不用卡片 */}

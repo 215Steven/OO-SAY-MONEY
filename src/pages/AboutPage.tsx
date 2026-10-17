@@ -2,7 +2,7 @@ import { Ic } from "@/src/components/Icons";
 import { motion } from "motion/react";
 import { Fragment } from "react";
 import { useLocation } from "wouter";
-import { Reveal, CountUp, Eyebrow, MoneyLine, SPRING } from "@/src/components/ui";
+import { Reveal, CountUp, Eyebrow, SPRING } from "@/src/components/ui";
 
 const principles = [
   { icon: "shield",  title: "先蓋好地基",         desc: "保障規劃是一切的起點。風險防護到位，才能安心往上走。" },
@@ -23,7 +23,7 @@ export const AboutPage = ({ onBack, onJoin }: any) => {
       </div>
 
       {/* 名字當主視覺 */}
-      <header className="px-6 pt-14 pb-10">
+      <header className="px-6 pt-14 pb-14">
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
           <Eyebrow className="mb-6">Our story</Eyebrow>
         </motion.div>
@@ -33,7 +33,6 @@ export const AboutPage = ({ onBack, onJoin }: any) => {
             <span className="font-light italic text-brass mr-2">&amp;</span>Annie
           </motion.span>
         </h1>
-        <MoneyLine className="w-full mt-8 opacity-90" />
       </header>
 
       {/* 數字：細線分欄，不用卡片 */}

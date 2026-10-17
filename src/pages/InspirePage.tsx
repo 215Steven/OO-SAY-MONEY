@@ -1,4 +1,4 @@
-import { Ic } from "@/src/components/Icons";
+import { Eyebrow, Reveal, SPRING } from "@/src/components/ui";
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
 
@@ -80,138 +80,118 @@ export const InspirePage = ({ onBack }: { onBack: () => void }) => {
   const rows: FundRow[] = data ? data[activeTabMeta.dataKey] : [];
 
   return (
-    <div className="min-h-screen bg-warm-gray-50 font-sans pb-10">
-
-      <div className="pt-12 pb-10 px-6 relative z-10 w-full max-w-sm mx-auto border-b border-warm-gray-200 mb-8 shrink-0 bg-white">
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-warm-gray-50 border border-warm-gray-200 rounded-full text-warm-gray-800 mb-6">
-            <Ic n="trend" size={28} color="currentColor" />
-          </div>
-          <h1 className="text-[28px] font-serif font-bold text-warm-gray-800 tracking-wide mb-4">理財靈感</h1>
-          <p className="text-[14px] text-warm-gray-800/70 font-normal leading-relaxed max-w-[280px] mx-auto tracking-wide">
-            VCCT 基金排行榜 TOP 10，快速掌握市場配息與報酬表現。
-          </p>
-        </motion.div>
+    <div className="min-h-[100dvh] bg-warm-gray-50 pb-6">
+      <div className="px-6 pt-8 flex items-center justify-between">
+        <div className="font-display text-[12px] font-semibold tracking-[0.22em] text-warm-gray-800">OO SAY MONEY</div>
+        <Eyebrow>Inspiration</Eyebrow>
       </div>
 
-      <div className="px-5 w-full max-w-sm mx-auto relative z-10">
+      <header className="px-6 pt-14 pb-8">
+        <h1 className="font-serif leading-[1.12] tracking-[-0.01em]">
+          <motion.span className="block text-[46px] font-semibold text-warm-gray-800" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.05 }}>理財</motion.span>
+          <motion.span className="block text-[46px] font-light italic text-brass" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.15 }}>靈感。</motion.span>
+        </h1>
+        <p className="mt-5 text-[15px] leading-[1.9] text-warm-gray-600 max-w-[19rem]">VCCT 基金排行榜 TOP 10，快速掌握市場配息與報酬表現。</p>
+      </header>
 
-        {/* Tabs */}
-        <div className="flex gap-2 mb-6 bg-white border border-warm-gray-200 rounded-2xl p-1.5 shadow-sm">
+      <div className="px-6">
+        {/* Tabs：底線式 */}
+        <div className="flex border-b border-warm-gray-300 mb-2" role="tablist">
           {TABS.map(t => (
             <button
               key={t.key}
+              role="tab"
+              aria-selected={activeTab === t.key}
               onClick={() => setActiveTab(t.key)}
-              className={`flex-1 py-2.5 rounded-xl text-[11px] font-medium tracking-wide transition-colors cursor-pointer ${
-                activeTab === t.key ? "bg-teal-base text-white" : "text-warm-gray-600 hover:bg-warm-gray-50"
-              }`}
+              className={`relative flex-1 py-3.5 text-[13px] tracking-[0.1em] cursor-pointer transition-colors outline-none focus-visible:bg-warm-gray-100 ${activeTab === t.key ? "text-warm-gray-800 font-medium" : "text-warm-gray-500 hover:text-warm-gray-800"}`}
             >
               {t.label}
+              {activeTab === t.key && <motion.span layoutId="inspire-tab" className="absolute left-0 right-0 -bottom-px h-[2px] bg-brass" transition={SPRING} />}
             </button>
           ))}
         </div>
 
         {loading && (
-          <div className="bg-white border border-warm-gray-200 rounded-2xl p-10 text-center shadow-sm mb-8">
-            <div className="text-[13px] text-warm-gray-500 tracking-widest">讀取排行榜資料中…</div>
+          <div className="py-16 text-center">
+            <div className="mx-auto w-24 h-px bg-warm-gray-200 relative overflow-hidden mb-4">
+              <motion.span className="absolute inset-y-0 w-10 bg-brass" initial={{ x: -40 }} animate={{ x: 96 }} transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }} />
+            </div>
+            <div className="text-[12px] text-warm-gray-500 tracking-[0.2em]">讀取排行榜資料中</div>
           </div>
         )}
 
         {!loading && failed && (
-          <div className="bg-white border border-warm-gray-200 p-8 text-center rounded-2xl shadow-sm mb-8">
-            <div className="text-[18px] font-serif font-bold text-warm-gray-800 mb-3 tracking-wide">暫時無法讀取排行榜</div>
-            <div className="text-[13px] text-warm-gray-800/80 font-normal leading-loose tracking-wide">
-              資料來源暫時無法連線，請稍後再試一次。
-            </div>
+          <div className="py-14">
+            <div className="font-serif text-[22px] font-semibold text-warm-gray-800 mb-3">暫時無法讀取排行榜</div>
+            <p className="text-[14px] text-warm-gray-600 leading-[1.9]">資料來源暫時無法連線，請稍後再試一次。</p>
+            <button onClick={() => window.location.reload()} className="mt-6 text-[13px] tracking-[0.18em] text-forest border-b border-forest pb-0.5 cursor-pointer">重新整理</button>
           </div>
         )}
 
         {!loading && !failed && (
           <AnimatePresence mode="wait">
-            <motion.div
+            <motion.ol
               key={activeTab}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="flex flex-col gap-3 mb-6"
+              className="list-none p-0 m-0"
             >
               {rows.map((row, i) => {
                 const { clean, warning } = splitFundName(row.name);
                 const metric = row[activeTabMeta.metricKey];
                 return (
-                  <div key={row.code + i} className="bg-white border border-warm-gray-200 rounded-2xl p-4 shadow-sm">
-                    <div className="flex items-start gap-3">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-[12px] font-serif font-bold ${
-                          i < 3 ? "bg-teal-base text-white" : "bg-warm-gray-100 text-warm-gray-800 border border-warm-gray-200"
-                        }`}
-                      >
-                        {row.rank}
+                  <li key={row.code + i} className="py-6 border-b border-warm-gray-300">
+                    <div className="flex items-start gap-4">
+                      <div className={`font-display tnum shrink-0 w-10 leading-none ${i < 3 ? "text-[36px] font-light text-brass" : "text-[26px] font-light text-warm-gray-400"}`}>
+                        {String(row.rank).padStart(2, "0")}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-[13px] font-medium text-warm-gray-800 leading-snug tracking-wide">{clean}</div>
-                        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                          <span className="text-[10px] text-warm-gray-500 bg-warm-gray-100 px-2 py-0.5 rounded">{row.cur}</span>
-                          <span className="text-[10px] text-warm-gray-500 bg-warm-gray-100 px-2 py-0.5 rounded">{row.rr}</span>
-                          <span className="text-[10px] text-warm-gray-500 bg-warm-gray-100 px-2 py-0.5 rounded">{row.freq}</span>
-                        </div>
+                        <div className="text-[14px] font-medium text-warm-gray-800 leading-[1.6]">{clean}</div>
+                        <div className="mt-2 text-[11px] text-warm-gray-500 tracking-[0.08em]">{row.cur} · {row.rr} · {row.freq}</div>
                       </div>
                       <div className="text-right shrink-0">
-                        <div className="text-[16px] font-serif font-bold text-teal-base tracking-wide">{fmtPct(metric)}</div>
-                        <div className="text-[9px] text-warm-gray-400 tracking-wide uppercase mt-0.5">{activeTabMeta.metricLabel}</div>
+                        <div className="font-display text-[22px] font-medium text-forest tnum leading-none">{fmtPct(metric)}</div>
+                        <div className="mt-1.5 text-[10px] text-warm-gray-500 tracking-[0.14em]">{activeTabMeta.metricLabel}</div>
                       </div>
                     </div>
-
-                    <div className="flex justify-between items-center text-[10px] text-warm-gray-500 tracking-wide mt-3 pt-3 border-t border-warm-gray-100">
+                    <div className="mt-4 ml-14 flex gap-5 text-[11px] text-warm-gray-500 tnum">
                       <span>六月 {fmtPct(row.ret6m)}</span>
                       <span>一年 {fmtPct(row.ret1y)}</span>
                       <span>三年 {fmtPct(row.ret3y)}</span>
                     </div>
-
                     {warning && (
-                      <div className="text-[10px] text-alert-orange bg-alert-orange/10 border border-alert-orange/30 rounded-lg px-3 py-2 mt-3 leading-relaxed">
-                        注意：{warning}
-                      </div>
+                      <div className="mt-3 ml-14 text-[11px] text-alert-orange border-l-2 border-alert-orange/50 pl-3 leading-[1.8]">注意：{warning}</div>
                     )}
-                  </div>
+                  </li>
                 );
               })}
-            </motion.div>
+            </motion.ol>
           </AnimatePresence>
         )}
 
         {data && (
-          <div className="text-[10px] text-warm-gray-400 text-center tracking-wide mb-8">
-            資料來源：VCCT 配息工具 · 更新於 {data.generatedAt || data.fetchedAt}
-          </div>
+          <div className="mt-6 text-[11px] text-warm-gray-500 tracking-wide">資料來源：VCCT 配息工具 · 更新於 {data.generatedAt || data.fetchedAt}</div>
         )}
 
-        {/* Disclaimer */}
-        <div className="bg-warm-gray-100 border border-warm-gray-200 rounded-2xl p-5 mb-8">
-          <div className="text-[11px] text-warm-gray-600 leading-relaxed tracking-wide">
-            以上排行僅供參考，過去績效不代表未來表現，投資前請詳閱公開說明書。配息可能來自本金，投資人於獲配息時應注意基金淨值同時降低之可能性。
-          </div>
-        </div>
-
-        {/* CTA */}
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="w-full max-w-sm mx-auto bg-warm-gray-50 p-10 text-center border border-warm-gray-200 relative overflow-hidden mb-10 shrink-0 rounded-2xl">
-          <div className="relative z-10">
-            <div className="w-16 h-16 bg-white flex items-center justify-center mx-auto mb-6 border border-warm-gray-200 rounded-full">
-              <Ic n="star" size={24} color="#2D2D2A" />
-            </div>
-            <div className="text-[20px] font-serif font-bold text-warm-gray-800 mb-4 tracking-widest">想聊聊怎麼配置？</div>
-            <div className="text-[13px] text-warm-gray-800/80 font-normal mb-8 leading-loose tracking-wide">
-              排行榜只是參考起點，適合你的配置需要專屬分析。
-            </div>
-            <button onClick={() => window.open('https://line.me/R/ti/p/@oosaymoney', '_blank')} className="no-underline flex items-center justify-center gap-3 bg-teal-base text-white w-full py-4 text-[13px] font-medium tracking-widest transition-colors hover:bg-cyan-base cursor-pointer border border-transparent uppercase mb-6 rounded-2xl shadow-sm">
-              <Ic n="star" size={16} color="currentColor" /> 加入 LINE 聯繫顧問
-            </button>
-            <div className="text-[10px] text-warm-gray-600 font-normal tracking-[0.2em] uppercase">免費諮詢 · 無推銷壓力</div>
-          </div>
-        </motion.div>
-
+        <p className="mt-6 text-[11px] text-warm-gray-500 leading-[1.9] tracking-wide">
+          以上排行僅供參考，過去績效不代表未來表現，投資前請詳閱公開說明書。配息可能來自本金，投資人於獲配息時應注意基金淨值同時降低之可能性。
+        </p>
       </div>
+
+      <Reveal className="px-6 pt-12">
+        <section className="grain relative rounded-[28px] bg-forest text-white overflow-hidden px-7 pt-10 pb-8">
+          <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
+          <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">想聊聊怎麼配置？</h2>
+          <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">排行榜只是參考起點，適合你的配置需要專屬分析。</p>
+          <motion.button onClick={() => window.open("https://line.me/R/ti/p/@oosaymoney", "_blank")} whileTap={{ scale: 0.97 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+            加入 LINE 聯繫顧問
+          </motion.button>
+          <p className="relative z-10 mt-4 text-[11px] text-white/45 tracking-wide text-center">免費諮詢 · 無推銷壓力</p>
+        </section>
+      </Reveal>
+      <div className="pb-10" />
     </div>
   );
 };

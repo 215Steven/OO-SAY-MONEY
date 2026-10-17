@@ -1,97 +1,92 @@
 import { Ic } from "@/src/components/Icons";
 import { useLocation } from "wouter";
 import { motion } from "motion/react";
+import { Reveal, Eyebrow, SPRING } from "@/src/components/ui";
+
+const types = ["穩健累積型", "成長放大型", "起步探索型", "策略進化型"];
 
 export const MoneyLanding = ({ onBack, onLogin }: any) => {
-  const [_, navigate] = useLocation();
-  
+  const [, navigate] = useLocation();
   return (
-  <div className="pb-12 min-h-[100dvh] bg-warm-gray-50 flex flex-col items-center">
-    <div className="pt-8 px-6 pb-6 relative overflow-hidden flex flex-col items-center w-full max-w-sm">
-      
-
-      
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="relative z-10 text-center w-full">
-        <div className="inline-flex items-center gap-2 bg-white border border-warm-gray-200 px-3 py-1 mb-6">
-          <div className="w-1.5 h-1.5 rounded-full bg-teal-base" />
-          <span className="text-[10px] font-medium text-warm-gray-800 tracking-[0.2em] uppercase">免費 · 約 90 秒</span>
-        </div>
-        <div className="text-[28px] font-serif font-bold text-warm-gray-800 leading-[1.4] tracking-wider mb-5">
-          你的錢，<br/>都去哪了？
-        </div>
-        <div className="text-[13px] text-warm-gray-800 leading-loose font-normal px-5 tracking-widest inline-block border-l px-4 border-warm-gray-300">
-          先了解你的財務心理類型，<br/>再看清你的財務真實數字。
-        </div>
-      </motion.div>
-    </div>
-    
-    <div className="px-5 relative z-20 flex flex-col gap-6 w-full max-w-sm pt-4">
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="bg-white p-8 border border-teal-soft/80 group hover:border-teal-base/30 hover:shadow-md transition-all rounded-2xl">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-10 h-10 border border-teal-soft bg-cyan-soft flex items-center justify-center shrink-0 rounded-full">
-            <span className="text-[16px] font-serif font-bold text-teal-base">1</span>
-          </div>
-          <div className="text-[18px] font-serif font-bold text-warm-gray-800 tracking-wider">你的理財類型？</div>
-        </div>
-        <div className="text-[13px] text-warm-gray-800/80 leading-loose mb-6 font-normal tracking-wide">
-          8 個問題，找出你對金錢的底層邏輯——穩健累積、成長放大、還是策略進化型？
-        </div>
-        <div className="flex flex-wrap gap-2.5 mb-8">
-          {[
-            { label:"穩健累積型", color:"text-cyan-base", bg:"bg-cyan-soft", border:"border-cyan-soft" },
-            { label:"成長放大型", color:"text-teal-base", bg:"bg-teal-soft", border:"border-teal-soft" },
-            { label:"起步探索型", color:"text-warm-gray-800", bg:"bg-warm-gray-50", border:"border-warm-gray-200" },
-            { label:"策略進化型", color:"text-warm-gray-800", bg:"bg-warm-gray-50", border:"border-warm-gray-200" },
-          ].map((t, i) => (
-            <span key={i} className={`text-[11px] font-medium tracking-widest ${t.color} ${t.bg} border ${t.border} px-3 py-1.5 rounded-full`}>
-              {t.label}
-            </span>
-          ))}
-        </div>
-        <button onClick={() => navigate("/quiz")} className="w-full bg-teal-base text-white border border-teal-base py-4 rounded-2xl text-[13px] font-medium tracking-widest uppercase cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2 shadow-sm">
-          開始測驗 <Ic n="trend" size={16} color="currentColor" />
+    <div className="min-h-[100dvh] bg-warm-gray-50 pb-6">
+      <div className="px-6 pt-8 flex items-center justify-between">
+        <button onClick={onBack} aria-label="返回" className="flex items-center gap-1 text-[12px] tracking-[0.18em] text-warm-gray-600 hover:text-warm-gray-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-4 focus-visible:ring-offset-warm-gray-50">
+          <Ic n="back" size={16} /> 返回
         </button>
-      </motion.div>
+        <div className="font-display text-[12px] font-semibold tracking-[0.22em] text-warm-gray-800">OO SAY MONEY</div>
+      </div>
 
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="bg-white p-8 border border-warm-gray-200 group hover:border-warm-gray-800/20 hover:shadow-md transition-all rounded-2xl relative overflow-hidden">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-10 h-10 border border-warm-gray-200 bg-white flex items-center justify-center shrink-0 rounded-full">
-            <span className="text-[16px] font-serif font-bold text-warm-gray-200">2</span>
-          </div>
-          <div className="text-[18px] font-serif font-bold text-warm-gray-800 tracking-wider">看清真實數字</div>
-          <span className="text-[10px] font-medium text-alert-orange border border-alert-orange/30 bg-alert-orange/5 px-2 py-1 ml-auto tracking-widest rounded-full">需登入</span>
-        </div>
-        <div className="text-[11px] text-warm-gray-500 tracking-wide mb-2">報告範例（示意數字）</div>
-        <div className="flex gap-3 mb-6">
-          {[
-            { label:"淨資產",   val:"1,600萬", color:"text-warm-gray-800", bg:"bg-warm-gray-50", b:"border-warm-gray-200" },
-            { label:"儲蓄率",   val:"33%",     color:"text-cyan-base", bg:"bg-cyan-soft/50", b:"border-cyan-soft" },
-            { label:"財務分數", val:"78分",    color:"text-teal-base", bg:"bg-teal-soft/50", b:"border-teal-soft" },
-          ].map((c, i) => (
-            <div key={i} className={`flex-1 py-5 px-1 text-center border ${c.b} rounded-xl ${c.bg} transition-colors`}>
-              <div className="text-[11px] text-warm-gray-800/60 font-medium tracking-widest mb-2">{c.label}</div>
-              <div className={`text-[16px] font-serif font-bold tracking-wider ${c.color}`}>{c.val}</div>
+      <header className="px-6 pt-14 pb-10">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
+          <Eyebrow className="mb-6">Free · about 90 seconds</Eyebrow>
+        </motion.div>
+        <h1 className="font-serif leading-[1.14] tracking-[-0.01em]">
+          <motion.span className="block text-[44px] font-semibold text-warm-gray-800" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.08 }}>你的錢，</motion.span>
+          <motion.span className="block text-[44px] font-light italic text-brass" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.18 }}>都去哪了？</motion.span>
+        </h1>
+        <p className="mt-6 text-[15px] leading-[1.95] text-warm-gray-600 max-w-[19rem]">先了解你的財務心理類型，<br />再看清你的財務真實數字。</p>
+      </header>
+
+      <section className="px-6">
+        <div className="border-t border-warm-gray-800/80">
+          {/* 步驟 1 */}
+          <Reveal>
+            <div className="py-8 border-b border-warm-gray-300">
+              <div className="flex items-baseline gap-4 mb-4">
+                <span className="font-display text-[13px] tnum text-brass">01</span>
+                <h2 className="font-serif text-[24px] font-semibold text-warm-gray-800">你的理財類型？</h2>
+              </div>
+              <p className="text-[14px] leading-[1.95] text-warm-gray-600 pl-[2.1rem]">8 個問題，找出你對金錢的底層邏輯——穩健累積、成長放大，還是策略進化型？</p>
+              <div className="flex flex-wrap gap-2 mt-5 pl-[2.1rem]">
+                {types.map((t) => (
+                  <span key={t} className="text-[12px] tracking-[0.1em] text-warm-gray-800 border border-warm-gray-300 px-3 py-1.5 rounded-full">{t}</span>
+                ))}
+              </div>
+              <motion.button onClick={() => navigate("/quiz")} whileTap={{ scale: 0.97 }} className="mt-7 ml-[2.1rem] w-[calc(100%-2.1rem)] bg-forest text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-brass/60 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50">
+                開始測驗 <Ic n="arrow" size={16} color="currentColor" />
+              </motion.button>
             </div>
-          ))}
-        </div>
-        <div className="text-[13px] text-warm-gray-800/80 font-normal tracking-wide leading-loose bg-warm-gray-50 rounded-xl p-5 border border-warm-gray-200">
-          儲蓄率、負債比、緊急金、保障缺口、財務自由進度——一次全看清，並產生優先行動清單。
-        </div>
-      </motion.div>
+          </Reveal>
 
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="bg-cyan-base p-10 mt-2 text-center rounded-2xl mb-8 relative overflow-hidden shadow-lg">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-teal-base/50 rounded-full blur-2xl -mr-10 -mt-10" />
-        <div className="relative z-10 w-full">
-          <div className="text-[18px] font-serif font-bold text-white mb-3 tracking-widest">解鎖完整財務工具</div>
-          <div className="text-[13px] text-cyan-soft font-normal mb-8 leading-relaxed tracking-wide">
-            免費加入會員，即可使用財管家<br/>用數字看清自己的財務狀況
-          </div>
-          <button onClick={onLogin} className="w-full bg-white text-cyan-base border border-white py-4 rounded-2xl text-[13px] font-bold tracking-widest uppercase cursor-pointer hover:bg-cyan-soft transition-colors flex items-center justify-center gap-2 shadow-sm">
-            加入會員，立即開始 <Ic n="arrow" size={16} color="currentColor" />
-          </button>
+          {/* 步驟 2 */}
+          <Reveal delay={0.05}>
+            <div className="py-8 border-b border-warm-gray-300">
+              <div className="flex items-baseline gap-4 mb-4">
+                <span className="font-display text-[13px] tnum text-brass">02</span>
+                <h2 className="font-serif text-[24px] font-semibold text-warm-gray-800">看清真實數字</h2>
+                <span className="ml-auto text-[10px] tracking-[0.2em] text-brass border border-brass/40 px-2 py-0.5 rounded-full">需登入</span>
+              </div>
+              <div className="pl-[2.1rem]">
+                <div className="text-[11px] text-warm-gray-500 tracking-wide mb-3">報告範例（示意數字）</div>
+                <div className="grid grid-cols-3 border-y border-warm-gray-300 divide-x divide-warm-gray-300">
+                  {[
+                    { label: "淨資產", val: "1,600萬" },
+                    { label: "儲蓄率", val: "33%" },
+                    { label: "財務分數", val: "78分" },
+                  ].map((c, i) => (
+                    <div key={c.label} className={`py-4 ${i === 0 ? "pr-3" : "px-3"}`}>
+                      <div className="text-[11px] text-warm-gray-500 tracking-[0.1em] mb-1.5">{c.label}</div>
+                      <div className="font-display text-[20px] font-medium text-forest tnum">{c.val}</div>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-5 text-[14px] leading-[1.95] text-warm-gray-600">儲蓄率、負債比、緊急金、保障缺口、財務自由進度——一次看清，並產生優先行動清單。</p>
+              </div>
+            </div>
+          </Reveal>
         </div>
-      </motion.div>
+      </section>
+
+      <Reveal className="px-6 pt-14">
+        <section className="grain relative rounded-[28px] bg-forest text-white overflow-hidden px-7 pt-10 pb-8">
+          <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
+          <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">解鎖完整財務工具</h2>
+          <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">免費加入會員，即可使用財管家，<br />用數字看清自己的財務狀況。</p>
+          <motion.button onClick={onLogin} whileTap={{ scale: 0.97 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors flex items-center justify-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+            加入會員，立即開始 <Ic n="arrow" size={16} color="currentColor" />
+          </motion.button>
+        </section>
+      </Reveal>
     </div>
-  </div>
   );
 };

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Ic } from "@/src/components/Icons";
 import { useLocation } from "wouter";
+import { Eyebrow, Reveal, SPRING } from "@/src/components/ui";
 import liff from "@line/liff";
 import { authHeaders } from "@/src/constants/liff";
 
@@ -359,100 +360,112 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
   };
 
   const renderWelcome = () => (
-    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -30 }} className="px-6 pb-6 pt-10 relative z-10 flex flex-col items-center justify-center min-h-[100dvh]">
-      <div className="absolute top-6 left-6 z-20">
-        
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -30 }} className="px-6 pt-10 pb-8 relative z-10 flex flex-col min-h-[100dvh]">
+      <div className="font-display text-[12px] font-semibold tracking-[0.22em] text-warm-gray-800">OO SAY MONEY</div>
+
+      <div className="flex-1 flex flex-col justify-center py-10">
+        <Eyebrow className="mb-6">Money personality · 8 questions</Eyebrow>
+        <h1 className="font-serif text-warm-gray-800 leading-[1.18] tracking-[-0.01em]">
+          {["看見你", "和錢的"].map((t, i) => (
+            <motion.span key={t} className="block text-[44px] font-semibold" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.05 + i * 0.1 }}>{t}</motion.span>
+          ))}
+          <motion.span className="block text-[44px] font-light italic text-brass" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.27 }}>關係。</motion.span>
+        </h1>
+        <p className="mt-7 text-[15px] leading-[1.95] text-warm-gray-600 max-w-[19rem]">
+          每個人適合的節奏不同。透過 8 個簡單情境，快速看清你的財務輪廓。
+        </p>
+
+        <div className="mt-10 border-t border-warm-gray-800/80">
+          {[
+            { n: "01", t: "約 90 秒完成", d: "8 題，每題憑直覺選就好" },
+            { n: "02", t: "結果只有你看得到", d: "不會公開，也不需要先留資料" },
+          ].map((r) => (
+            <div key={r.n} className="flex gap-5 py-5 border-b border-warm-gray-300">
+              <span className="font-display text-[13px] tnum text-brass pt-0.5 w-6 shrink-0">{r.n}</span>
+              <div>
+                <div className="font-serif text-[17px] font-semibold text-warm-gray-800">{r.t}</div>
+                <div className="mt-1 text-[13px] text-warm-gray-600">{r.d}</div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="w-20 h-20 bg-warm-gray-100 border border-warm-gray-200 flex items-center justify-center mb-10 shrink-0">
-        <Ic n="money" size={32} color="#2D2D2A" />
-      </div>
-      <h1 className="text-[28px] font-serif font-bold text-warm-gray-800 leading-[1.4] mb-5 text-center tracking-wider">
-        探索您的<br/>客製化理財性格
-      </h1>
-      <div className="text-[13px] text-warm-gray-800/80 font-normal leading-loose text-center mb-10 border-l px-4 border-warm-gray-300 inline-block">
-        每個人適合的節奏不同。<br/>透過 8 個簡單情境，快速看清你的財務輪廓。
-      </div>
-
-      <div className="flex flex-col gap-3 mb-12 w-full max-w-[340px]">
-        <div className="bg-white rounded-2xl border border-warm-gray-200 px-5 py-4 font-normal text-[13px] text-warm-gray-800 tracking-wider flex items-center justify-center gap-3">
-          <div className="border border-teal-base p-0.5"><Ic n="check" size={14} color="#2D2D2A" /></div> 約 90 秒完成
-        </div>
-        <div className="bg-white rounded-2xl border border-warm-gray-200 px-5 py-4 font-normal text-[13px] text-warm-gray-800 tracking-wider flex items-center justify-center gap-3">
-          <div className="border border-teal-base p-0.5"><Ic n="shield" size={14} color="#2D2D2A" /></div> 結果皆為隱私，請安心填寫
-        </div>
-      </div>
-
-        <div className="w-full max-w-[340px] pb-4">
-          <button onClick={() => setStep(1)} className="w-full bg-teal-base text-white border border-teal-base py-4 text-[13px] font-medium tracking-widest uppercase cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2 rounded-2xl">
-            開始測驗 <Ic n="trend" size={16} color="currentColor" />
-          </button>
-        </div>
+      <motion.button
+        onClick={() => setStep(1)}
+        whileTap={{ scale: 0.97 }}
+        className="w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors flex items-center justify-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-forest focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50"
+      >
+        開始測驗 <Ic n="arrow" size={16} color="currentColor" />
+      </motion.button>
     </motion.div>
   );
 
   const renderQuestion = () => {
     const qIdx = step - 1;
     const q = QUESTIONS[qIdx];
+    const letters = ["A", "B", "C", "D", "E"];
     return (
-      <div className="flex-1 flex flex-col pt-10 px-5 relative z-10 pb-8 min-h-[100dvh]">
-        
-        <div className="flex justify-center items-center mb-8 relative z-20">
-          <div className="text-[12px] font-medium tracking-widest text-warm-gray-800 bg-white rounded-2xl border border-warm-gray-200 px-4 py-2">
-             第 {step} 題 <span className="text-warm-gray-200 mx-1">/</span> 8
+      <div className="flex-1 flex flex-col pt-10 px-6 relative z-10 pb-8 min-h-[100dvh]">
+        <div className="flex items-end justify-between mb-5">
+          <div className="font-display text-warm-gray-800 leading-none">
+            <span className="text-[44px] font-light tnum">{String(step).padStart(2, "0")}</span>
+            <span className="text-[14px] text-warm-gray-500 ml-1.5 tnum">/ 08</span>
           </div>
+          <div className="font-display text-[12px] font-semibold tracking-[0.22em] text-warm-gray-800 pb-1.5">OO SAY MONEY</div>
         </div>
-        
-        <div className="flex gap-2 mb-10 w-full max-w-sm mx-auto">
+
+        <div className="flex gap-1.5 mb-10 w-full" role="progressbar" aria-valuemin={1} aria-valuemax={8} aria-valuenow={step}>
           {QUESTIONS.map((_, i) => (
-            <div key={i} className={`h-[2px] flex-1 ${i < qIdx ? 'bg-teal-base' : 'bg-[#D6D3D1]'} overflow-hidden relative`}>
-              {i === qIdx && <motion.div initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: 0.5 }} className="absolute inset-0 bg-[#8B8A88]" />}
+            <div key={i} className="h-[2px] flex-1 bg-warm-gray-200 overflow-hidden relative">
+              {i <= qIdx && <motion.div initial={{ scaleX: i === qIdx ? 0 : 1 }} animate={{ scaleX: 1 }} style={{ originX: 0 }} transition={{ duration: 0.5, ease: "easeOut" }} className="absolute inset-0 bg-brass" />}
             </div>
           ))}
         </div>
 
-        <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full">
+        <div className="flex-1 flex flex-col justify-center w-full">
           {q.hint && (
-            <div className="text-[11px] font-normal tracking-widest text-warm-gray-800/80 mb-4 flex items-center gap-3">
-              <span className="w-6 h-[1px] bg-teal-base" />{q.hint}
+            <div className="text-[12px] tracking-[0.12em] text-brass mb-4 flex items-center gap-3">
+              <span className="w-6 h-px bg-brass" />{q.hint}
             </div>
           )}
-          <h2 className="text-[22px] font-serif font-bold text-warm-gray-800 leading-[1.6] mb-8 tracking-wider">
+          <h2 className="text-[25px] font-serif font-semibold text-warm-gray-800 leading-[1.55] mb-9 tracking-wide">
             {q.q}
           </h2>
 
-          <div className="flex flex-col gap-4 pb-8">
-            <AnimatePresence mode="wait">
-              <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.4 }} className="flex flex-col gap-3">
-                {q.opts.map((o, i) => {
-                  const isSelected = answers[qIdx] === o.type;
-                  return (
-                    <button key={i} onClick={() => handleSelect(qIdx, o.type)}
-                      className={`text-left px-5 py-5 transition-colors duration-300 text-[14px] cursor-pointer tracking-wide border rounded-2xl
-                        ${isSelected ? 'border-teal-base bg-white text-warm-gray-800 font-medium' : 'border-warm-gray-200 bg-white text-warm-gray-800/80 hover:bg-warm-gray-50'}
-                      `}
-                    >
-                      {o.text}
-                    </button>
-                  );
-                })}
-              </motion.div>
-            </AnimatePresence>
-          </div>
+          <AnimatePresence mode="wait">
+            <motion.div key={step} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }} className="flex flex-col gap-3 pb-6">
+              {q.opts.map((o, i) => {
+                const isSelected = answers[qIdx] === o.type;
+                return (
+                  <motion.button
+                    key={i}
+                    onClick={() => handleSelect(qIdx, o.type)}
+                    whileTap={{ scale: 0.985 }}
+                    aria-pressed={isSelected}
+                    className={`group text-left flex items-start gap-4 px-5 py-5 text-[15px] leading-[1.7] cursor-pointer tracking-wide border rounded-2xl transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-brass/60
+                      ${isSelected ? "border-forest bg-forest text-white" : "border-warm-gray-300 bg-transparent text-warm-gray-800 hover:border-warm-gray-800/50 hover:bg-warm-gray-100"}`}
+                  >
+                    <span className={`font-display text-[13px] pt-0.5 w-4 shrink-0 ${isSelected ? "text-brass-soft" : "text-brass"}`}>{letters[i]}</span>
+                    <span className="flex-1">{o.text}</span>
+                  </motion.button>
+                );
+              })}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     );
   };
 
   const renderLoading = () => (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 text-center min-h-[100dvh] relative z-10">
-      <div className="relative w-[72px] h-[72px] mb-8 mx-auto">
-         <motion.div animate={{ rotate: 360 }} transition={{ ease: "linear", duration: 1, repeat: Infinity }} className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#2a9068]" />
-         <motion.div animate={{ rotate: -360 }} transition={{ ease: "linear", duration: 0.7, repeat: Infinity }} className="absolute inset-[10px] rounded-full border-[3px] border-transparent border-r-[#f0a500]" />
-         <motion.div animate={{ rotate: 360 }} transition={{ ease: "linear", duration: 1.3, repeat: Infinity }} className="absolute inset-[20px] rounded-full border-[3px] border-transparent border-b-[#2a9068]" />
-      </div>
-      <motion.h2 key={"t"+loadMsg} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-[20px] font-bold text-warm-gray-800 mb-2">{MSGS[loadMsg].t}</motion.h2>
-      <motion.p key={"s"+loadMsg} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[14px] font-normal text-warm-gray-600 leading-relaxed whitespace-pre-line">{MSGS[loadMsg].s}</motion.p>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col justify-center px-8 min-h-[100dvh] relative z-10">
+      <Eyebrow className="mb-8">Analyzing</Eyebrow>
+      <svg viewBox="0 0 320 60" fill="none" className="w-full mb-10" style={{ overflow: "visible" }} aria-hidden="true">
+        <motion.path d="M2 48 C 50 46, 70 40, 104 34 S 160 30, 190 22 S 260 18, 318 6" stroke="var(--color-brass)" strokeWidth="1.5" strokeLinecap="round" initial={{ pathLength: 0 }} animate={{ pathLength: [0, 1, 1] }} transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }} />
+      </svg>
+      <motion.h2 key={"t" + loadMsg} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="font-serif text-[26px] font-semibold text-warm-gray-800 leading-snug mb-3">{MSGS[loadMsg].t}</motion.h2>
+      <motion.p key={"s" + loadMsg} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[14px] text-warm-gray-600 leading-[1.9] whitespace-pre-line">{MSGS[loadMsg].s}</motion.p>
     </motion.div>
   );
 
@@ -477,91 +490,89 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
     };
 
     return (
-      <div className="min-h-[100dvh] relative z-10 flex flex-col items-center" style={{ backgroundColor: main.bg }}>
-        <Confetti colors={confettiColorsMap[winner] || confettiColorsMap.plan} />
-        
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="w-full max-w-[480px]">
-          {/* Header */}
-          <div className="pt-8 px-6 pb-3 text-center relative">
-            <div className="inline-flex items-center justify-center gap-1.5 px-3 py-1 text-[11px] font-bold tracking-[0.06em] rounded-md mb-3.5 uppercase" style={{ background: `${main.color}18`, color: main.color, border: `1.5px solid ${main.color}30` }}>
-              <Ic n="trend" size={14} /> 你的財務性格
+      <div className="min-h-[100dvh] relative z-10 flex flex-col items-center bg-warm-gray-50">
+        <Confetti colors={['#B8793A', '#E9D6BC', '#0F3D33']} />
+
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={SPRING} className="w-full max-w-[480px]">
+          {/* Header：名字當主視覺，靠左 */}
+          <div className="pt-10 px-6 pb-8">
+            <div className="flex items-center justify-between mb-10">
+              <Eyebrow>Your money personality</Eyebrow>
+              <div className="font-display text-[12px] font-semibold tracking-[0.22em] text-warm-gray-800">OO SAY MONEY</div>
             </div>
-            
-            <div className="mb-2.5">
-              <div className="w-20 h-20 mx-auto rounded-2xl flex items-center justify-center relative bg-white" style={{ boxShadow: `0 6px 24px ${main.color}28`, color: main.color }}>
-                <Ic n={main.icon} size={36} color="currentColor" />
-              </div>
+            <div className="w-14 h-14 rounded-full flex items-center justify-center border border-warm-gray-300 bg-white mb-6" style={{ color: main.color }}>
+              <Ic n={main.icon} size={26} color="currentColor" />
             </div>
-            
-            <h2 className="text-[28px] font-black tracking-tight mb-1" style={{ color: main.text }}>
+            <h2 className="font-serif text-[48px] font-semibold leading-[1.1] tracking-[-0.01em] text-forest">
               {main.name}
             </h2>
             {sub && (
-              <div className="text-[13px] font-bold mt-1 mb-1 opacity-90" style={{ color: main.color }}>
-                （副：{sub.name}）
-              </div>
+              <div className="mt-3 text-[13px] tracking-[0.12em] text-brass">副：{sub.name}</div>
             )}
-            <p className="text-[14px] text-warm-gray-600 mb-0 leading-snug mt-1">
+            <p className="mt-5 text-[16px] text-warm-gray-600 leading-[1.9] max-w-[22rem]">
               {main.tagline}
             </p>
             {sub && main.subDescs[subType!] && (
-              <div className="text-[13px] text-warm-gray-500 bg-white/50 rounded-xl px-4 py-3 mt-3 text-left leading-relaxed">
+              <div className="text-[13px] text-warm-gray-600 border-l-2 border-brass-soft pl-4 mt-5 leading-[1.9]">
                 {main.subDescs[subType!]}
               </div>
             )}
           </div>
 
-          {/* Body Sections */}
-          <div className="px-5 pb-5">
-            <div className="bg-white rounded-[14px] p-5 mb-2.5 shadow-[0_1px_8px_rgba(0,0,0,0.05)] border border-black/5">
-              <div className="text-[11px] font-extrabold text-warm-gray-400 tracking-[0.1em] uppercase mb-2.5">你是這樣的人</div>
-              <div className="text-[14.5px] leading-[1.75] text-warm-gray-800">{main.desc}</div>
-            </div>
-
-            <div className="bg-[#fff8e1] border-l-[3px] border-[#f0a500] rounded-r-[14px] p-4 mb-3 shadow-[0_1px_8px_rgba(240,165,0,0.08)]">
-              <div className="text-[11px] font-extrabold text-[#8a5a00] tracking-[0.1em] uppercase mb-2 flex items-center gap-1.5">
-                <Ic n="info" size={14} color="currentColor" /> 你可能不知道
-              </div>
-              <div className="text-[14.5px] leading-[1.75] text-[#5a3a00] border-0">{main.insight}</div>
-            </div>
-
-            <div className="bg-white rounded-[14px] p-5 mb-2.5 shadow-[0_1px_8px_rgba(0,0,0,0.05)] border border-black/5">
-              <div className="text-[11px] font-extrabold text-warm-gray-400 tracking-[0.1em] uppercase mb-2.5">你可以從這裡開始</div>
-              <div className="text-[14.5px] leading-[1.75] text-warm-gray-800">{main.nextStep}</div>
+          {/* Body：細線分段，不用卡片 */}
+          <div className="px-6 pb-6">
+            <div className="border-t border-warm-gray-800/80">
+              {[
+                { k: "01", label: "你是這樣的人", body: main.desc },
+                { k: "02", label: "你可能不知道", body: main.insight, accent: true },
+                { k: "03", label: "你可以從這裡開始", body: main.nextStep },
+              ].map((sec, i) => (
+                <Reveal key={sec.k} delay={i * 0.05}>
+                  <div className={`py-7 border-b border-warm-gray-300 ${sec.accent ? "bg-warm-gray-100/70 -mx-6 px-6" : ""}`}>
+                    <div className="flex items-baseline gap-4 mb-3">
+                      <span className="font-display text-[13px] tnum text-brass">{sec.k}</span>
+                      <span className="text-[11px] font-medium tracking-[0.24em] uppercase text-warm-gray-600">{sec.label}</span>
+                    </div>
+                    <div className="text-[15px] leading-[1.95] text-warm-gray-800 pl-[2.1rem]">{sec.body}</div>
+                  </div>
+                </Reveal>
+              ))}
             </div>
 
             {/* 從分享／推播連結直接開啟結果頁時沒有真實作答紀錄，性格分佈圖沒有意義，先隱藏 */}
             {!resultOverride && (
-              <div className="bg-white rounded-[14px] p-5 mb-2.5 shadow-[0_1px_8px_rgba(0,0,0,0.05)] border border-black/5">
-                <div className="text-[11px] font-extrabold text-warm-gray-400 tracking-[0.1em] uppercase mb-2.5">你的性格分佈</div>
-                <div className="mt-1 flex flex-col gap-2">
-                  {Object.keys(barColors).map(k => (
-                    <div key={k} className="flex items-center gap-2.5">
-                      <div className="text-[11.5px] text-warm-gray-800 font-bold w-[56px] shrink-0 tracking-tight">{barLabels[k]}</div>
-                      <div className="flex-1 h-[7px] bg-warm-gray-200 rounded-full overflow-hidden">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${pctMap[k] || 0}%` }}
-                          transition={{ duration: 1.1, ease: 'easeOut', delay: 0.3 }}
-                          className="h-full rounded-full"
-                          style={{ backgroundColor: k === winner ? barColors[k] : `${barColors[k]}88` }}
-                        />
+              <Reveal>
+                <div className="pt-9">
+                  <Eyebrow className="mb-5">你的性格分佈</Eyebrow>
+                  <div className="flex flex-col gap-4">
+                    {Object.keys(barColors).map(k => (
+                      <div key={k} className="flex items-center gap-3">
+                        <div className={`text-[12px] w-[64px] shrink-0 tracking-wide ${k === winner ? "text-warm-gray-800 font-medium" : "text-warm-gray-500"}`}>{barLabels[k]}</div>
+                        <div className="flex-1 h-px bg-warm-gray-300 relative">
+                          <motion.div
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: (pctMap[k] || 0) / 100 }}
+                            style={{ originX: 0 }}
+                            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+                            className={`absolute left-0 -top-[1px] h-[3px] w-full rounded-full ${k === winner ? "bg-brass" : "bg-warm-gray-400"}`}
+                          />
+                        </div>
+                        <div className="font-display text-[13px] tnum text-warm-gray-600 w-[36px] text-right shrink-0">{pctMap[k] || 0}%</div>
                       </div>
-                      <div className="text-[12px] text-warm-gray-500 font-bold w-[32px] text-right shrink-0">{pctMap[k] || 0}%</div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </Reveal>
             )}
           </div>
 
           {/* CTA Zone */}
           <div className="px-5 pb-8 mt-2">
-            <div className="bg-teal-base p-8 flex flex-col justify-center items-center text-center rounded-2xl shadow-lg relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-base/20 rounded-full blur-2xl -mr-10 -mt-10" />
+            <div className="bg-teal-base p-8 flex flex-col justify-center items-center text-center rounded-[28px] relative overflow-hidden grain">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-brass/20 rounded-full blur-2xl -mr-10 -mt-10" />
               
               <div className="text-[14px] text-teal-soft/90 font-bold mb-2 tracking-wide relative z-10">恭喜你完成測驗</div>
-              <h3 className="text-[16px] font-serif font-bold text-[#FFD166] mb-3 tracking-wide relative z-10">你的結果，可以變成一個實際的計劃</h3>
+              <h3 className="text-[16px] font-serif font-bold text-brass-soft mb-3 tracking-wide relative z-10">你的結果，可以變成一個實際的計劃</h3>
               <p className="text-[14px] text-white/90 font-normal mb-3 leading-relaxed relative z-10">
                 {main.ctaNote}
               </p>
@@ -589,8 +600,8 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
                   color: m.color
                 }));
                 onComplete();
-              }} className="w-full bg-white text-teal-base py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all flex justify-center items-center gap-2 shadow-sm relative z-10">
-                 加入會員
+              }} className="w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] active:scale-[0.98] transition-all flex justify-center items-center gap-2 relative z-10">
+                 免費加入會員
               </button>
 
               <button onClick={() => {
@@ -598,7 +609,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
                 const m = TYPES[res.winner] || {};
                 const s = res.subType ? TYPES[res.subType] : null;
                 shareQuizResult(m.name || '', s ? s.name : '', m.color || '');
-              }} className="w-full mt-3 bg-transparent text-white py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer border border-white/40 hover:bg-white/10 transition-all flex justify-center items-center gap-2 relative z-10">
+              }} className="w-full mt-3 bg-transparent text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer border border-white/30 hover:bg-white/10 transition-all flex justify-center items-center gap-2 relative z-10">
                  分享結果給朋友
               </button>
             </div>
