@@ -17,7 +17,7 @@ export const GRIDS: Record<string, any> = {
     items: [
       { key:"defense",    label:"財務防線",   icon:"shield",   bg:"#F4EFE5", accent:"#3E4E42", sub:"保障" },
       { key:"money_tool", label:"錢的流向",   icon:"money",    bg:"#F4EFE5", accent:"#3E4E42", sub:"財管家" },
-      { key:"appointment",label:"預約聊聊",   icon:"calendar", bg:"#F4EFE5", accent:"#3E4E42", sub:"預約" },
+      { key:"appointment",label:"預約聊聊",   icon:"calendar", bg:"#F4EFE5", accent:"#3E4E42", sub:"LINE 對話" },
       { key:"about",      label:"認識我們",   icon:"book",     bg:"#F4EFE5", accent:"#3E4E42", sub:"我們能幫你什麼" },
       { key:"inspire",    label:"理財靈感",   icon:"star",     bg:"#F4EFE5", accent:"#3E4E42", sub:"理財文章" },
       { key:"blueprint",  label:"啟富藍圖",   icon:"map",      bg:"#F4EFE5", accent:"#3E4E42", sub:"月配息說明頁" },
