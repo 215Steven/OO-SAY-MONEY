@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { THEMES, ROLE_META } from "@/src/constants/roles";
 import { LoginModal } from "@/src/components/LoginModal";
 import { useLiff } from "@/src/hooks/useLiff";
+import { Loading } from "@/src/components/ui";
 // 修法：RegisterPage 改為「直接」引入（不再 lazy load）。
 // 從 故事起點／解鎖更多／錢去哪了 等子頁面點擊「加入會員」時，是透過
 // RouteWithRegister 內部的 showReg state 切換顯示 RegisterPage，
@@ -199,7 +200,7 @@ export default function MainApp() {
 
       <div className="flex-1 w-full bg-warm-gray-50">
         <ErrorBoundary>
-        <Suspense fallback={<div className="p-10 text-center text-slate-400 font-medium">載入中…</div>}>
+        <Suspense fallback={<Loading />}>
           {/* 修法：AnimatePresence 在路由切換時偶爾會讓「離場」的舊頁面卡在
               DOM 中沒有真正移除（畫面卡在舊頁面下方，需要往下捲動才看得到
               新頁面內容，看起來就像沒反應／空白）。改直接渲染 Switch，讓
@@ -220,7 +221,7 @@ export default function MainApp() {
               {isReady || isMockMode ? (
                 <PageTransition><PublicGrid onSelect={handlePublic} /></PageTransition>
               ) : (
-                <div className="p-10 text-center text-slate-400 font-medium">載入中…</div>
+                <Loading />
               )}
             </Route>
             <Route path="/about">
