@@ -9,11 +9,11 @@ export type QuizTypeKey = "guard" | "enjoy" | "anxiety" | "plan";
 // 這個常數同時也寫死在 src/pages/QuizPage.tsx，兩邊要保持一致。
 export const QUIZ_RESULT_TRIGGER_TEXT = "我做完了 90 秒財務性格測驗！";
 
-// 這兩個連結對應 src/constants/liff.ts 裡 /quiz、/appointment 的 LIFF ID，
-// 沿用前端 QuizPage.tsx 既有的分享連結，維持單一事實來源的精神
-// （若日後 LIFF ID 變動，這裡跟前端都要一起改）。
+// 測驗連結對應 src/constants/liff.ts 裡 /quiz 的 LIFF ID，
+// 沿用前端 QuizPage.tsx 既有的分享連結（若日後 LIFF ID 變動，這裡跟前端都要一起改）。
+// 預約頁已移除，改為開啟官方帳號聊天室並預填「我想預約財務健診」。
 const QUIZ_LIFF_URL = "https://liff.line.me/2007659354-EofSbRGu";
-const APPOINTMENT_LIFF_URL = "https://liff.line.me/2007659354-okKabZ27";
+const BOOK_CHAT_URL = `https://line.me/R/oaMessage/@oosaymoney/?${encodeURIComponent("我想預約財務健診")}`;
 
 // 內容以後端為準（只保留組訊息需要的欄位），不接受前端傳自由文字，
 // 避免有心人士拿官方帳號的推播權限發送未經檢查的內容。
@@ -120,7 +120,7 @@ export function buildQuizResultFlex(winner: QuizTypeKey, subType?: QuizTypeKey |
           {
             type: "button",
             style: "link",
-            action: { type: "uri", label: "預約免費財務健診", uri: APPOINTMENT_LIFF_URL },
+            action: { type: "uri", label: "預約免費財務健診", uri: BOOK_CHAT_URL },
           },
         ],
       },
