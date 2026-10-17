@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Ic } from "@/src/components/Icons";
 import { InputBox } from "@/src/components/ui/InputBox";
 import { motion } from "motion/react";
+import { openLine } from "@/src/constants/links";
 import { fmt } from "@/src/utils/formatters";
 
 // 欄位值允許 number（demo 預設值）或 string（使用者輸入中，
@@ -182,13 +183,13 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
   } else if (fixedExp === 0) {
     passiveColor = 'text-teal-base';
     passiveBg = 'bg-cyan-soft/30';
-    passiveTitle = '已有被動收入 🎉';
+    passiveTitle = '已有被動收入 ';
     passiveMsg = `每月被動收入 ${fmt(passive)} 元。填入固定支出後可計算財務自由進度。`;
     passiveMsgColor = 'text-teal-800';
   } else if (passivePct >= 100) {
     passiveColor = 'text-teal-base';
     passiveBg = 'bg-cyan-soft/30';
-    passiveTitle = '🎉 已達財務自由基礎！';
+    passiveTitle = '已達財務自由基礎！';
     passiveMsg = `被動收入（${fmt(passive)} 元）已超過固定支出（${fmt(fixedExp)} 元）。主動收入可以完全轉為財富累積，恭喜！`;
     passiveMsgColor = 'text-teal-800';
   } else if (passivePct >= 75) {
@@ -227,9 +228,9 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
   const score = Math.round(expScore + efScore + liabScore + invScore);
 
   let status, sub, colorClass, borderClass, bgClass;
-  if (score >= 80) { status = '✅ 財務體質良好'; colorClass = 'text-teal-base'; borderClass = 'border-teal-soft'; bgClass = 'bg-cyan-soft/30'; sub = '整體結構穩健。深度諮詢可找到下一個成長機會'; }
-  else if (score >= 60) { status = '📊 有優化空間'; colorClass = 'text-alert-orange'; borderClass = 'border-alert-orange/30'; bgClass = 'bg-alert-orange/5'; sub = '投資動能待啟動，被動收入尚未建立'; }
-  else { status = '⚠️ 建議優先改善'; colorClass = 'text-rose-500'; borderClass = 'border-rose-200'; bgClass = 'bg-rose-50'; sub = '財務結構需要調整，越早規劃空間越大'; }
+  if (score >= 80) { status = '財務體質良好'; colorClass = 'text-teal-base'; borderClass = 'border-teal-soft'; bgClass = 'bg-cyan-soft/30'; sub = '整體結構穩健。深度諮詢可找到下一個成長機會'; }
+  else if (score >= 60) { status = '有優化空間'; colorClass = 'text-alert-orange'; borderClass = 'border-alert-orange/30'; bgClass = 'bg-alert-orange/5'; sub = '投資動能待啟動，被動收入尚未建立'; }
+  else { status = '建議優先改善'; colorClass = 'text-alert-red'; borderClass = 'border-alert-red/30'; bgClass = 'bg-alert-red/5'; sub = '財務結構需要調整，越早規劃空間越大'; }
 
   const insRate = income > 0 ? Math.round((insurance / income) * 100) : 0;
   // 標準化指標達成率（0~1），1 代表達標，用於篩選最需要關注的項目
@@ -240,14 +241,14 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
   const mDebtSvc = Math.max(0, Math.min(1, (0.6 - debtSvcRatio) / 0.2)); // 0.4 以下為 1，0.6 以上為 0
 
   const metricsList = [
-    { pct: mExp, icon: '💸', name: '收支比', weak: `固定支出佔收入 ${expRatePct}%，偏高。每月可動用空間不足`, strong: `收支結構健康，固定支出控制得宜` },
-    { pct: mEf, icon: '🛡️', name: '緊急預備金', weak: `緊急預備金約 ${Math.round(efMonths * 10) / 10} 個月，建議補足至 6 個月`, strong: `緊急預備金充足。可以開始思考如何讓資金更積極配置` },
-    { pct: mLiab, icon: '📉', name: '負債比', weak: `負債比 ${Math.round(liabRatio * 100)}%，偏高。優先降低高利率負債`, strong: `負債比健康。財務彈性佳，適合進一步規劃資產配置` },
-    { pct: mInv, icon: '📈', name: '投資比例', weak: `投資佔總資產 ${Math.round(investRatio * 100)}%，偏低。資金複利效果尚未啟動`, strong: `投資比例不錯。進一步優化配置結構可放大報酬` },
-    { pct: mDebtSvc, icon: '💳', name: '償還債務率', weak: `每月負債還款佔收入 ${debtSvcPct}%，偏高。若含信用卡或信用貸款等高利率負債，建議優先償還`, strong: `每月還款壓力健康，財務彈性佳` },
+    { pct: mExp, icon: '', name: '收支比', weak: `固定支出佔收入 ${expRatePct}%，偏高。每月可動用空間不足`, strong: `收支結構健康，固定支出控制得宜` },
+    { pct: mEf, icon: '', name: '緊急預備金', weak: `緊急預備金約 ${Math.round(efMonths * 10) / 10} 個月，建議補足至 6 個月`, strong: `緊急預備金充足。可以開始思考如何讓資金更積極配置` },
+    { pct: mLiab, icon: '', name: '負債比', weak: `負債比 ${Math.round(liabRatio * 100)}%，偏高。優先降低高利率負債`, strong: `負債比健康。財務彈性佳，適合進一步規劃資產配置` },
+    { pct: mInv, icon: '', name: '投資比例', weak: `投資佔總資產 ${Math.round(investRatio * 100)}%，偏低。資金複利效果尚未啟動`, strong: `投資比例不錯。進一步優化配置結構可放大報酬` },
+    { pct: mDebtSvc, icon: '', name: '償還債務率', weak: `每月負債還款佔收入 ${debtSvcPct}%，偏高。若含信用卡或信用貸款等高利率負債，建議優先償還`, strong: `每月還款壓力健康，財務彈性佳` },
   ];
-  if (insRate > 15) metricsList.push({ pct: Math.max(0, 1 - (insRate - 15) / 10), icon: '🔍', name: '保費比例', weak: `保費佔收入 ${insRate}%，偏高。建議檢視是否有重疊保單`, strong: '' });
-  else if (insRate <= 0 && insurance === 0) metricsList.push({ pct: 0.2, icon: '🛡️', name: '保費', weak: `尚未填寫保險狀態。保障缺口是最常被忽略的風險`, strong: '' });
+  if (insRate > 15) metricsList.push({ pct: Math.max(0, 1 - (insRate - 15) / 10), icon: '', name: '保費比例', weak: `保費佔收入 ${insRate}%，偏高。建議檢視是否有重疊保單`, strong: '' });
+  else if (insRate <= 0 && insurance === 0) metricsList.push({ pct: 0.2, icon: '', name: '保費', weak: `尚未填寫保險狀態。保障缺口是最常被忽略的風險`, strong: '' });
 
   const weakest = metricsList.reduce((a, b) => a.pct < b.pct ? a : b);
   const isWeakGood = weakest.pct >= 0.85;
@@ -256,11 +257,11 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
   if (income === 0) {
     momTxt = '填入月收入後，這裡會顯示你每月結餘的使用狀況。'; momPct = '—';
   } else if (surplus <= 0) {
-    momTxt = '目前固定支出已超過月收入，建議優先審視各項支出結構。'; momPct = '⚠️';
+    momTxt = '目前固定支出已超過月收入，建議優先審視各項支出結構。'; momPct = '';
   } else if (dca === 0) {
     momTxt = `你每月有 ${fmt(surplus)} 元的結餘，但目前沒有定期投資計畫。這筆錢是否有更好的去處？`; momPct = '0%';
   } else if (idle < 0) {
-    momTxt = `定時定額（${fmt(dca)} 元）已超過月結餘，需要調整支出或投資金額。`; momPct = '⚠️';
+    momTxt = `定時定額（${fmt(dca)} 元）已超過月結餘，需要調整支出或投資金額。`; momPct = '';
   } else {
     momTxt = `每月結餘 ${fmt(surplus)} 元，其中 ${fmt(dca)} 元（${dcaRate}%）已在定時定額，剩餘 ${fmt(idle)} 元閒置。${idle > 5000 ? '這筆閒置還有配置空間。' : '配置比例不錯！'}`;
     momPct = dcaRate + '%';
@@ -316,15 +317,15 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
   const a3 = income>0 ? Math.round((insurance / income) * 100) : 0;
 
   const msgs = [];
-  if (a1 > t1 + 5) msgs.push({ icon: '⚠️', text: `生活必需支出佔收入 ${a1}%，建議控制在 ${t1}% 以內`, color: 'text-alert-orange' });
-  if (a2 < t2 * 0.6) msgs.push({ icon: '📉', text: `儲蓄理財比例 ${a2}%，建議提升至 ${t2}%，這是財富成長的關鍵`, color: 'text-alert-orange' });
-  if (a2 >= t2) msgs.push({ icon: '✅', text: `儲蓄理財比例 ${a2}%，已達建議標準，繼續保持`, color: 'text-teal-base' });
-  if (a3 > 15) msgs.push({ icon: '🔍', text: `保費佔收入 ${a3}%，偏高。建議檢視是否有重疊保單`, color: 'text-rose-500' });
-  else if (a3 < 8 && insurance > 0) msgs.push({ icon: '🛡️', text: `保費佔收入 ${a3}%，偏低。現有保障是否足夠值得確認`, color: 'text-alert-orange' });
-  else if (a3 >= 8 && a3 <= 15) msgs.push({ icon: '✅', text: `保費比例 ${a3}%，落在合理範圍`, color: 'text-teal-base' });
-  else if (a3 === 0) msgs.push({ icon: '🛡️', text: `尚未填入保費。建議確認現有保障是否完整`, color: 'text-warm-gray-600' });
+  if (a1 > t1 + 5) msgs.push({ icon: '', text: `生活必需支出佔收入 ${a1}%，建議控制在 ${t1}% 以內`, color: 'text-alert-orange' });
+  if (a2 < t2 * 0.6) msgs.push({ icon: '', text: `儲蓄理財比例 ${a2}%，建議提升至 ${t2}%，這是財富成長的關鍵`, color: 'text-alert-orange' });
+  if (a2 >= t2) msgs.push({ icon: '', text: `儲蓄理財比例 ${a2}%，已達建議標準，繼續保持`, color: 'text-teal-base' });
+  if (a3 > 15) msgs.push({ icon: '', text: `保費佔收入 ${a3}%，偏高。建議檢視是否有重疊保單`, color: 'text-alert-red' });
+  else if (a3 < 8 && insurance > 0) msgs.push({ icon: '', text: `保費佔收入 ${a3}%，偏低。現有保障是否足夠值得確認`, color: 'text-alert-orange' });
+  else if (a3 >= 8 && a3 <= 15) msgs.push({ icon: '', text: `保費比例 ${a3}%，落在合理範圍`, color: 'text-teal-base' });
+  else if (a3 === 0) msgs.push({ icon: '', text: `尚未填入保費。建議確認現有保障是否完整`, color: 'text-warm-gray-600' });
 
-  if (msgs.length === 0) msgs.push({ icon: '✅', text: `整體配比接近建議水準，結構不錯`, color: 'text-teal-base' });
+  if (msgs.length === 0) msgs.push({ icon: '', text: `整體配比接近建議水準，結構不錯`, color: 'text-teal-base' });
 
   let insightQ = '', insightCta = '';
   if (surplus <= 0) {
@@ -364,7 +365,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
     `負債比：${Math.round(liabRatio*100)}%`,
     `投資比例：${Math.round(investRatio*100)}%`,
     `━━━━━━━━━━━━━━━`,
-    `想預約免費諮詢，請回覆此訊息 🙌`
+    `想預約免費諮詢，請回覆此訊息 `
   ].join('\n');
 
   const sendToLineOA = () => {
@@ -385,14 +386,14 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
 
           <div className="w-full flex flex-col gap-3 mt-2">
             {hasDraft && (
-              <button onClick={continueDraft} className="w-full bg-cyan-soft/40 text-teal-base border border-teal-soft py-4 rounded-2xl text-[13px] font-bold tracking-widest cursor-pointer hover:bg-cyan-soft/60 transition-colors flex items-center justify-center gap-2">
+              <button onClick={continueDraft} className="w-full bg-cyan-soft/40 text-teal-base border border-teal-soft py-4 rounded-full text-[13px] font-medium tracking-[0.2em] cursor-pointer hover:bg-cyan-soft/60 transition-colors flex items-center justify-center gap-2">
                 繼續上次填到一半的健檢 <Ic n="arrowRight" size={16} color="currentColor" />
               </button>
             )}
-            <button onClick={startReal} className="w-full bg-teal-base text-white border border-teal-base py-5 rounded-2xl text-[14px] font-bold tracking-widest uppercase cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2 shadow-md">
+            <button onClick={startReal} className="w-full bg-teal-base text-white border border-teal-base py-5 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2">
               {hasDraft ? "重新開始填寫" : "開始填寫我的健檢"} <Ic n="arrowRight" size={18} color="currentColor" />
             </button>
-            <button onClick={startDemo} className="w-full bg-white text-warm-gray-700 border border-warm-gray-200 py-4 rounded-2xl text-[13px] font-medium tracking-widest cursor-pointer hover:bg-warm-gray-100 transition-colors">
+            <button onClick={startDemo} className="w-full bg-white text-warm-gray-700 border border-warm-gray-200 py-4 rounded-full text-[13px] font-medium tracking-widest cursor-pointer hover:bg-warm-gray-100 transition-colors">
               先看看範例報告長什麼樣子
             </button>
           </div>
@@ -406,7 +407,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
       <div className="min-h-[100dvh] bg-warm-gray-50 flex flex-col items-center pb-28 relative">
         <div className="bg-white border-b border-warm-gray-200 w-full pt-12 pb-6 px-6 sticky top-0 z-30 shrink-0">
           <div className="max-w-sm mx-auto flex flex-col items-center gap-4">
-            <div className="text-[12px] font-medium tracking-widest text-warm-gray-800 bg-warm-gray-50 rounded-2xl border border-warm-gray-200 px-4 py-2">
+            <div className="text-[12px] font-medium tracking-widest text-warm-gray-800 bg-warm-gray-50 rounded-lg border border-warm-gray-200 px-4 py-2">
               第 {wizardStep + 1} 步 <span className="text-warm-gray-300 mx-1">/</span> {WIZARD_TITLES.length} · {WIZARD_TITLES[wizardStep]}
             </div>
             <div className="flex gap-2 w-full">
@@ -422,7 +423,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
         <div className="px-5 w-full max-w-sm mx-auto relative z-10 pt-6 flex flex-col gap-6">
 
           {wizardStep === 0 && (
-            <div className="bg-white border border-warm-gray-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-white/60 border border-warm-gray-300 rounded-lg overflow-hidden">
               <div className="p-6 border-b border-warm-gray-200">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="text-[16px] font-serif font-bold text-warm-gray-800 tracking-wider">第一部分 · 資產概況</div>
@@ -430,7 +431,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
                 <div className="text-[12px] text-warm-gray-600 font-normal">填入大約金額（單位：萬元）</div>
               </div>
               <div className="p-5 flex flex-col gap-4">
-                <div className="text-[12px] font-bold tracking-widest text-teal-base uppercase pb-1 border-b border-warm-gray-100 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-teal-base"/> 資產</div>
+                <div className="text-[12px] font-medium tracking-[0.2em] text-teal-base uppercase pb-1 border-b border-warm-gray-100 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-teal-base"/> 資產</div>
                 <div className="grid grid-cols-2 gap-3">
                   <InputBox label="現金存款" hint="活存、定存" value={data.a_cash} onChange={(e:any)=>set("a_cash",e.target.value)} unit="萬" />
                   <InputBox label="投資部位" hint="股票、基金" value={data.a_invest} onChange={(e:any)=>set("a_invest",e.target.value)} unit="萬" />
@@ -439,7 +440,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
                   </div>
                 </div>
 
-                <div className="text-[12px] font-bold tracking-widest text-rose-500 uppercase pb-1 border-b border-warm-gray-100 flex items-center gap-2 mt-2"><span className="w-1.5 h-1.5 rounded-full bg-rose-500"/> 負債</div>
+                <div className="text-[12px] font-medium tracking-[0.2em] text-alert-red uppercase pb-1 border-b border-warm-gray-100 flex items-center gap-2 mt-2"><span className="w-1.5 h-1.5 rounded-full bg-alert-red"/> 負債</div>
                 <div className="grid grid-cols-2 gap-3">
                   <InputBox label="房貸餘額" value={data.l_mortgage} onChange={(e:any)=>set("l_mortgage",e.target.value)} unit="萬" />
                   <InputBox label="其他負債" hint="信貸、信卡" value={data.l_other} onChange={(e:any)=>set("l_other",e.target.value)} unit="萬" />
@@ -448,13 +449,13 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
                 <div className="flex bg-warm-gray-50 rounded-xl p-4 gap-4 mt-2">
                   <div className="flex-1">
                     <div className="text-[10px] tracking-widest text-warm-gray-600 mb-1 font-medium">淨資產</div>
-                    <div className={`text-[18px] font-serif font-bold ${netWorth>=0?'text-teal-base':'text-rose-500'}`}>{fmt(netWorth)}<span className="text-[11px] font-normal ml-1">萬</span></div>
+                    <div className={`text-[18px] font-serif font-bold ${netWorth>=0?'text-teal-base':'text-alert-red'}`}>{fmt(netWorth)}<span className="text-[11px] font-normal ml-1">萬</span></div>
                   </div>
                 </div>
 
                 {wanWarnFields.length > 0 && (
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-[11px] text-amber-800 leading-relaxed">
-                    ⚠️「{wanWarnFields.map(f => f.label).join('、')}」填入的數字看起來非常大，這裡的單位是「萬元」，是否不小心把「元」當成「萬」填了？請確認一下。
+                    「{wanWarnFields.map(f => f.label).join('、')}」填入的數字看起來非常大，這裡的單位是「萬元」，是否不小心把「元」當成「萬」填了？請確認一下。
                   </div>
                 )}
               </div>
@@ -462,7 +463,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
           )}
 
           {wizardStep === 1 && (
-            <div className="bg-white border border-warm-gray-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-white/60 border border-warm-gray-300 rounded-lg overflow-hidden">
               <div className="p-6 border-b border-warm-gray-200">
                 <div className="text-[16px] font-serif font-bold text-warm-gray-800 tracking-wider">第二部分 · 每月收入</div>
                 <div className="text-[12px] text-warm-gray-600 font-normal mt-2">薪水、股息、租金等（單位：元）</div>
@@ -477,13 +478,13 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
           )}
 
           {wizardStep === 2 && (
-            <div className="bg-white border border-warm-gray-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-white/60 border border-warm-gray-300 rounded-lg overflow-hidden">
               <div className="p-6 border-b border-warm-gray-200">
                 <div className="text-[16px] font-serif font-bold text-warm-gray-800 tracking-wider">第三部分 · 每月固定支出</div>
                 <div className="text-[12px] text-warm-gray-600 font-normal mt-2">每個月固定要付的錢（單位：元）</div>
               </div>
               <div className="p-5 flex flex-col gap-4">
-                <div className="text-[12px] font-bold tracking-widest text-alert-orange uppercase pb-1 border-b border-warm-gray-100 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-alert-orange"/> 固定支出</div>
+                <div className="text-[12px] font-medium tracking-[0.2em] text-alert-orange uppercase pb-1 border-b border-warm-gray-100 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-alert-orange"/> 固定支出</div>
                 <div className="grid grid-cols-2 gap-3">
                   <InputBox label="生活費" hint="飲食、娛樂" value={data.e_living} onChange={(e:any)=>set("e_living",e.target.value)} unit="元" />
                   <InputBox label="住居費" hint="房租/房貸" value={data.e_housing} onChange={(e:any)=>set("e_housing",e.target.value)} unit="元" />
@@ -495,20 +496,20 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
           )}
 
           {wizardStep === 3 && (
-            <div className="bg-white border border-warm-gray-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-white/60 border border-warm-gray-300 rounded-lg overflow-hidden">
               <div className="p-6 border-b border-warm-gray-200">
                 <div className="text-[16px] font-serif font-bold text-warm-gray-800 tracking-wider">第四部分 · 定期定額與總覽</div>
                 <div className="text-[12px] text-warm-gray-600 font-normal mt-2">最後一步，順便看看目前的收支總覽</div>
               </div>
               <div className="p-5 flex flex-col gap-4">
                 <div className="flex flex-col bg-cyan-soft/10 border border-teal-soft/80 p-4 rounded-xl">
-                  <div className="text-[12px] font-bold tracking-widest text-[#7c3aed] uppercase pb-2 flex items-center gap-2">
+                  <div className="text-[12px] font-medium tracking-[0.2em] text-[#7c3aed] uppercase pb-2 flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#7c3aed]"/> 定時定額 / 投資存錢
                   </div>
                   <InputBox label="每月投資" hint="基金、ETF定存" value={data.e_dca} onChange={(e:any)=>set("e_dca",e.target.value)} unit="元" highlight />
                 </div>
 
-                <div className="bg-white border-2 border-warm-gray-100 rounded-2xl p-5 mt-2 flex flex-col gap-3 shadow-sm">
+                <div className="bg-white border-2 border-warm-gray-100 rounded-lg p-5 mt-2 flex flex-col gap-3">
                   <div className="flex justify-between items-center pb-2 border-b border-warm-gray-50">
                     <span className="text-[13px] font-medium text-warm-gray-800 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-teal-base" />主動收入</span>
                     <span className="text-[14px] font-serif font-bold text-teal-base">+ {fmt(active)} 元</span>
@@ -531,7 +532,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
 
                   <div className="flex justify-between items-center pt-2 pb-3 border-b-2 border-warm-gray-100">
                     <span className="text-[14px] font-bold text-warm-gray-800">月結餘</span>
-                    <span className={`text-[18px] font-serif font-bold ${surplus>=0?'text-teal-base':'text-rose-500'}`}>{surplus>=0?'':'-'}{fmt(Math.abs(surplus))} 元 <span className={`text-[13px] font-bold ml-1 ${surplus>=0?'text-teal-base':'text-rose-500'}`}>({savRate}%)</span></span>
+                    <span className={`text-[18px] font-serif font-bold ${surplus>=0?'text-teal-base':'text-alert-red'}`}>{surplus>=0?'':'-'}{fmt(Math.abs(surplus))} 元 <span className={`text-[13px] font-bold ml-1 ${surplus>=0?'text-teal-base':'text-alert-red'}`}>({savRate}%)</span></span>
                   </div>
 
                   <div className="h-2" />
@@ -545,15 +546,15 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
 
                   <div className="flex justify-between items-center pt-2">
                     <span className="text-[13px] font-medium text-warm-gray-500 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-warm-gray-300" />閒置結餘 (尚未配置)</span>
-                    <span className={`text-[14px] font-serif font-bold ${idle>=0?'text-warm-gray-500':'text-rose-500'}`}>{idle>=0 ? `${fmt(idle)} 元` : `⚠️ 超支 ${fmt(Math.abs(idle))} 元`}</span>
+                    <span className={`text-[14px] font-serif font-bold ${idle>=0?'text-warm-gray-500':'text-alert-red'}`}>{idle>=0 ? `${fmt(idle)} 元` : `超支 ${fmt(Math.abs(idle))} 元`}</span>
                   </div>
                 </div>
 
                 {/* 理財動能卡 */}
-                <div className="bg-[#f5f3ff] border border-[#d8b4fe] rounded-2xl p-5 mt-2 flex flex-col md:flex-row items-center justify-between gap-5 relative overflow-hidden shadow-sm">
-                  <div className="absolute top-0 right-0 p-4 opacity-5 text-[80px] -mt-6">📈</div>
+                <div className="bg-brass-soft/50 border border-brass/30 rounded-lg p-5 mt-2 flex flex-col md:flex-row items-center justify-between gap-5 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-4 opacity-5 text-[80px] -mt-6"></div>
                   <div className="flex items-center gap-4 relative z-10 w-full">
-                    <div className="text-[28px] shrink-0">📈</div>
+                    <div className="text-[28px] shrink-0"></div>
                     <div className="flex-1 text-left">
                       <div className="text-[13px] font-bold text-[#7c3aed] mb-1">理財動能</div>
                       <div className="text-[12px] text-[#6d28d9] leading-relaxed">{momTxt}</div>
@@ -568,10 +569,10 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
         </div>
 
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-warm-gray-200 px-5 py-4 flex gap-3 max-w-[430px] mx-auto z-40">
-          <button onClick={prevWizardStep} className="flex-1 bg-white text-warm-gray-700 border border-warm-gray-200 py-4 rounded-2xl text-[13px] font-bold tracking-widest uppercase cursor-pointer hover:bg-warm-gray-50 transition-colors">
+          <button onClick={prevWizardStep} className="flex-1 bg-white text-warm-gray-700 border border-warm-gray-200 py-4 rounded-full text-[13px] font-medium tracking-[0.2em] cursor-pointer hover:bg-warm-gray-50 transition-colors">
             上一步
           </button>
-          <button onClick={nextWizardStep} className="flex-[2] bg-teal-base text-white border border-teal-base py-4 rounded-2xl text-[13px] font-bold tracking-widest uppercase cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2">
+          <button onClick={nextWizardStep} className="flex-[2] bg-teal-base text-white border border-teal-base py-4 rounded-full text-[13px] font-medium tracking-[0.2em] cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2">
             {wizardStep === WIZARD_TITLES.length - 1 ? '產生健檢報告' : '下一步'} <Ic n="arrowRight" size={16} color="currentColor" />
           </button>
         </div>
@@ -582,7 +583,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
   // --- 健檢結果（screen === "report"，維持單頁滑動閱讀，不拆步驟） ---
   return (
     <div className="min-h-[100dvh] bg-warm-gray-50 flex flex-col items-center pb-20 relative">
-      <div className="bg-white border-b border-warm-gray-200 w-full pt-12 pb-6 px-6 sticky top-0 z-30 shrink-0 shadow-sm">
+      <div className="bg-white border-b border-warm-gray-200 w-full pt-12 pb-6 px-6 sticky top-0 z-30 shrink-0">
         <div className="max-w-sm mx-auto flex items-center justify-center">
           <div className="text-[14px] font-medium tracking-widest text-warm-gray-800 uppercase">財務健檢結果</div>
         </div>
@@ -591,19 +592,19 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
       <div className="px-5 w-full max-w-sm mx-auto relative z-10 pt-6 flex flex-col gap-6">
 
         {isDemo && (
-          <div className="bg-[#0369a1] text-white p-4 rounded-2xl flex flex-col gap-3 shadow-sm">
+          <div className="bg-forest text-white p-4 rounded-lg flex flex-col gap-3">
             <div className="text-[12px] font-medium leading-relaxed">
-              <span className="bg-white/20 px-2 py-0.5 rounded text-[11px] font-bold tracking-widest mr-2 uppercase">範例報告</span>
+              <span className="bg-white/20 px-2 py-0.5 rounded text-[11px] font-medium tracking-[0.2em] mr-2 uppercase">範例報告</span>
               以下顯示的是「月薪 8 萬」的示例數據，不是您的真實狀況。
             </div>
-            <button onClick={startReal} className="bg-white text-[#0284c7] font-bold text-[12px] py-2.5 px-4 rounded-xl shadow-sm text-center tracking-widest uppercase cursor-pointer hover:bg-cyan-50">
+            <button onClick={startReal} className="bg-white text-forest font-bold text-[12px] py-2.5 px-4 rounded-xl text-center tracking-widest uppercase cursor-pointer hover:bg-cyan-50">
               填入我的數字，產生真實報告
             </button>
           </div>
         )}
 
         {/* Floating / Hero Score */}
-        <div className="bg-white border border-warm-gray-200 rounded-3xl p-8 flex flex-col items-center text-center shadow-md relative overflow-hidden">
+        <div className="bg-white/60 border border-warm-gray-300 rounded-xl p-8 flex flex-col items-center text-center relative overflow-hidden">
           <div className="text-[11px] font-bold text-warm-gray-600 tracking-widest uppercase mb-1">初步財務健康評估</div>
           <div className={`text-[64px] font-serif font-bold leading-none tracking-tight mb-2 ${colorClass}`}>
             {score}
@@ -621,7 +622,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
         </div>
 
         {/* 資產總覽 */}
-        <div className="bg-white border border-warm-gray-200 rounded-2xl p-5 shadow-sm grid grid-cols-3 gap-2 text-center">
+        <div className="bg-white/60 border border-warm-gray-300 rounded-lg p-5 grid grid-cols-3 gap-2 text-center">
           <div>
             <div className="text-[10px] text-warm-gray-500 font-medium mb-1 tracking-wide">總資產</div>
             <div className="text-[15px] font-serif font-bold text-warm-gray-800">{fmt(totalAssets)}<span className="text-[10px] font-normal ml-0.5">萬</span></div>
@@ -632,7 +633,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
           </div>
           <div>
             <div className="text-[10px] text-warm-gray-500 font-medium mb-1 tracking-wide">淨資產</div>
-            <div className={`text-[15px] font-serif font-bold ${netWorth>=0?'text-teal-base':'text-rose-500'}`}>{fmt(netWorth)}<span className="text-[10px] font-normal ml-0.5">萬</span></div>
+            <div className={`text-[15px] font-serif font-bold ${netWorth>=0?'text-teal-base':'text-alert-red'}`}>{fmt(netWorth)}<span className="text-[10px] font-normal ml-0.5">萬</span></div>
           </div>
         </div>
 
@@ -643,7 +644,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
         )}
 
         {/* 弱點提示 */}
-        <div className={`border ${isWeakGood ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-[#fffdf5]'} rounded-xl p-5 flex items-start gap-4 shadow-sm`}>
+        <div className={`border ${isWeakGood ? 'border-teal-soft bg-cyan-soft/60' : 'border-brass/30 bg-brass-soft/40'} rounded-xl p-5 flex items-start gap-4`}>
           <div className="text-[20px] pt-0.5">{weakest.icon}</div>
           <div>
             <div className="text-[11px] font-bold text-warm-gray-600 uppercase tracking-widest mb-1.5">最值得關注</div>
@@ -660,20 +661,20 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
               const isR = m.isReverse;
               const isOk = isR ? val <= m.ok : val >= m.ok;
               const isWarn = isR ? val <= m.warn : val >= m.warn;
-              const c = isOk ? 'teal-base' : isWarn ? 'alert-orange' : 'rose-500';
-              const bg = isOk ? 'bg-cyan-soft/30' : isWarn ? 'bg-alert-orange/10' : 'bg-rose-50';
-              const textC = isOk ? 'text-teal-base' : isWarn ? 'text-alert-orange' : 'text-rose-500';
+              const c = isOk ? 'teal-base' : isWarn ? 'alert-orange' : 'alert-red';
+              const bg = isOk ? 'bg-cyan-soft/30' : isWarn ? 'bg-alert-orange/10' : 'bg-alert-red/5';
+              const textC = isOk ? 'text-teal-base' : isWarn ? 'text-alert-orange' : 'text-alert-red';
               const lbl = isOk ? '良好' : isWarn ? '注意' : '警示';
               const barPct = isR ? Math.max(0, Math.min(100, 100 - (val/80*100))) : Math.min(100, val/(m.ok*1.5)*100);
 
               return (
-                <div key={i} className="bg-white border border-warm-gray-200 rounded-2xl p-5 shadow-sm">
+                <div key={i} className="bg-white/60 border border-warm-gray-300 rounded-lg p-5">
                   <div className="flex justify-between items-start mb-3">
                     <div>
                       <div className="text-[14px] font-bold text-warm-gray-800 mb-0.5">{m.name}</div>
                       <div className="text-[11px] text-warm-gray-500 tracking-wide">{m.desc}</div>
                     </div>
-                    <div className={`text-[11px] font-bold tracking-widest px-2.5 py-1 rounded border border-${c}/30 ${bg} ${textC}`}>{lbl}</div>
+                    <div className={`text-[11px] font-medium tracking-[0.2em] px-2.5 py-1 rounded border border-${c}/30 ${bg} ${textC}`}>{lbl}</div>
                   </div>
                   <div className="h-1.5 w-full bg-warm-gray-100 rounded-full mb-2 overflow-hidden">
                     <div className={`h-full rounded-full transition-all duration-700 bg-${c}`} style={{width:`${barPct}%`}} />
@@ -692,14 +693,14 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
         </div>
 
         {/* 建議配比 */}
-        <div className="bg-white border border-warm-gray-200 rounded-2xl p-6 shadow-sm mt-2">
+        <div className="bg-white/60 border border-warm-gray-300 rounded-lg p-6 mt-2">
           <div className="inline-flex items-center gap-1.5 border border-warm-gray-200 px-3 py-1 rounded uppercase tracking-widest text-[10px] font-bold text-warm-gray-600 mb-4">
             收支配比
           </div>
           <div className="text-[16px] font-serif font-bold text-warm-gray-800 tracking-wider mb-2">收入應該怎麼分配？</div>
           <div className="text-[12px] text-warm-gray-600 leading-loose mb-6">根據您的收入水準，自動推薦最適配比。為動態調整，並非固定 631 原則。</div>
           
-          <div className="text-[11px] font-bold tracking-widest text-warm-gray-500 mb-2 uppercase">{tier} 建議</div>
+          <div className="text-[11px] font-medium tracking-[0.2em] text-warm-gray-500 mb-2 uppercase">{tier} 建議</div>
           <div className="h-2.5 flex rounded-full overflow-hidden mb-4">
             <div className="bg-teal-base flex items-center justify-center text-[9px] text-white font-bold" style={{width:`${t1}%`}}>{t1}%</div>
             <div className="bg-[#0284c7] flex items-center justify-center text-[9px] text-white font-bold" style={{width:`${t2}%`}}>{t2}%</div>
@@ -724,7 +725,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
         </div>
 
         {/* 財務自由指標 */}
-        <div className="bg-white border border-warm-gray-200 rounded-2xl p-6 shadow-sm mt-2">
+        <div className="bg-white/60 border border-warm-gray-300 rounded-lg p-6 mt-2">
           <div className="flex items-center justify-between space-y-0 pb-2 mb-4">
             <div>
               <div className="text-[11px] font-bold text-warm-gray-500 uppercase tracking-widest mb-1">財務自由指標</div>
@@ -749,14 +750,14 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
         </div>
 
         {/* 顧問觀察 Insight Card */}
-        <div className="bg-gradient-to-br from-[#0c2b27] to-[#134e4a] rounded-3xl p-8 relative overflow-hidden mt-4 shadow-lg text-white">
+        <div className="bg-forest grain rounded-xl p-8 relative overflow-hidden mt-4 text-white">
           <div className="inline-flex items-center gap-2 text-[10px] font-bold text-[#6ee7b7] border border-[#6ee7b7]/30 px-3 py-1 rounded uppercase tracking-widest mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#6ee7b7]" /> 顧問觀察
           </div>
           <div className="text-[15px] font-medium leading-loose tracking-wide mb-8">
             {insightQ}
           </div>
-          <button onClick={() => window.open('https://line.me/R/ti/p/@oosaymoney', '_blank')} className="bg-[#14b8a6] hover:bg-[#6ee7b7] text-[#0c2b27] transition-colors py-3.5 px-6 rounded-xl text-[13px] font-bold tracking-widest uppercase flex items-center gap-2 cursor-pointer shadow-sm w-full justify-center">
+          <button onClick={() => openLine()} className="bg-brass hover:bg-[#A66B30] text-white transition-colors py-3.5 px-6 rounded-xl text-[13px] font-medium tracking-[0.2em] flex items-center gap-2 cursor-pointer w-full justify-center">
             {insightCta} <Ic n="arrowRight" size={16} color="currentColor" />
           </button>
         </div>
@@ -765,16 +766,16 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
         <div>
           <div className="text-[16px] font-serif font-bold text-warm-gray-800 tracking-wider mb-4 pl-2 mt-4">預約完整諮詢，解鎖更多分析</div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white border border-warm-gray-200 rounded-2xl p-5 shadow-sm text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[160px]">
+            <div className="bg-white/60 border border-warm-gray-300 rounded-lg p-5 text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[160px]">
               <div className="absolute inset-0 bg-warm-gray-50/50 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center p-4">
-                <div className="text-[20px] mb-2">🛡️</div>
+                <div className="text-[20px] mb-2"></div>
                 <div className="text-[12px] font-bold text-warm-gray-800 mb-1">保障缺口分析</div>
                 <div className="text-[10px] text-warm-gray-600 leading-relaxed">醫療、失能保障夠嗎？完整評估。</div>
               </div>
             </div>
-            <div className="bg-white border border-warm-gray-200 rounded-2xl p-5 shadow-sm text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[160px]">
+            <div className="bg-white/60 border border-warm-gray-300 rounded-lg p-5 text-center relative overflow-hidden flex flex-col items-center justify-center min-h-[160px]">
                <div className="absolute inset-0 bg-warm-gray-50/50 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center p-4">
-                <div className="text-[20px] mb-2">📊</div>
+                <div className="text-[20px] mb-2"></div>
                 <div className="text-[12px] font-bold text-warm-gray-800 mb-1">資產配置建議</div>
                 <div className="text-[10px] text-warm-gray-600 leading-relaxed">根據您的風險屬性，量身規劃比例。</div>
               </div>
@@ -783,7 +784,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
         </div>
 
         {/* 傳送財務資料給顧問 */}
-        <div className="bg-white border border-warm-gray-200 rounded-2xl p-6 shadow-sm mt-4 flex flex-col md:flex-row gap-6">
+        <div className="bg-white/60 border border-warm-gray-300 rounded-lg p-6 mt-4 flex flex-col md:flex-row gap-6">
           <div className="flex-1">
             <div className="text-[11px] font-bold text-teal-base uppercase tracking-widest mb-1.5">傳送財務資料給顧問</div>
             <div className="text-[13px] text-warm-gray-800 leading-relaxed mb-4">

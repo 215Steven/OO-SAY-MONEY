@@ -1,5 +1,7 @@
 import { Ic } from "@/src/components/Icons";
 import { motion, AnimatePresence } from "motion/react";
+import { TopBar, PageHeader, SectionLabel, CtaBlock, Reveal, SPRING } from "@/src/components/ui";
+import { LINE_BOOK_URL, openLine } from "@/src/constants/links";
 import { useState } from "react";
 
 const DEFENSE_SECTIONS = [
@@ -73,142 +75,84 @@ const WHY_STATS = [
 // 那頁會依登入者身分抓 Notion 裡的真實保單資料。
 export const DefensePage = ({ onBack }: { onBack: () => void }) => {
   const [openSection, setOpenSection] = useState<string | null>("life");
-
-  const toggleSection = (id: string) => {
-    setOpenSection(prev => prev === id ? null : id);
-  };
+  const toggleSection = (id: string) => setOpenSection(prev => (prev === id ? null : id));
 
   return (
-    <div className="min-h-screen bg-warm-gray-50 font-sans pb-10">
+    <div className="min-h-[100dvh] bg-warm-gray-50 pb-6">
+      <TopBar />
+      <PageHeader eyebrow="Protection basics" line1="財務" line2="防線。" desc="用對的保險守住你最重要的東西，避免突發事件拖垮財務。" />
 
-      <div className="pt-12 pb-10 px-6 relative z-10 w-full max-w-sm mx-auto border-b border-warm-gray-200 mb-8 shrink-0 bg-white">
-
-
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-warm-gray-50 border border-warm-gray-200 rounded-full text-warm-gray-800 mb-6">
-             <Ic n="shield" size={28} color="currentColor" />
-          </div>
-          <h1 className="text-[28px] font-serif font-bold text-warm-gray-800 tracking-wide mb-4">財務防線</h1>
-          <p className="text-[14px] text-warm-gray-800/70 font-normal leading-relaxed max-w-[280px] mx-auto tracking-wide">用對的保險守住你最重要的東西，避免突發事件拖垮財務。</p>
-        </motion.div>
-      </div>
-
-      <div className="px-5 w-full max-w-sm mx-auto relative z-10">
-
-        {/* Intro Notice */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
-           <div className="bg-white border border-warm-gray-200 p-10 text-center relative overflow-hidden rounded-2xl shadow-sm">
-              <div className="w-16 h-16 bg-warm-gray-100 flex items-center justify-center mx-auto mb-6 border border-warm-gray-200">
-                 <Ic n="user" size={24} color="#2D2D2A" />
+      {/* 為什麼需要保險：大數字清單 */}
+      <section className="px-6">
+        <SectionLabel>為什麼需要保險</SectionLabel>
+        <div className="border-t border-warm-gray-800/80">
+          {WHY_STATS.map((stat, i) => (
+            <Reveal key={i} delay={i * 0.05}>
+              <div className="flex items-start gap-5 py-6 border-b border-warm-gray-300">
+                <div className="font-display text-[34px] font-light text-brass tnum leading-none w-[84px] shrink-0">{stat.num}</div>
+                <p className="text-[14px] text-warm-gray-600 leading-[1.9] pt-0.5">{stat.text}</p>
               </div>
-              <div className="text-[20px] font-serif font-bold text-warm-gray-800 mb-4 tracking-widest">了解你的保障缺口</div>
-              <div className="text-[13px] text-warm-gray-800/80 font-normal leading-loose max-w-[240px] mx-auto tracking-wide">
-                透過下方保險說明了解你可能缺少什麼，<br/>再預約免費諮詢讓我們幫你分析。
-              </div>
-           </div>
-        </motion.div>
-
-        {/* Why matters section */}
-        <div className="mb-12">
-          <div className="text-[10px] font-medium text-warm-gray-800 tracking-[0.2em] mb-8 flex items-center justify-center gap-2 uppercase">
-             <span className="w-1.5 h-1.5 bg-teal-base rounded-full" />
-             為什麼需要保險
-             <span className="w-1.5 h-1.5 bg-teal-base rounded-full" />
-          </div>
-          <div className="bg-white border border-warm-gray-200 p-6 rounded-2xl shadow-sm">
-            {WHY_STATS.map((stat, i) => (
-              <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} key={i} className={`flex items-start gap-6 py-6 ${i !== WHY_STATS.length - 1 ? 'border-b border-warm-gray-200' : ''}`}>
-                <div className="text-[24px] font-serif font-bold text-warm-gray-800 tracking-widest shrink-0 w-[60px] leading-none pt-1">{stat.num}</div>
-                <div className="text-[13px] text-warm-gray-800/80 leading-loose font-normal tracking-wide">{stat.text}</div>
-              </motion.div>
-            ))}
-          </div>
+            </Reveal>
+          ))}
         </div>
+      </section>
 
-        {/* Insurance Map */}
-        <div className="mb-14">
-          <div className="text-[10px] font-medium text-warm-gray-800 tracking-[0.2em] mb-8 flex items-center justify-center gap-2 uppercase">
-            <span className="w-1.5 h-1.5 bg-teal-base rounded-full" />
-            保險地圖
-            <span className="w-1.5 h-1.5 bg-teal-base rounded-full" />
-          </div>
-
-          <div className="flex flex-col gap-4">
-            {DEFENSE_SECTIONS.map((section, i) => {
-              const isOpen = openSection === section.id;
-              return (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-                  key={section.id}
-                  className={`bg-white rounded-2xl transition-colors duration-300 overflow-hidden border ${isOpen ? 'border-teal-base' : 'border-warm-gray-200 hover:border-warm-gray-300'}`}
+      {/* 保險地圖：手風琴 */}
+      <section className="px-6 pt-16">
+        <SectionLabel>保險地圖</SectionLabel>
+        <div className="border-t border-warm-gray-800/80">
+          {DEFENSE_SECTIONS.map((section, i) => {
+            const isOpen = openSection === section.id;
+            return (
+              <div key={section.id} className="border-b border-warm-gray-300">
+                <button
+                  onClick={() => toggleSection(section.id)}
+                  aria-expanded={isOpen}
+                  className="w-full flex items-start gap-5 py-6 text-left cursor-pointer outline-none focus-visible:bg-warm-gray-100"
                 >
-                  <div onClick={() => toggleSection(section.id)} className={`p-5 flex items-center justify-between cursor-pointer transition-colors ${isOpen ? 'bg-warm-gray-50' : 'hover:bg-warm-gray-50'}`}>
-                    <div className="flex items-center gap-5">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 transition-colors border ${isOpen ? 'bg-teal-base text-white border-transparent' : 'bg-warm-gray-100 text-warm-gray-800 border-warm-gray-200'}`}>
-                        <Ic n={section.icon} size={20} color="currentColor" />
-                      </div>
-                      <div>
-                        <div className={`text-[14px] font-medium tracking-widest transition-colors ${isOpen ? 'text-warm-gray-800' : 'text-warm-gray-800'}`}>{section.title}</div>
-                        <div className="text-[12px] text-warm-gray-600 font-normal mt-1.5 tracking-wide">{section.desc}</div>
-                      </div>
-                    </div>
-                    <div className={`w-8 h-8 flex items-center justify-center transition-transform duration-300 ${isOpen ? 'rotate-180 text-warm-gray-800' : 'text-warm-gray-600'}`}>
-                       <Ic n="arrowRight" size={16} color="currentColor" />
-                    </div>
-                  </div>
-
-                  <AnimatePresence>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden bg-warm-gray-50"
-                      >
-                        <div className="p-6 pt-0 border-t border-warm-gray-200 mt-2">
-                           <div className="flex flex-col gap-4 mb-8 pt-6">
-                             {section.points.map((pt, j) => (
-                               <div key={j} className="flex gap-4 items-start text-[13px] text-warm-gray-800/80 leading-loose font-normal tracking-wide">
-                                 <div className="w-1.5 h-1.5 bg-[#AFAEA9] shrink-0 mt-2.5" />
-                                 <span>{pt}</span>
-                               </div>
-                             ))}
-                           </div>
-
-                           <div className="bg-white border border-warm-gray-200 p-5 relative overflow-hidden rounded-2xl shadow-sm">
-                             <div className="absolute left-0 top-0 bottom-0 w-1 bg-teal-base" />
-                             <div className="text-[10px] font-medium text-warm-gray-800 mb-3 pl-3 tracking-widest uppercase flex items-center gap-2">
-                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-base mr-1.5 align-middle" /> {section.highlightLabel}
-                             </div>
-                             <div className="text-[13px] text-warm-gray-800/80 leading-loose pl-3 font-medium tracking-wider italic">{section.highlight}</div>
-                           </div>
+                  <span className="font-display text-[13px] tnum text-brass pt-1.5 w-6 shrink-0">0{i + 1}</span>
+                  <span className="flex-1">
+                    <span className="block font-serif text-[21px] font-semibold text-warm-gray-800 tracking-wide">{section.title}</span>
+                    <span className="block mt-1 text-[13px] text-warm-gray-600">{section.desc}</span>
+                  </span>
+                  <motion.span animate={{ rotate: isOpen ? 90 : 0 }} transition={SPRING} className="pt-1.5 text-warm-gray-800">
+                    <Ic n="arrow" size={20} color="currentColor" />
+                  </motion.span>
+                </button>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }} className="overflow-hidden">
+                      <div className="pl-11 pb-8">
+                        <ul className="list-none p-0 m-0 flex flex-col gap-4">
+                          {section.points.map((pt, j) => (
+                            <li key={j} className="flex gap-3 text-[14px] text-warm-gray-600 leading-[1.9]">
+                              <span className="w-1 h-1 rounded-full bg-brass shrink-0 mt-[0.85rem]" />
+                              <span>{pt}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="mt-6 border-l-2 border-brass pl-4">
+                          <div className="text-[11px] tracking-[0.2em] text-brass mb-2">{section.highlightLabel}</div>
+                          <p className="text-[14px] text-warm-gray-800 leading-[1.9]">{section.highlight}</p>
                         </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              );
-            })}
-          </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
         </div>
+      </section>
 
-        {/* CTA */}
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="w-full max-w-sm mx-auto bg-warm-gray-50 p-10 text-center border border-warm-gray-200 relative overflow-hidden mb-10 shrink-0">
-          <div className="relative z-10">
-             <div className="w-16 h-16 bg-white flex items-center justify-center mx-auto mb-6 border border-warm-gray-200 rounded-full">
-                <Ic n="user" size={24} color="#2D2D2A" />
-             </div>
-             <div className="text-[20px] font-serif font-bold text-warm-gray-800 mb-4 tracking-widest">免費保障健診</div>
-             <div className="text-[13px] text-warm-gray-800/80 font-normal mb-8 leading-loose tracking-wide">
-               不確定自己保了什麼、缺了什麼？<br/>與我們預約，20分鐘幫你看清楚
-             </div>
-
-             <button onClick={() => window.open('https://line.me/R/ti/p/@oosaymoney', '_blank')} className="no-underline flex items-center justify-center gap-3 bg-teal-base text-white w-full py-4 text-[13px] font-medium tracking-widest transition-colors hover:bg-cyan-base cursor-pointer border border-transparent uppercase mb-6 rounded-2xl shadow-sm">
-               <Ic n="star" size={16} color="currentColor" /> 加入 LINE 聯繫顧問
-             </button>
-             <div className="text-[10px] text-warm-gray-600 font-normal tracking-[0.2em] uppercase">免費諮詢 · 無推銷壓力</div>
-          </div>
-        </motion.div>
-
-      </div>
+      <CtaBlock
+        title="免費保障健診"
+        desc="不確定自己保了什麼、缺了什麼？直接在 LINE 跟我們說，20 分鐘幫你看清楚。"
+        primary="在 LINE 預約聊聊"
+        onPrimary={() => openLine(LINE_BOOK_URL)}
+        note="免費諮詢 · 無推銷壓力"
+      />
+      <p className="px-8 mt-8 pb-10 text-[11px] text-warm-gray-500 text-center tracking-wide leading-relaxed">內容為一般性保險說明，不構成購買建議，實際保障以保單條款為準。</p>
     </div>
   );
 };

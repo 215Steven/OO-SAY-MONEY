@@ -1,18 +1,17 @@
 import { Ic } from "@/src/components/Icons";
 import { motion } from "motion/react";
-import { useLocation } from "wouter";
+import { LINE_BOOK_URL, openLine } from "@/src/constants/links";
 import { Reveal, Eyebrow, SPRING } from "@/src/components/ui";
 
 const features = [
   { icon: "shield",   title: "財務防線",  desc: "保障是起點，風險顧好，才能安心往前走" },
   { icon: "chart",    title: "財務健檢",  desc: "用財管家初步檢視你的財務分數" },
-  { icon: "calendar", title: "預約聊聊",  desc: "一對一諮詢，依你的狀況討論" },
+  { icon: "calendar", title: "預約聊聊",  desc: "直接在 LINE 對話，一句話就能約" },
   { icon: "book",     title: "理財靈感",  desc: "基金排行與精選理財觀點，定期更新" },
   { icon: "map",      title: "啟富藍圖",  desc: "月配息策略說明，試算你的財務自由路徑" },
 ];
 
 export const UnlockPage = ({ onBack, onJoin }: any) => {
-  const [, navigate] = useLocation();
   return (
     <div className="min-h-[100dvh] bg-warm-gray-50 pb-6">
       <div className="px-6 pt-8 flex items-center justify-between">
@@ -58,8 +57,8 @@ export const UnlockPage = ({ onBack, onJoin }: any) => {
           <motion.button onClick={onJoin} whileTap={{ scale: 0.97 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
             加入會員
           </motion.button>
-          <button onClick={() => navigate("/appointment")} className="relative z-10 mt-2 w-full py-3 text-[13px] tracking-[0.15em] text-white/75 hover:text-white transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full">
-            想先聊聊？預約免費諮詢
+          <button onClick={() => openLine(LINE_BOOK_URL)} className="relative z-10 mt-2 w-full py-3 text-[13px] tracking-[0.15em] text-white/75 hover:text-white transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full">
+            想先聊聊？直接在 LINE 跟我們說
           </button>
         </section>
       </Reveal>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Ic } from "@/src/components/Icons";
+import { TopBar, PageHeader } from "@/src/components/ui";
 import { useLiff } from "@/src/hooks/useLiff";
 import { authHeaders } from "@/src/constants/liff";
 
@@ -201,120 +202,86 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
     }
   };
 
+  const Check = ({ on }: { on: boolean }) => (
+    <span className={`w-5 h-5 shrink-0 rounded-full flex items-center justify-center border transition-colors ${on ? "bg-forest border-forest" : "border-warm-gray-400"}`}>
+      {on && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+    </span>
+  );
+
   return (
-    <div className="min-h-screen bg-warm-gray-50 font-sans pb-10 flex flex-col relative overflow-hidden">
+    <div className="min-h-[100dvh] bg-warm-gray-50 pb-6">
+      <TopBar onBack={onBack} />
+      <PageHeader eyebrow="Membership" line1="加入" line2="會員。" desc="確認 LINE 帳號並選擇身分，一步完成。" />
 
-      {/* Header Area */}
-      <div className="relative z-10 px-6 pt-12 pb-4 flex items-center mb-8 border-b border-warm-gray-200 bg-white">
-        <button type="button" onClick={onBack} className="bg-white rounded-full w-10 h-10 flex items-center justify-center border border-warm-gray-200 cursor-pointer hover:bg-warm-gray-100 transition-colors shrink-0 shadow-sm">
-          <Ic n="back" color="var(--color-warm-gray-800)" size={20} />
-        </button>
-        <div className="flex-1 flex flex-col items-center justify-center">
-            <h1 className="text-[14px] font-serif font-bold text-warm-gray-800 tracking-[0.2em] uppercase">會員註冊</h1>
-        </div>
-        <div className="w-10 h-10 shrink-0" />
-      </div>
-
-      <div className="flex-1 px-6 max-w-[430px] w-full mx-auto relative z-10 flex flex-col pt-2">
-        <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }} className="flex flex-col flex-1 pb-10">
-
-          <div className="text-center mb-8">
-            <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">加入會員</h2>
-            <p className="text-[14px] text-warm-gray-600 font-normal tracking-wide">確認 LINE 帳號並選擇身分，一步完成</p>
-          </div>
-
-          {/* LINE Login Block */}
-          <div className="mb-8" onClick={handleLineLogin}>
-            <div className="bg-white px-5 py-4 rounded-2xl flex items-center gap-3 shadow-sm border border-warm-gray-200">
-               <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-warm-gray-200">
-                   {formData.linePictureUrl ? (
-                      <img src={formData.linePictureUrl} alt="LINE Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={() => setFormData({...formData, linePictureUrl: ''})} />
-                   ) : (
-                      <div className="w-full h-full bg-warm-gray-50 flex items-center justify-center text-warm-gray-800/40">
-                        <Ic n="user" size={18} color="currentColor" />
-                      </div>
-                   )}
-               </div>
-               {formData.lineUserId ? (
-                 <div className="font-serif font-bold text-[15px] text-warm-gray-800 tracking-wide pr-2">{formData.lineDisplayName}</div>
-               ) : (
-                 <div className="font-serif font-bold text-[14px] text-warm-gray-800/60 tracking-wide pr-2 animate-pulse">
-                   {isReady ? '請稍候，驗證中...' : '與 LINE 連線中...'}
-                 </div>
-               )}
-            </div>
-          </div>
-
-          {/* Identity Selection */}
-          <div className="mb-8">
-            <h3 className="text-[14px] font-bold text-warm-gray-800 tracking-wider mb-3">請問您怎麼認識 Steven&Annie？ <span className="text-red-500">*</span></h3>
-            <div className="flex flex-col gap-3">
-              {['親朋好友', '網路社群', '其他管道'].map((opt) => (
-                <div
-                   key={opt}
-                   onClick={() => {
-                     setFormData({...formData, identity: opt});
-                   }}
-                   className={`group flex items-center p-4 border cursor-pointer transition-all duration-300 rounded-2xl shadow-sm ${formData.identity === opt ? 'border-teal-base bg-cyan-soft/30' : 'border-warm-gray-200 bg-white hover:border-teal-soft/80 hover:bg-cyan-soft/10'}`}
-                >
-                  <span className={`text-[15px] font-medium flex-1 tracking-wider transition-colors ml-2 ${formData.identity === opt ? 'text-teal-base':'text-warm-gray-800'}`}>{opt}</span>
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-all duration-300 ${formData.identity === opt ? 'bg-teal-base' : 'bg-white border border-warm-gray-200'}`}>
-                    {formData.identity === opt && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Newsletter / Email / Terms */}
-          <div className="bg-white border border-warm-gray-200 p-0 rounded-2xl overflow-hidden shadow-sm mb-8">
-            <div onClick={() => setFormData({...formData, newsletter: !formData.newsletter})} className="flex items-center p-5 cursor-pointer hover:bg-warm-gray-50 transition-colors group">
-              <div className={`w-5 h-5 flex-shrink-0 flex items-center justify-center transition-all mr-4 border rounded ${formData.newsletter ? 'bg-teal-base border-teal-base' : 'bg-transparent border-warm-gray-200'}`}>
-                {formData.newsletter && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
-              </div>
-              <span className="text-[13px] text-warm-gray-800 font-medium tracking-wide">我願意收到理財快訊與電子報</span>
-            </div>
-
-            {formData.newsletter && (
-              <>
-                <div className="h-px bg-warm-gray-200 w-full" />
-                <div className="flex items-center px-4 py-1 bg-warm-gray-50/50">
-                  <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3"><Ic n="mail" size={18} color="currentColor"/></div>
-                  <input type="email" placeholder="Email（接收電子報用）" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide" />
-                </div>
-              </>
+      <div className="px-6 flex flex-col gap-12">
+        {/* LINE 帳號 */}
+        <div onClick={handleLineLogin} className="flex items-center gap-4 border-y border-warm-gray-300 py-5">
+          <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 border border-warm-gray-300 bg-warm-gray-100">
+            {formData.linePictureUrl ? (
+              <img src={formData.linePictureUrl} alt="LINE 大頭貼" className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={() => setFormData({ ...formData, linePictureUrl: "" })} />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-warm-gray-500"><Ic n="user" size={20} color="currentColor" /></div>
             )}
+          </div>
+          <div>
+            <div className="text-[11px] tracking-[0.2em] text-warm-gray-500 mb-1">LINE 帳號</div>
+            {formData.lineUserId ? (
+              <div className="font-serif text-[18px] font-semibold text-warm-gray-800">{formData.lineDisplayName}</div>
+            ) : (
+              <div className="text-[14px] text-warm-gray-500 animate-pulse">{isReady ? "請稍候，驗證中…" : "與 LINE 連線中…"}</div>
+            )}
+          </div>
+        </div>
 
-            <div className="h-px bg-warm-gray-200 w-full" />
+        {/* 身分 */}
+        <fieldset className="border-0 p-0 m-0">
+          <legend className="font-serif text-[20px] font-semibold text-warm-gray-800 mb-5 leading-[1.5]">你怎麼認識 Steven &amp; Annie？<span className="text-alert-red ml-1">*</span></legend>
+          <div className="border-t border-warm-gray-800/80">
+            {["親朋好友", "網路社群", "其他管道"].map((opt) => {
+              const on = formData.identity === opt;
+              return (
+                <button key={opt} type="button" role="radio" aria-checked={on} onClick={() => setFormData({ ...formData, identity: opt })}
+                  className="w-full flex items-center gap-4 py-5 border-b border-warm-gray-300 text-left cursor-pointer outline-none focus-visible:bg-warm-gray-100">
+                  <Check on={on} />
+                  <span className={`text-[16px] tracking-wide transition-colors ${on ? "text-forest font-medium" : "text-warm-gray-800"}`}>{opt}</span>
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
 
-            <div onClick={() => setFormData({...formData, terms: !formData.terms})} className="flex items-center p-5 cursor-pointer hover:bg-warm-gray-50 transition-colors group">
-              <div className={`w-5 h-5 flex-shrink-0 flex items-center justify-center transition-all mr-4 border rounded ${formData.terms ? 'bg-teal-base border-teal-base' : 'bg-transparent border-warm-gray-200'}`}>
-                {formData.terms && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[13px] text-warm-gray-800 font-medium tracking-wide">同意服務約定與隱私政策 <span className="text-red-500">*</span></span>
-                <span className="text-[11px] text-warm-gray-800/60 font-normal mt-1 tracking-wider">點擊 <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); onTerms(); }} className="text-teal-base font-bold bg-transparent outline-none cursor-pointer p-0 border-b border-teal-base/30 hover:border-teal-base">查看條款內容</button></span>
+        {/* 電子報 / 條款 */}
+        <div className="border-t border-warm-gray-800/80">
+          <button type="button" role="checkbox" aria-checked={formData.newsletter} onClick={() => setFormData({ ...formData, newsletter: !formData.newsletter })} className="w-full flex items-center gap-4 py-5 border-b border-warm-gray-300 text-left cursor-pointer outline-none focus-visible:bg-warm-gray-100">
+            <Check on={formData.newsletter} />
+            <span className="text-[15px] text-warm-gray-800 tracking-wide">我願意收到理財快訊與電子報</span>
+          </button>
+          {formData.newsletter && (
+            <label className="block py-4 border-b border-warm-gray-300 focus-within:border-forest transition-colors">
+              <span className="block text-[11px] font-medium tracking-[0.2em] text-warm-gray-600">Email</span>
+              <input type="email" inputMode="email" autoComplete="email" placeholder="接收電子報用" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-transparent border-none outline-none text-[17px] text-warm-gray-800 placeholder-warm-gray-400 tracking-wide mt-1.5 py-1" />
+            </label>
+          )}
+          <div className="flex items-start gap-4 py-5 border-b border-warm-gray-300">
+            <button type="button" role="checkbox" aria-checked={formData.terms} aria-label="同意服務約定與隱私政策" onClick={() => setFormData({ ...formData, terms: !formData.terms })} className="mt-0.5 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brass/60 rounded-full"><Check on={formData.terms} /></button>
+            <div>
+              <span className="text-[15px] text-warm-gray-800 tracking-wide">同意服務約定與隱私政策<span className="text-alert-red ml-1">*</span></span>
+              <div className="mt-1.5 text-[12px] text-warm-gray-500">
+                <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); onTerms(); }} className="text-forest border-b border-forest/40 hover:border-forest cursor-pointer bg-transparent p-0">查看條款內容</button>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="mt-auto">
-            <button
-             type="button"
-             onClick={handleSubmit}
-             disabled={submitting}
-             className={`w-full font-medium text-[14px] py-4 transition-colors flex justify-center items-center uppercase tracking-widest rounded-2xl shadow-sm ${
-               canSubmit
-                 ? 'bg-teal-base hover:bg-cyan-base active:scale-[0.98] text-white cursor-pointer border border-teal-base'
-                 : 'bg-warm-gray-200 text-warm-gray-500 cursor-not-allowed border border-transparent'
-             }`}
-            >
-               {submitting ? '處理中...' : '完成加入'}
-            </button>
-            <p className="text-center text-[12px] text-warm-gray-500 mt-4 tracking-wide">送出後專屬圖文選單即開通，聯絡資料可日後補填</p>
-          </div>
-        </motion.div>
+        <div>
+          <motion.button type="button" onClick={handleSubmit} disabled={submitting} whileTap={{ scale: canSubmit ? 0.97 : 1 }}
+            className={`w-full py-4 rounded-full text-[14px] font-medium tracking-[0.2em] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/60 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50 ${canSubmit ? "bg-brass text-white hover:bg-[#A66B30] cursor-pointer" : "bg-warm-gray-200 text-warm-gray-500 cursor-not-allowed"}`}>
+            {submitting ? "處理中…" : "完成加入"}
+          </motion.button>
+          <p className="mt-5 text-[12px] text-warm-gray-500 tracking-wide leading-[1.9] text-center">送出後專屬圖文選單即開通，聯絡資料可日後補填。</p>
+        </div>
       </div>
+      <div className="pb-10" />
     </div>
   );
 };

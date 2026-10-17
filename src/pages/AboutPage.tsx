@@ -1,7 +1,7 @@
 import { Ic } from "@/src/components/Icons";
 import { motion } from "motion/react";
 import { Fragment } from "react";
-import { useLocation } from "wouter";
+import { LINE_BOOK_URL, openLine } from "@/src/constants/links";
 import { Reveal, CountUp, Eyebrow, SPRING } from "@/src/components/ui";
 
 const principles = [
@@ -11,7 +11,6 @@ const principles = [
 ];
 
 export const AboutPage = ({ onBack, onJoin }: any) => {
-  const [, navigate] = useLocation();
   return (
     <div className="min-h-[100dvh] bg-warm-gray-50 pb-6">
       {/* 頂列 */}
@@ -110,8 +109,8 @@ export const AboutPage = ({ onBack, onJoin }: any) => {
           <motion.button onClick={onJoin} whileTap={{ scale: 0.97 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
             免費加入會員
           </motion.button>
-          <button onClick={() => navigate("/appointment")} className="relative z-10 mt-2 w-full py-3 text-[13px] tracking-[0.15em] text-white/75 hover:text-white transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full">
-            想先聊聊？預約免費諮詢
+          <button onClick={() => openLine(LINE_BOOK_URL)} className="relative z-10 mt-2 w-full py-3 text-[13px] tracking-[0.15em] text-white/75 hover:text-white transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full">
+            想先聊聊？直接在 LINE 跟我們說
           </button>
         </section>
       </Reveal>

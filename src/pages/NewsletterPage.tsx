@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Ic } from "@/src/components/Icons";
+import { TopBar, PageHeader, Eyebrow, SPRING } from "@/src/components/ui";
 import { useLiff } from "@/src/hooks/useLiff";
 import { authHeaders } from "@/src/constants/liff";
 
@@ -51,101 +51,39 @@ export const NewsletterPage = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div className="min-h-screen bg-warm-gray-50 font-sans pb-10 flex flex-col relative overflow-hidden">
-      {/* Header Area */}
-      <div className="relative z-10 px-6 pt-12 pb-4 flex items-center mb-8 border-b border-warm-gray-200 bg-white">
-        <button
-          type="button"
-          onClick={onBack}
-          className="bg-white rounded-full w-10 h-10 flex items-center justify-center border border-warm-gray-200 cursor-pointer hover:bg-warm-gray-100 transition-colors shrink-0 shadow-sm"
-        >
-          <Ic n="back" color="var(--color-warm-gray-800)" size={20} />
-        </button>
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <h1 className="text-[14px] font-serif font-bold text-warm-gray-800 tracking-[0.2em] uppercase">電子報訂閱</h1>
+    <div className="min-h-[100dvh] bg-warm-gray-50 pb-6">
+      <TopBar onBack={onBack} />
+      {done ? (
+        <div className="px-6 pt-20">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
+            <Eyebrow className="mb-6">Almost there</Eyebrow>
+            <h1 className="font-serif text-[40px] leading-[1.15] font-semibold text-warm-gray-800">請到信箱<br /><span className="font-light italic text-brass">確認訂閱。</span></h1>
+            <p className="mt-6 text-[15px] leading-[1.95] text-warm-gray-600">我們寄了一封確認信到 <span className="text-warm-gray-800 font-medium break-all">{email}</span>。點擊信中的確認連結後，就會開始收到電子報。若沒看到，請檢查垃圾郵件匣。</p>
+            <motion.button type="button" onClick={onBack} whileTap={{ scale: 0.97 }} className="mt-10 w-full bg-forest text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-cyan-base transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/60 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50">回上一頁</motion.button>
+          </motion.div>
         </div>
-        <div className="w-10 h-10 shrink-0" />
-      </div>
-
-      <div className="flex-1 px-6 max-w-[430px] w-full mx-auto relative z-10 flex flex-col pt-2">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-          className="flex flex-col flex-1 pb-10"
-        >
-          {done ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-center gap-4 py-16">
-              <div className="w-16 h-16 rounded-full bg-cyan-soft/40 flex items-center justify-center">
-                <Ic n="mail" size={28} color="var(--color-teal-base)" />
-              </div>
-              <h2 className="text-[20px] font-serif font-bold text-warm-gray-800 tracking-widest">訂閱申請已送出</h2>
-              <p className="text-[13px] text-warm-gray-600 tracking-wide leading-relaxed max-w-[280px]">
-                我們寄了一封確認信到 {email}，請到信箱點擊確認連結，完成後就會開始收到電子報。若沒看到，請檢查垃圾郵件匣。
-              </p>
-              <button
-                type="button"
-                onClick={onBack}
-                className="mt-4 py-3 px-8 bg-teal-base text-white cursor-pointer font-medium tracking-widest text-[13px] uppercase rounded-2xl shadow-sm hover:bg-cyan-base transition-colors"
-              >
-                回上一頁
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className="text-center mb-8">
-                <h2 className="text-[24px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">加入 OO SAY MONEY 電子報</h2>
-                <p className="text-[14px] text-warm-gray-600 font-normal tracking-wide">留下 Email，訂閱理財快訊與電子報</p>
-              </div>
-
-              <div className="bg-white border border-warm-gray-200 rounded-2xl overflow-hidden shadow-sm mb-8">
-                <div className="flex items-center px-4 py-1">
-                  <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3">
-                    <Ic n="user" size={18} color="currentColor" />
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="稱呼（選填）"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide"
-                  />
-                </div>
-                <div className="h-px bg-warm-gray-200 w-full" />
-                <div className="flex items-center px-4 py-1">
-                  <div className="w-10 shrink-0 text-warm-gray-800/50 flex justify-center border-r border-warm-gray-200 mr-2 pr-2 py-3">
-                    <Ic n="mail" size={18} color="currentColor" />
-                  </div>
-                  <input
-                    type="email"
-                    placeholder="Email（接收電子報用）"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-transparent border-none px-3 py-4 text-[16px] font-medium text-warm-gray-800 placeholder-warm-gray-300 focus:outline-none focus:ring-0 tracking-wide"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-auto">
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={!canSubmit}
-                  className={`w-full font-medium text-[14px] py-4 transition-colors flex justify-center items-center uppercase tracking-widest rounded-2xl shadow-sm ${
-                    canSubmit
-                      ? "bg-teal-base hover:bg-cyan-base active:scale-[0.98] text-white cursor-pointer border border-teal-base"
-                      : "bg-warm-gray-200 text-warm-gray-500 cursor-not-allowed border border-transparent"
-                  }`}
-                >
-                  {submitting ? "處理中..." : "訂閱電子報"}
-                </button>
-                <p className="text-center text-[12px] text-warm-gray-500 mt-4 tracking-wide">送出後會收到確認信，點擊信中連結才算完成訂閱。
-                  <br />Email 只用於寄送電子報，可隨時退訂。</p>
-              </div>
-            </>
-          )}
-        </motion.div>
-      </div>
+      ) : (
+        <form onSubmit={handleSubmit} noValidate>
+          <PageHeader eyebrow="Newsletter" line1="加入" line2="電子報。" desc="留下 Email，訂閱理財快訊與電子報。" />
+          <div className="px-6 flex flex-col gap-7">
+            <label className="block border-b border-warm-gray-300 focus-within:border-forest transition-colors pb-2">
+              <span className="block text-[11px] font-medium tracking-[0.2em] text-warm-gray-600">稱呼（選填）</span>
+              <input type="text" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="怎麼稱呼你" className="w-full bg-transparent border-none outline-none text-[17px] text-warm-gray-800 placeholder-warm-gray-400 tracking-wide mt-1.5 py-1" />
+            </label>
+            <label className="block border-b border-warm-gray-300 focus-within:border-forest transition-colors pb-2">
+              <span className="block text-[11px] font-medium tracking-[0.2em] text-warm-gray-600">Email</span>
+              <input type="email" autoComplete="email" inputMode="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="接收電子報用" className="w-full bg-transparent border-none outline-none text-[17px] text-warm-gray-800 placeholder-warm-gray-400 tracking-wide mt-1.5 py-1" />
+            </label>
+          </div>
+          <div className="px-6 pt-10">
+            <motion.button type="submit" disabled={!canSubmit} whileTap={{ scale: canSubmit ? 0.97 : 1 }}
+              className={`w-full py-4 rounded-full text-[14px] font-medium tracking-[0.2em] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/60 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50 ${canSubmit ? "bg-brass text-white hover:bg-[#A66B30] cursor-pointer" : "bg-warm-gray-200 text-warm-gray-500 cursor-not-allowed"}`}>
+              {submitting ? "處理中…" : "訂閱電子報"}
+            </motion.button>
+            <p className="mt-5 text-[12px] text-warm-gray-500 tracking-wide leading-[1.9] text-center">送出後會收到確認信，點擊信中連結才算完成訂閱。<br />Email 只用於寄送電子報，可隨時退訂。</p>
+          </div>
+        </form>
+      )}
     </div>
   );
 };

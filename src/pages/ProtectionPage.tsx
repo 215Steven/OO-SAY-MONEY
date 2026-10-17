@@ -1,16 +1,17 @@
-import { Ic } from "@/src/components/Icons";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import liff from "@line/liff";
 import { getLiffIdForPath, authHeaders } from "@/src/constants/liff";
+import { TopBar, PageHeader, SectionLabel, CtaBlock, Reveal } from "@/src/components/ui";
+import { openLine, LINE_BOOK_URL } from "@/src/constants/links";
 
 // 保障狀態的顯示樣式與友善文字（對應 Notion「保單」資料庫四大類的狀態欄位，
 // 目前看到的值有 ok / gap / none / na，其餘未知值一律顯示原始文字＋中性樣式）
 const STATUS_MAP: Record<string, { label: string; textColor: string; bg: string; border: string }> = {
-  ok: { label: "已足夠", textColor: "text-teal-base", bg: "bg-cyan-soft/30", border: "border-teal-soft" },
-  gap: { label: "待補強", textColor: "text-alert-orange", bg: "bg-alert-orange/10", border: "border-alert-orange/30" },
-  none: { label: "尚未規劃", textColor: "text-rose-500", bg: "bg-rose-50", border: "border-rose-200" },
-  na: { label: "不適用", textColor: "text-warm-gray-400", bg: "bg-warm-gray-100", border: "border-warm-gray-200" },
+  ok: { label: "已足夠", textColor: "text-forest", bg: "bg-teal-soft/50", border: "border-teal-soft" },
+  gap: { label: "待補強", textColor: "text-brass", bg: "bg-brass-soft/40", border: "border-brass/30" },
+  none: { label: "尚未規劃", textColor: "text-alert-red", bg: "bg-alert-red/5", border: "border-alert-red/25" },
+  na: { label: "不適用", textColor: "text-warm-gray-500", bg: "bg-warm-gray-100", border: "border-warm-gray-200" },
 };
 function statusStyle(status: string) {
   return STATUS_MAP[status] || { label: status || "未知", textColor: "text-warm-gray-500", bg: "bg-warm-gray-100", border: "border-warm-gray-200" };
@@ -18,16 +19,16 @@ function statusStyle(status: string) {
 
 // 一般文字輸入欄位（姓名／生日／手機都是文字，不能用財管家那種只收數字的 InputBox）
 const TextField = ({ label, hint, value, onChange }: { label: string; hint?: string; value: string; onChange: (e: any) => void }) => (
-  <div className="border p-4 transition-colors rounded-2xl bg-warm-gray-50 border-warm-gray-200 focus-within:border-teal-base focus-within:bg-white">
-    <div className="text-[11px] font-medium tracking-widest uppercase mb-1 text-warm-gray-800">{label}</div>
-    {hint && <div className="text-[10px] text-warm-gray-600 font-normal tracking-wide">{hint}</div>}
+  <label className="block border-b border-warm-gray-300 focus-within:border-forest transition-colors pb-2">
+    <span className="block text-[11px] font-medium tracking-[0.2em] text-warm-gray-600">{label}</span>
     <input
       type="text"
       value={value}
       onChange={onChange}
-      className="w-full border-0 outline-none font-medium text-[16px] bg-transparent placeholder:text-warm-gray-300 tracking-wide text-warm-gray-800 mt-2 pb-1 border-b border-warm-gray-200 focus:border-teal-base"
+      placeholder={hint}
+      className="w-full border-0 outline-none bg-transparent text-[17px] text-warm-gray-800 placeholder:text-warm-gray-400 tracking-wide mt-1.5 py-1"
     />
-  </div>
+  </label>
 );
 
 type Category = { key: string; label: string; status: string; desc: string; note: string };
@@ -78,7 +79,7 @@ export const ProtectionPage = ({ onBack }: { onBack: () => void }) => {
     load();
   }, []);
 
-  const bookConsult = () => window.open("https://line.me/R/ti/p/@oosaymoney", "_blank");
+  const bookConsult = () => openLine(LINE_BOOK_URL);
 
   const submitVerify = async () => {
     if (!verifyName.trim() || !verifyBirthday.trim() || !verifyPhone.trim()) return;
@@ -106,152 +107,108 @@ export const ProtectionPage = ({ onBack }: { onBack: () => void }) => {
     }
   };
 
+  const canVerify = !!verifyName.trim() && !!verifyBirthday.trim() && !!verifyPhone.trim();
   return (
-    <div className="min-h-screen bg-warm-gray-50 font-sans pb-10">
+    <div className="min-h-[100dvh] bg-warm-gray-50 pb-6">
+      <TopBar />
+      <PageHeader eyebrow="My protection" line1="我的" line2="保障。" desc="你與家人的保障總覽，資料由顧問團隊為你維護更新。" />
 
-      <div className="pt-12 pb-10 px-6 relative z-10 w-full max-w-sm mx-auto border-b border-warm-gray-200 mb-8 shrink-0 bg-white">
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-warm-gray-50 border border-warm-gray-200 rounded-full text-warm-gray-800 mb-6">
-            <Ic n="shield" size={28} color="currentColor" />
-          </div>
-          <h1 className="text-[28px] font-serif font-bold text-warm-gray-800 tracking-wide mb-4">我的保障</h1>
-          <p className="text-[14px] text-warm-gray-800/70 font-normal leading-relaxed max-w-[280px] mx-auto tracking-wide">你與家人的保障總覽，資料由顧問團隊為你維護更新。</p>
-        </motion.div>
-      </div>
-
-      <div className="px-5 w-full max-w-sm mx-auto relative z-10">
-
+      <div className="px-6">
         {loading && (
-          <div className="bg-white border border-warm-gray-200 rounded-2xl p-10 text-center shadow-sm mb-8">
-            <div className="text-[13px] text-warm-gray-500 tracking-widest">讀取保單資料中…</div>
+          <div className="py-12" role="status">
+            <div className="w-24 h-px bg-warm-gray-200 relative overflow-hidden mb-4">
+              <motion.span className="absolute inset-y-0 w-10 bg-brass" initial={{ x: -40 }} animate={{ x: 96 }} transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }} />
+            </div>
+            <div className="text-[12px] text-warm-gray-500 tracking-[0.2em]">讀取保單資料中</div>
           </div>
         )}
 
         {!loading && loadFailed && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-            <div className="bg-white border border-warm-gray-200 p-8 text-center rounded-2xl shadow-sm">
-              <div className="text-[20px] font-serif font-bold text-warm-gray-800 mb-3 tracking-wide">暫時無法讀取</div>
-              <div className="text-[13px] text-warm-gray-800/80 font-normal leading-loose tracking-wide">
-                請確認已完成 LINE 登入，或稍後再試一次。<br />若問題持續發生，歡迎直接聯繫顧問。
-              </div>
-            </div>
-          </motion.div>
+          <div className="py-10 border-t border-warm-gray-800/80">
+            <div className="font-serif text-[22px] font-semibold text-warm-gray-800 mb-3">暫時無法讀取</div>
+            <p className="text-[14px] text-warm-gray-600 leading-[1.9]">請確認已完成 LINE 登入，或稍後再試一次。若問題持續發生，歡迎直接聯繫顧問。</p>
+          </div>
         )}
 
         {!loading && !loadFailed && members && members.length === 0 && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-            <div className="bg-white border border-warm-gray-200 p-8 relative overflow-hidden rounded-2xl shadow-sm">
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-warm-gray-100 flex items-center justify-center mx-auto mb-6 border border-warm-gray-200 rounded-full">
-                  <Ic n="shield" size={24} color="#2D2D2A" />
-                </div>
-                <div className="text-[18px] font-serif font-bold text-warm-gray-800 mb-3 tracking-widest">查不到你的保障資料</div>
-                <div className="text-[13px] text-warm-gray-800/80 font-normal leading-loose tracking-wide">
-                  填入以下資訊核對身份，我們會比對顧問建檔的資料。
-                </div>
-              </div>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="border-t border-warm-gray-800/80 pt-8">
+            <h2 className="font-serif text-[24px] font-semibold text-warm-gray-800">查不到你的保障資料</h2>
+            <p className="mt-3 text-[14px] text-warm-gray-600 leading-[1.9]">填入以下資訊核對身份，我們會比對顧問建檔的資料。</p>
 
-              <div className="flex flex-col gap-3">
-                <TextField label="姓名" hint="與顧問登記的姓名一致" value={verifyName} onChange={(e: any) => setVerifyName(e.target.value)} />
-                <TextField label="生日" hint="例：1990-01-01" value={verifyBirthday} onChange={(e: any) => setVerifyBirthday(e.target.value)} />
-                <TextField label="手機" hint="例：0912345678" value={verifyPhone} onChange={(e: any) => setVerifyPhone(e.target.value)} />
-              </div>
-
-              {verifyResult === "notfound" && (
-                <div className="bg-rose-50 border border-rose-200 text-rose-500 text-[12px] rounded-xl p-4 mt-4 leading-relaxed">
-                  查無符合的資料，請確認姓名／生日／手機是否與顧問登記的一致，或直接聯繫顧問協助確認。
-                </div>
-              )}
-
-              <button
-                onClick={submitVerify}
-                disabled={verifying || !verifyName.trim() || !verifyBirthday.trim() || !verifyPhone.trim()}
-                className="w-full bg-teal-base text-white border border-teal-base py-4 rounded-2xl text-[13px] font-bold tracking-widest uppercase cursor-pointer hover:bg-cyan-base transition-colors flex items-center justify-center gap-2 shadow-sm mt-5 disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                {verifying ? "核對中…" : "核對身份"}
-              </button>
-
-              <div className="text-[10px] text-warm-gray-400 font-normal tracking-wide leading-relaxed mt-4 text-center">
-                核對成功後，之後登入會自動顯示你的保障資料，不需要再次核對。
-              </div>
+            <div className="mt-8 flex flex-col gap-6">
+              <TextField label="姓名" hint="與顧問登記的姓名一致" value={verifyName} onChange={(e: any) => setVerifyName(e.target.value)} />
+              <TextField label="生日" hint="例：1990-01-01" value={verifyBirthday} onChange={(e: any) => setVerifyBirthday(e.target.value)} />
+              <TextField label="手機" hint="例：0912345678" value={verifyPhone} onChange={(e: any) => setVerifyPhone(e.target.value)} />
             </div>
 
-            <button onClick={bookConsult} className="no-underline flex items-center justify-center gap-3 bg-white border border-warm-gray-200 text-warm-gray-700 w-full py-4 text-[13px] font-medium tracking-widest transition-colors hover:bg-warm-gray-100 cursor-pointer rounded-2xl shadow-sm mt-4">
-              找不到資料？直接聯繫顧問
-            </button>
+            {verifyResult === "notfound" && (
+              <div role="alert" className="mt-6 border-l-2 border-alert-red pl-4 text-[13px] text-alert-red leading-[1.9]">
+                查無符合的資料，請確認姓名／生日／手機是否與顧問登記的一致，或直接聯繫顧問協助確認。
+              </div>
+            )}
+
+            <motion.button
+              onClick={submitVerify}
+              disabled={verifying || !canVerify}
+              whileTap={{ scale: canVerify ? 0.97 : 1 }}
+              className="mt-8 w-full bg-forest text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-cyan-base transition-colors disabled:opacity-35 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-brass/60 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50"
+            >
+              {verifying ? "核對中…" : "核對身份"}
+            </motion.button>
+            <p className="mt-4 text-[11px] text-warm-gray-500 tracking-wide leading-[1.9] text-center">核對成功後，之後登入會自動顯示你的保障資料，不需要再次核對。</p>
+            <button onClick={bookConsult} className="mt-6 w-full text-[13px] tracking-[0.15em] text-warm-gray-600 hover:text-warm-gray-800 border-b border-warm-gray-300 pb-1 cursor-pointer">找不到資料？直接聯繫顧問</button>
           </motion.div>
         )}
 
         {!loading && !loadFailed && members && members.length > 0 && (
-          <div className="mb-10">
-            <div className="text-[10px] font-medium text-warm-gray-800 tracking-[0.2em] mb-6 flex items-center justify-center gap-2 uppercase">
-              <span className="w-1.5 h-1.5 bg-teal-base rounded-full" />
-              家庭保障總覽 · 共 {members.length} 位成員
-              <span className="w-1.5 h-1.5 bg-teal-base rounded-full" />
-            </div>
-            <div className="flex flex-col gap-4">
+          <div>
+            <SectionLabel>家庭保障總覽 · 共 {members.length} 位成員</SectionLabel>
+            <div className="border-t border-warm-gray-800/80">
               {members.map((m, i) => (
-                <motion.div key={m.id || i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                  className="bg-white border border-warm-gray-200 rounded-2xl p-5 shadow-sm">
-                  <div className="flex items-center gap-3 mb-4 pb-4 border-b border-warm-gray-100">
-                    <div className="w-10 h-10 bg-warm-gray-100 border border-warm-gray-200 rounded-full flex items-center justify-center text-[13px] font-serif font-bold text-warm-gray-800 shrink-0">
-                      {(m.name || "?").charAt(0)}
+                <Reveal key={m.id || i} delay={i * 0.04}>
+                  <div className="py-8 border-b border-warm-gray-300">
+                    <div className="flex items-baseline gap-3 mb-5">
+                      <span className="font-serif text-[26px] font-semibold text-warm-gray-800">{m.name || "未命名"}</span>
+                      {m.relation && <span className="text-[11px] tracking-[0.18em] text-brass border border-brass/40 px-2 py-0.5 rounded-full">{m.relation}</span>}
+                      {m.age !== null && <span className="ml-auto text-[12px] text-warm-gray-500 tnum">{m.age} 歲</span>}
                     </div>
-                    <div className="flex-1">
-                      <div className="text-[14px] font-bold text-warm-gray-800 tracking-wide flex items-center gap-2">
-                        {m.name || "未命名"}
-                        {m.relation && <span className="text-[10px] font-medium text-warm-gray-500 bg-warm-gray-100 px-2 py-0.5 rounded">{m.relation}</span>}
-                      </div>
-                      {m.age !== null && <div className="text-[11px] text-warm-gray-500 mt-1">{m.age} 歲</div>}
-                    </div>
-                  </div>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    {m.categories.map((c, j) => {
-                      const st = statusStyle(c.status);
-                      return (
-                        <div key={j} className={`p-3 rounded-xl border ${st.border} ${st.bg}`}>
-                          <div className="flex items-center justify-between mb-1.5">
-                            <span className="text-[11px] font-bold text-warm-gray-700">{c.label}</span>
-                            <span className={`text-[10px] font-bold ${st.textColor}`}>{st.label}</span>
+                    <div className="grid grid-cols-2 gap-3">
+                      {m.categories.map((c, j) => {
+                        const st = statusStyle(c.status);
+                        return (
+                          <div key={j} className={`p-4 rounded-2xl border ${st.border} ${st.bg}`}>
+                            <div className="text-[12px] font-medium text-warm-gray-800 tracking-wide">{c.label}</div>
+                            <div className={`mt-1 text-[12px] font-medium tracking-wide ${st.textColor}`}>{st.label}</div>
+                            {c.desc && <div className="mt-2 text-[12px] text-warm-gray-600 leading-[1.7]">{c.desc}</div>}
+                            {c.note && <div className="mt-1 text-[11px] text-warm-gray-500 leading-[1.7]">{c.note}</div>}
                           </div>
-                          {c.desc && <div className="text-[11px] text-warm-gray-700 leading-relaxed">{c.desc}</div>}
-                          {c.note && <div className="text-[10px] text-warm-gray-500 leading-relaxed mt-1">{c.note}</div>}
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {(m.advisor || m.lastUpdated) && (
-                    <div className="flex justify-between items-center text-[10px] text-warm-gray-400 tracking-wide mt-4 pt-3 border-t border-warm-gray-50">
-                      {m.advisor && <span>負責顧問：{m.advisor}</span>}
-                      {m.lastUpdated && <span>更新於 {m.lastUpdated}</span>}
+                        );
+                      })}
                     </div>
-                  )}
-                </motion.div>
+
+                    {(m.advisor || m.lastUpdated) && (
+                      <div className="flex justify-between text-[11px] text-warm-gray-500 tracking-wide mt-5">
+                        {m.advisor && <span>負責顧問：{m.advisor}</span>}
+                        {m.lastUpdated && <span>更新於 {m.lastUpdated}</span>}
+                      </div>
+                    )}
+                  </div>
+                </Reveal>
               ))}
             </div>
           </div>
         )}
-
-        {/* CTA */}
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="w-full max-w-sm mx-auto bg-warm-gray-50 p-10 text-center border border-warm-gray-200 relative overflow-hidden mb-10 shrink-0 rounded-2xl">
-          <div className="relative z-10">
-            <div className="w-16 h-16 bg-white flex items-center justify-center mx-auto mb-6 border border-warm-gray-200 rounded-full">
-              <Ic n="user" size={24} color="#2D2D2A" />
-            </div>
-            <div className="text-[20px] font-serif font-bold text-warm-gray-800 mb-4 tracking-widest">有保單相關問題？</div>
-            <div className="text-[13px] text-warm-gray-800/80 font-normal mb-8 leading-loose tracking-wide">
-              不管是想調整保障、確認理賠，<br />或單純想聊聊現況，都歡迎找我們。
-            </div>
-            <button onClick={bookConsult} className="no-underline flex items-center justify-center gap-3 bg-teal-base text-white w-full py-4 text-[13px] font-medium tracking-widest transition-colors hover:bg-cyan-base cursor-pointer border border-transparent uppercase mb-6 rounded-2xl shadow-sm">
-              <Ic n="star" size={16} color="currentColor" /> 加入 LINE 聯繫顧問
-            </button>
-            <div className="text-[10px] text-warm-gray-600 font-normal tracking-[0.2em] uppercase">免費諮詢 · 無推銷壓力</div>
-          </div>
-        </motion.div>
-
       </div>
+
+      <CtaBlock
+        title="有保單相關問題？"
+        desc="想調整保障、確認理賠，或單純想聊聊現況，直接在 LINE 跟我們說。"
+        primary="在 LINE 跟我們聊聊"
+        onPrimary={bookConsult}
+        note="免費諮詢 · 無推銷壓力"
+      />
+      <p className="px-8 mt-8 pb-10 text-[11px] text-warm-gray-500 text-center tracking-wide leading-relaxed">保障內容以保單條款與保險公司核定為準。</p>
     </div>
   );
 };
