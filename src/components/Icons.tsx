@@ -19,6 +19,9 @@ const icons: Record<string, any> = {
   check: Check,
   arrow: ChevronRight,
   back: ChevronLeft,
+  // 別名：部分頁面使用這兩個 key，原本找不到會退回成「資訊」圖示
+  "arrow-left": ChevronLeft,
+  arrowRight: ChevronRight,
   close: X,
 };
 
