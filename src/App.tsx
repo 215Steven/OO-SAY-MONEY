@@ -71,7 +71,7 @@ const PageTransition = ({ children }: { children: ReactNode }) => (
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0 }}
     transition={{ duration: 0.2 }}
-    className="w-full min-h-[100dvh] bg-[#f8f8f6]"
+    className="w-full min-h-[100dvh] bg-warm-gray-50"
   >
     {children}
   </motion.div>
@@ -192,12 +192,12 @@ export default function MainApp() {
   return (
     <div className="max-w-[430px] mx-auto min-h-[100dvh] font-sans relative flex flex-col"
       style={{
-        background: role ? THEMES[ROLE_META[role]?.theme||"newMember"].bg : "#F8F8F6",
+        background: role ? THEMES[ROLE_META[role]?.theme||"newMember"].bg : "var(--color-warm-gray-50)",
       }}
     >
 
 
-      <div className="flex-1 w-full bg-[#f8f8f6]">
+      <div className="flex-1 w-full bg-warm-gray-50">
         <ErrorBoundary>
         <Suspense fallback={<div className="p-10 text-center text-slate-400 font-medium">載入中…</div>}>
           {/* 修法：AnimatePresence 在路由切換時偶爾會讓「離場」的舊頁面卡在

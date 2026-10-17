@@ -1,29 +1,49 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Serif+TC:wght@400;500;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@500;600;700;900&display=swap');
 @import "tailwindcss";
 
+/* 設計系統 v2：紙張米白 × 深森林綠 × 單一銅金強調色。
+   沿用原本的 token 名稱（warm-gray-* / teal-* / cyan-*），
+   這樣所有既有頁面會一次套用新色彩，不用逐頁改 class。 */
 @theme {
-  --font-serif: "Noto Serif TC", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --color-warm-gray-50: #F9F9F8;
-  --color-warm-gray-100: #F2F0ED;
-  --color-warm-gray-200: #E6E2DE;
-  --color-warm-gray-800: #2D2D2A;
-  --color-warm-gold: #B8966E;
+  --font-serif: "Fraunces", "Noto Serif TC", ui-serif, Georgia, serif;
+  --font-display: "Fraunces", "Noto Serif TC", ui-serif, Georgia, serif;
+  --font-sans: "Noto Sans TC", system-ui, -apple-system, sans-serif;
 
-  /* Brand Colors */
-  --color-cyan-base: #0095b8;
-  --color-cyan-soft: #e0f4f9;
-  --color-teal-base: #00a29d;
-  --color-teal-soft: #e0f6f4;
-  --color-alert-red: #ea580c;
-  --color-alert-orange: #f59e0b;
+  /* 紙張與墨色 */
+  --color-warm-gray-50: #F4EFE5;
+  --color-warm-gray-100: #ECE5D6;
+  --color-warm-gray-200: #DDD4C1;
+  --color-warm-gray-300: #C9BEA7;
+  --color-warm-gray-400: #A99E88;
+  --color-warm-gray-500: #7F7766;
+  --color-warm-gray-600: #5E574A;
+  --color-warm-gray-800: #14231E;
+  --color-warm-gold: #B8793A;
+
+  /* 品牌：深森林綠（取代原本的青綠） */
+  --color-teal-base: #0F3D33;
+  --color-teal-soft: #DCE6DA;
+  --color-cyan-base: #1D5A49;
+  --color-cyan-soft: #E6EDE2;
+  --color-alert-red: #B4452A;
+  --color-alert-orange: #B8793A;
+
+  --color-brass: #B8793A;
+  --color-brass-soft: #E9D6BC;
+  --color-ink: #14231E;
+  --color-forest: #0F3D33;
 }
 
 @layer base {
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body {
     background-color: var(--color-warm-gray-50);
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-sans);
     color: var(--color-warm-gray-800);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
+  ::selection { background: var(--color-brass-soft); color: var(--color-ink); }
 }
 
 @layer utilities {
@@ -35,6 +55,17 @@
   .no-spinner {
     -moz-appearance: textfield;
   }
+  /* 顆粒雜訊：打破數位平整感，只加在深色大區塊上 */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .22;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
 }
 
 ::-webkit-scrollbar { width: 4px; }
