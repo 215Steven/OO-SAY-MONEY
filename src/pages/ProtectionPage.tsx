@@ -247,7 +247,7 @@ export const ProtectionPage = ({ onBack }: { onBack: () => void }) => {
             <button onClick={bookConsult} className="no-underline flex items-center justify-center gap-3 bg-teal-base text-white w-full py-4 text-[13px] font-medium tracking-widest transition-colors hover:bg-cyan-base cursor-pointer border border-transparent uppercase mb-6 rounded-2xl shadow-sm">
               <Ic n="star" size={16} color="currentColor" /> 加入 LINE 聯繫顧問
             </button>
-            <div className="text-[10px] text-warm-gray-600 font-normal tracking-[0.2em] uppercase">✨ 免費諮詢 · 無推銷壓力</div>
+            <div className="text-[10px] text-warm-gray-600 font-normal tracking-[0.2em] uppercase">免費諮詢 · 無推銷壓力</div>
           </div>
         </motion.div>
 

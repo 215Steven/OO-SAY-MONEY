@@ -176,7 +176,7 @@ export const DefensePage = ({ onBack }: { onBack: () => void }) => {
                            <div className="bg-white border border-warm-gray-200 p-5 relative overflow-hidden rounded-2xl shadow-sm">
                              <div className="absolute left-0 top-0 bottom-0 w-1 bg-teal-base" />
                              <div className="text-[10px] font-medium text-warm-gray-800 mb-3 pl-3 tracking-widest uppercase flex items-center gap-2">
-                                <span className="text-[12px]">💡</span> {section.highlightLabel}
+                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-base mr-1.5 align-middle" /> {section.highlightLabel}
                              </div>
                              <div className="text-[13px] text-warm-gray-800/80 leading-loose pl-3 font-medium tracking-wider italic">{section.highlight}</div>
                            </div>
@@ -204,7 +204,7 @@ export const DefensePage = ({ onBack }: { onBack: () => void }) => {
              <button onClick={() => window.open('https://line.me/R/ti/p/@oosaymoney', '_blank')} className="no-underline flex items-center justify-center gap-3 bg-teal-base text-white w-full py-4 text-[13px] font-medium tracking-widest transition-colors hover:bg-cyan-base cursor-pointer border border-transparent uppercase mb-6 rounded-2xl shadow-sm">
                <Ic n="star" size={16} color="currentColor" /> 加入 LINE 聯繫顧問
              </button>
-             <div className="text-[10px] text-warm-gray-600 font-normal tracking-[0.2em] uppercase">✨ 免費諮詢 · 無推銷壓力</div>
+             <div className="text-[10px] text-warm-gray-600 font-normal tracking-[0.2em] uppercase">免費諮詢 · 無推銷壓力</div>
           </div>
         </motion.div>
 

@@ -81,7 +81,7 @@ export const NewsletterPage = ({ onBack }: { onBack: () => void }) => {
               </div>
               <h2 className="text-[20px] font-serif font-bold text-warm-gray-800 tracking-widest">訂閱申請已送出</h2>
               <p className="text-[13px] text-warm-gray-600 tracking-wide leading-relaxed max-w-[280px]">
-                我們寄了一封確認信到 {email}，請至信箱點擊確認連結，就能開始收到理財快訊與電子報囉！
+                我們寄了一封確認信到 {email}，請到信箱點擊確認連結，完成後就會開始收到電子報。若沒看到，請檢查垃圾郵件匣。
               </p>
               <button
                 type="button"
@@ -139,7 +139,8 @@ export const NewsletterPage = ({ onBack }: { onBack: () => void }) => {
                 >
                   {submitting ? "處理中..." : "訂閱電子報"}
                 </button>
-                <p className="text-center text-[12px] text-warm-gray-500 mt-4 tracking-wide">送出後會收到確認信，點擊信中連結才算完成訂閱</p>
+                <p className="text-center text-[12px] text-warm-gray-500 mt-4 tracking-wide">送出後會收到確認信，點擊信中連結才算完成訂閱。
+                  <br />Email 只用於寄送電子報，可隨時退訂。</p>
               </div>
             </>
           )}

@@ -1,7 +1,10 @@
 import { Ic } from "@/src/components/Icons";
 import { motion } from "motion/react";
+import { useLocation } from "wouter";
 
-export const AboutPage = ({ onBack, onJoin }: any) => (
+export const AboutPage = ({ onBack, onJoin }: any) => {
+  const [, navigate] = useLocation();
+  return (
   <div className="min-h-screen pb-12 flex flex-col relative bg-warm-gray-50">
     
     <div className="pt-12 px-6 pb-8 flex flex-col items-center">
@@ -74,36 +77,38 @@ export const AboutPage = ({ onBack, onJoin }: any) => (
 
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }} className="w-full max-w-sm bg-white border border-warm-gray-200 p-6 rounded-2xl shadow-sm">
         <div className="text-[17px] font-serif font-bold text-warm-gray-800 mb-6 tracking-wide flex items-center gap-3">
-           <div className="w-9 h-9 bg-warm-gray-50 border border-warm-gray-200 rounded-full flex items-center justify-center text-[15px]">🤝</div>
-           跟我們在這裡見面
+           <div className="w-9 h-9 bg-warm-gray-50 border border-warm-gray-200 rounded-full flex items-center justify-center"><Ic n="user" size={16} color="var(--color-warm-gray-800)" /></div>
+           在這裡找到我們
         </div>
         <div className="flex gap-4">
           <a href="https://www.facebook.com/oosayhi" target="_blank" rel="noopener noreferrer" className="flex-1 no-underline">
             <div className="bg-warm-gray-50 border border-warm-gray-200 py-5 px-3 text-center rounded-xl transition-all hover:border-teal-soft hover:bg-cyan-soft/50 group">
-              <div className="text-[26px] mb-3 transition-all duration-300">📘</div>
+              <div className="mb-3 flex justify-center"><Ic n="user" size={24} color="var(--color-teal-base)" /></div>
               <div className="text-[13px] font-bold text-warm-gray-800 group-hover:text-teal-base tracking-widest transition-colors">FB 粉專</div>
             </div>
           </a>
           <a href="https://oosayhi.com" target="_blank" rel="noopener noreferrer" className="flex-1 no-underline">
             <div className="bg-warm-gray-50 border border-warm-gray-200 py-5 px-3 text-center rounded-xl transition-all hover:border-teal-soft hover:bg-cyan-soft/50 group">
-              <div className="text-[26px] mb-3 transition-all duration-300">✍️</div>
+              <div className="mb-3 flex justify-center"><Ic n="book" size={24} color="var(--color-teal-base)" /></div>
               <div className="text-[13px] font-bold text-warm-gray-800 group-hover:text-teal-base tracking-widest transition-colors">部落格</div>
             </div>
           </a>
         </div>
       </motion.div>
 
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="w-full max-w-sm mt-4 mb-10">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.5 }} className="w-full max-w-sm mt-4 mb-6">
         <div className="bg-teal-base p-8 flex flex-col justify-center items-center text-center rounded-2xl shadow-lg relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-base/20 rounded-full blur-2xl -mr-10 -mt-10" />
           <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide relative z-10">想了解更多？</h3>
-          <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">加入會員，解鎖讓錢為你工作的運作邏輯</p>
-          <button onClick={onJoin} className="w-full bg-white text-teal-base py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all flex justify-center items-center gap-2 shadow-sm relative z-10">
+          <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">加入會員，了解讓錢替你工作的做法</p>
+          <button onClick={onJoin} className="outline-none focus-visible:ring-2 focus-visible:ring-teal-base/40 focus-visible:ring-offset-2 w-full bg-white text-teal-base py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft active:scale-[0.98] transition-all flex justify-center items-center gap-2 shadow-sm relative z-10">
              加入會員
           </button>
+          <button onClick={() => navigate("/appointment")} className="outline-none focus-visible:ring-2 focus-visible:ring-teal-base/40 focus-visible:ring-offset-2 mt-3 text-white/90 py-3 text-[13px] tracking-widest cursor-pointer hover:text-white transition-colors relative z-10">想先聊聊？預約免費諮詢</button>
         </div>
       </motion.div>
+      <p className="px-8 mb-10 text-[11px] text-warm-gray-500 text-center tracking-wide leading-relaxed max-w-sm">以上為過往服務經驗，不代表未來結果，內容不構成投資建議。</p>
     </div>
   </div>
-);
-
+  );
+};

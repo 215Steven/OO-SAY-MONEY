@@ -14,7 +14,7 @@ export const MoneyLanding = ({ onBack, onLogin }: any) => {
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="relative z-10 text-center w-full">
         <div className="inline-flex items-center gap-2 bg-white border border-warm-gray-200 px-3 py-1 mb-6">
           <div className="w-1.5 h-1.5 rounded-full bg-teal-base" />
-          <span className="text-[10px] font-medium text-warm-gray-800 tracking-[0.2em] uppercase">免費 · 2分鐘</span>
+          <span className="text-[10px] font-medium text-warm-gray-800 tracking-[0.2em] uppercase">免費 · 約 90 秒</span>
         </div>
         <div className="text-[28px] font-serif font-bold text-warm-gray-800 leading-[1.4] tracking-wider mb-5">
           你的錢，<br/>都去哪了？
@@ -61,6 +61,7 @@ export const MoneyLanding = ({ onBack, onLogin }: any) => {
           <div className="text-[18px] font-serif font-bold text-warm-gray-800 tracking-wider">看清真實數字</div>
           <span className="text-[10px] font-medium text-alert-orange border border-alert-orange/30 bg-alert-orange/5 px-2 py-1 ml-auto tracking-widest rounded-full">需登入</span>
         </div>
+        <div className="text-[11px] text-warm-gray-500 tracking-wide mb-2">報告範例（示意數字）</div>
         <div className="flex gap-3 mb-6">
           {[
             { label:"淨資產",   val:"1,600萬", color:"text-warm-gray-800", bg:"bg-warm-gray-50", b:"border-warm-gray-200" },
@@ -83,10 +84,10 @@ export const MoneyLanding = ({ onBack, onLogin }: any) => {
         <div className="relative z-10 w-full">
           <div className="text-[18px] font-serif font-bold text-white mb-3 tracking-widest">解鎖完整財務工具</div>
           <div className="text-[13px] text-cyan-soft font-normal mb-8 leading-relaxed tracking-wide">
-            加入會員，免費使用財管家所有功能<br/>不再讓記帳變成半途而廢
+            免費加入會員，即可使用財管家<br/>用數字看清自己的財務狀況
           </div>
           <button onClick={onLogin} className="w-full bg-white text-cyan-base border border-white py-4 rounded-2xl text-[13px] font-bold tracking-widest uppercase cursor-pointer hover:bg-cyan-soft transition-colors flex items-center justify-center gap-2 shadow-sm">
-            加入會員，立即開始 <Ic n="arrowRight" size={16} color="currentColor" />
+            加入會員，立即開始 <Ic n="arrow" size={16} color="currentColor" />
           </button>
         </div>
       </motion.div>

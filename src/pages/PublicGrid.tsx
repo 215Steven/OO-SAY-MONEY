@@ -6,8 +6,8 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
   // 再帶到品牌故事、最後才是解鎖更多，符合先痛點、後信任、再轉換的順序。
   const items = [
     { key:"quiz",   label:"錢去哪了", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"money", sub:"90 秒財務性格測驗" },
-    { key:"story",  label:"故事起點", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"info",  sub:"自我介紹" },
-    { key:"unlock", label:"解鎖更多", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"star",  sub:"簡述會員頁的六格網頁" },
+    { key:"story",  label:"故事起點", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"info",  sub:"認識 Steven & Annie" },
+    { key:"unlock", label:"解鎖更多", bg:"bg-warm-gray-50", text:"text-warm-gray-800", icon:"star",  sub:"會員專屬工具與一對一諮詢" },
   ];
   return (
     <div className="min-h-screen pb-12 flex flex-col relative bg-warm-gray-50 items-center">
@@ -33,9 +33,9 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
       <div className="px-5 flex flex-col gap-4 w-full max-w-sm pt-4">
         {items.map((item, i) => (
           <motion.div 
-            initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: i * 0.1 + 0.2 }}
-            key={item.key} onClick={() => onSelect(item.key)} 
-            className="bg-white p-6 flex items-center gap-5 border border-teal-soft/80 rounded-2xl hover:border-teal-base/30 hover:shadow-md transition-all cursor-pointer group"
+            initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 100, damping: 20, delay: i * 0.08 + 0.15 }}
+            key={item.key} onClick={() => onSelect(item.key)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter") onSelect(item.key); }} whileTap={{ scale: 0.98 }}
+            className="outline-none focus-visible:ring-2 focus-visible:ring-teal-base/40 focus-visible:ring-offset-2 bg-white p-6 flex items-center gap-5 border border-teal-soft/80 rounded-2xl hover:border-teal-base/30 hover:shadow-md transition-all cursor-pointer group"
           >
             <div className="w-12 h-12 border border-teal-soft bg-cyan-soft/50 rounded-full flex items-center justify-center shrink-0 group-hover:bg-cyan-soft transition-colors">
               <Ic n={item.icon} size={22} color="var(--color-teal-base)" />
@@ -56,12 +56,14 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }} className="bg-teal-base p-8 mt-10 text-center rounded-2xl shadow-lg relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-base/20 rounded-full blur-2xl -mr-10 -mt-10" />
           <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide relative z-10">開始專屬理財旅程</h3>
-          <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">紀錄財務、顧問諮詢<br/>與您的客製化理財藍圖。</p>
+          <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">記錄財務、預約顧問，<br/>取得屬於你的理財藍圖。</p>
           <button onClick={() => onSelect("login")} className="w-full bg-white text-teal-base py-4 rounded-2xl text-[14px] font-bold tracking-widest cursor-pointer hover:bg-teal-soft transition-all flex justify-center items-center gap-2 relative z-10 shadow-sm">
-             前往註冊 / 登入
+             免費加入會員
           </button>
+          <p className="text-[11px] text-teal-soft/70 mt-4 tracking-wide relative z-10">已有帳號？同一個按鈕登入即可</p>
         </motion.div>
       </div>
+      <p className="px-8 mt-8 text-[11px] text-warm-gray-500 text-center tracking-wide leading-relaxed max-w-sm">本站內容僅供參考，不構成投資建議。</p>
     </div>
   );
 };
