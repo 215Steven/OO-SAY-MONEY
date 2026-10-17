@@ -1,4 +1,5 @@
 import { motion, useInView, animate } from "motion/react";
+import { Ic } from "@/src/components/Icons";
 import { useEffect, useRef, useState, ReactNode, Attributes } from "react";
 
 // 共用動效與小元件（設計系統 v2）
@@ -64,4 +65,60 @@ export const Loading = () => (
       <motion.span className="absolute inset-y-0 w-10 bg-brass" initial={{ x: -40 }} animate={{ x: 96 }} transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }} />
     </div>
   </div>
+);
+
+/** 頁面頂列：返回（可選）＋品牌字樣 */
+export const TopBar = ({ onBack, right }: { onBack?: () => void; right?: ReactNode }) => (
+  <div className="px-6 pt-8 flex items-center justify-between">
+    {onBack ? (
+      <button onClick={onBack} aria-label="返回" className="flex items-center gap-1 text-[12px] tracking-[0.18em] text-warm-gray-600 hover:text-warm-gray-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-4 focus-visible:ring-offset-warm-gray-50">
+        <Ic n="back" size={16} /> 返回
+      </button>
+    ) : (
+      <div className="font-display text-[12px] font-semibold tracking-[0.22em] text-warm-gray-800">OO SAY MONEY</div>
+    )}
+    {right ?? (onBack ? <div className="font-display text-[12px] font-semibold tracking-[0.22em] text-warm-gray-800">OO SAY MONEY</div> : null)}
+  </div>
+);
+
+/** 頁面主標：兩行，第二行為銅金斜體 */
+export const PageHeader = ({ eyebrow, line1, line2, desc }: { eyebrow: string; line1: string; line2?: string; desc?: ReactNode }) => (
+  <header className="px-6 pt-14 pb-10">
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
+      <Eyebrow className="mb-6">{eyebrow}</Eyebrow>
+    </motion.div>
+    <h1 className="font-serif leading-[1.12] tracking-[-0.01em]">
+      <motion.span className="block text-[44px] font-semibold text-warm-gray-800" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.08 }}>{line1}</motion.span>
+      {line2 && <motion.span className="block text-[44px] font-light italic text-brass" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.18 }}>{line2}</motion.span>}
+    </h1>
+    {desc && <p className="mt-6 text-[15px] leading-[1.95] text-warm-gray-600 max-w-[19rem]">{desc}</p>}
+  </header>
+);
+
+/** 小節標題：編號＋大寫小標 */
+export const SectionLabel = ({ no, children }: { no?: string; children: ReactNode }) => (
+  <div className="flex items-baseline gap-4 mb-5">
+    {no && <span className="font-display text-[13px] tnum text-brass">{no}</span>}
+    <span className="text-[11px] font-medium tracking-[0.24em] uppercase text-warm-gray-600">{children}</span>
+  </div>
+);
+
+/** 深色轉換區塊 */
+export const CtaBlock = ({ title, desc, primary, onPrimary, secondary, onSecondary, note }: {
+  title: string; desc?: ReactNode; primary: string; onPrimary: () => void; secondary?: string; onSecondary?: () => void; note?: string;
+}) => (
+  <Reveal className="px-6 pt-14">
+    <section className="grain relative rounded-[28px] bg-forest text-white overflow-hidden px-7 pt-10 pb-8">
+      <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
+      <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">{title}</h2>
+      {desc && <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">{desc}</p>}
+      <motion.button onClick={onPrimary} whileTap={{ scale: 0.97 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+        {primary}
+      </motion.button>
+      {secondary && onSecondary && (
+        <button onClick={onSecondary} className="relative z-10 mt-2 w-full py-3 text-[13px] tracking-[0.15em] text-white/75 hover:text-white transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full">{secondary}</button>
+      )}
+      {note && <p className="relative z-10 mt-4 text-[11px] text-white/45 tracking-wide text-center">{note}</p>}
+    </section>
+  </Reveal>
 );
