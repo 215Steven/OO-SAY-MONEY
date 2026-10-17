@@ -5,6 +5,7 @@ import { THEMES, ROLE_META } from "@/src/constants/roles";
 import { LoginModal } from "@/src/components/LoginModal";
 import { useLiff } from "@/src/hooks/useLiff";
 import { Loading } from "@/src/components/ui";
+import { LINE_BOOK_URL, openLine } from "@/src/constants/links";
 // 修法：RegisterPage 改為「直接」引入（不再 lazy load）。
 // 從 故事起點／解鎖更多／錢去哪了 等子頁面點擊「加入會員」時，是透過
 // RouteWithRegister 內部的 showReg state 切換顯示 RegisterPage，
@@ -55,7 +56,6 @@ const PublicGrid = lazyPage(() => import("@/src/pages/PublicGrid"), "PublicGrid"
 const AboutPage = lazyPage(() => import("@/src/pages/AboutPage"), "AboutPage");
 const MoneyLanding = lazyPage(() => import("@/src/pages/MoneyLanding"), "MoneyLanding");
 const UnlockPage = lazyPage(() => import("@/src/pages/UnlockPage"), "UnlockPage");
-const AppointmentPage = lazyPage(() => import("@/src/pages/AppointmentPage"), "AppointmentPage");
 const RoleHome = lazyPage(() => import("@/src/pages/RoleHome"), "RoleHome");
 const MoneyTool = lazyPage(() => import("@/src/pages/MoneyTool"), "MoneyTool");
 const TemplatePage = lazyPage(() => import("@/src/pages/TemplatePage"), "TemplatePage");
@@ -65,6 +65,17 @@ const ProtectionPage = lazyPage(() => import("@/src/pages/ProtectionPage"), "Pro
 const InspirePage = lazyPage(() => import("@/src/pages/InspirePage"), "InspirePage");
 const BlueprintPage = lazyPage(() => import("@/src/pages/BlueprintPage"), "BlueprintPage");
 const TermsPage = lazyPage(() => import("@/src/pages/TermsPage"), "TermsPage");
+
+const RedirectToLine = () => {
+  useEffect(() => { window.location.replace(LINE_BOOK_URL); }, []);
+  return (
+    <div className="min-h-[60dvh] flex flex-col items-center justify-center gap-4 px-6 text-center">
+      <div className="font-serif text-[22px] font-semibold text-warm-gray-800">前往 LINE 對話</div>
+      <p className="text-[14px] text-warm-gray-600 leading-[1.9]">預約直接在 LINE 跟我們說就好。</p>
+      <a href={LINE_BOOK_URL} className="mt-2 bg-brass text-white px-8 py-3.5 rounded-full text-[13px] font-medium tracking-[0.2em] no-underline">開啟 LINE</a>
+    </div>
+  );
+};
 
 const PageTransition = ({ children }: { children: ReactNode }) => (
   <motion.div
@@ -183,7 +194,7 @@ export default function MainApp() {
 
   const handleRoleSelect = (key: string) => {
     if (key === "money_tool") navigate("/tool");
-    else if (key === "book" || key === "chat") navigate("/appointment");
+    else if (key === "book" || key === "chat") openLine(LINE_BOOK_URL);
     else navigate(`/${key}`); // Added fallback route for newly created pages
   };
 
@@ -237,7 +248,8 @@ export default function MainApp() {
               <PageTransition><RouteWithRegister component={UnlockPage} goBack={goBack} navigate={navigate} handleLogin={handleLogin} /></PageTransition>
             </Route>
             <Route path="/appointment">
-              <PageTransition><AppointmentPage onBack={goBack} /></PageTransition>
+              {/* 預約頁已移除：舊連結（LINE 選單、測驗結果卡）一律導向 LINE 對話，並預填「我想預約聊聊」 */}
+              <RedirectToLine />
             </Route>
             <Route path="/register">
               <PageTransition><RegisterPage onBack={goBack} onTerms={() => navigate("/terms")} onSubmitSuccess={() => handleLogin("newMember")} /></PageTransition>
@@ -258,7 +270,7 @@ export default function MainApp() {
               </PageTransition>
             </Route>
             <Route path="/tool">
-              <PageTransition><MoneyTool onBack={goBack} onBook={() => navigate("/appointment")} /></PageTransition>
+              <PageTransition><MoneyTool onBack={goBack} onBook={() => openLine(LINE_BOOK_URL)} /></PageTransition>
             </Route>
             <Route path="/defense"><PageTransition><DefensePage onBack={goBack} /></PageTransition></Route>
             <Route path="/blueprint"><PageTransition><BlueprintPage onBack={goBack} role={role} /></PageTransition></Route>
