@@ -14,8 +14,8 @@
   --color-warm-gray-100: #ECE5D6;
   --color-warm-gray-200: #DDD4C1;
   --color-warm-gray-300: #C9BEA7;
-  --color-warm-gray-400: #A99E88;
-  --color-warm-gray-500: #7F7766;
+  --color-warm-gray-400: #8A8070;
+  --color-warm-gray-500: #6B6455;
   --color-warm-gray-600: #5E574A;
   --color-warm-gray-800: #14231E;
   --color-warm-gold: #B8793A;
@@ -28,7 +28,8 @@
   --color-alert-red: #B4452A;
   --color-alert-orange: #B8793A;
 
-  --color-brass: #B8793A;
+  --color-brass: #94591F;
+  --color-brass-light: #D9A465;
   --color-brass-soft: #E9D6BC;
   --color-ink: #14231E;
   --color-forest: #0F3D33;
@@ -71,3 +72,10 @@
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
+
+h1, h2, h3 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}

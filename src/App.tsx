@@ -35,7 +35,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, EBState> {
           <p className="text-[13px] text-warm-gray-500">請重新整理或稍後再試一次</p>
           <button
             onClick={() => { this.setState({ hasError: false }); window.location.reload(); }}
-            className="mt-2 py-3 px-6 bg-teal-base text-white cursor-pointer font-medium tracking-widest text-[13px] uppercase rounded-2xl"
+            className="mt-2 py-3 px-6 bg-teal-base text-white cursor-pointer font-medium tracking-widest text-[13px] rounded-2xl"
           >
             重新整理
           </button>
@@ -291,7 +291,7 @@ export default function MainApp() {
               <PageTransition>
                 <div className="p-10 text-center">
                   <h2 className="text-[20px] font-serif font-extrabold text-warm-gray-800">Page Not Found</h2>
-                  <button onClick={goHome} className="mt-5 py-3 px-6 bg-teal-base text-white cursor-pointer font-medium tracking-widest text-[13px] uppercase border hover:bg-[#1A1A18] transition-colors">回到首頁</button>
+                  <button onClick={goHome} className="mt-5 py-3 px-6 bg-teal-base text-white cursor-pointer font-medium tracking-widest text-[13px] border hover:bg-[#1A1A18] transition-colors">回到首頁</button>
                 </div>
               </PageTransition>
             </Route>
