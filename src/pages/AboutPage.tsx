@@ -23,13 +23,13 @@ export const AboutPage = ({ onBack, onJoin }: any) => {
 
       {/* 名字當主視覺 */}
       <header className="px-6 pt-14 pb-14">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
+        <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
           <Eyebrow className="mb-6">Our story</Eyebrow>
         </motion.div>
         <h1 className="font-serif leading-[1.02] tracking-[-0.02em] text-forest">
-          <motion.span className="block text-[56px] font-light italic" initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.1 }}>Steven</motion.span>
-          <motion.span className="block text-[56px] font-semibold pl-10 -mt-1" initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.2 }}>
-            <span className="font-light italic text-brass mr-2">&amp;</span>Annie
+          <motion.span className="block text-[56px] font-medium" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.1 }}>Steven</motion.span>
+          <motion.span className="block text-[56px] font-semibold pl-10 -mt-1" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.2 }}>
+            <span className="font-medium text-brass mr-2">&amp;</span>Annie
           </motion.span>
         </h1>
       </header>
@@ -105,7 +105,7 @@ export const AboutPage = ({ onBack, onJoin }: any) => {
           <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
           <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">想了解更多？</h2>
           <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">加入會員，了解讓錢替你工作的做法。</p>
-          <motion.button onClick={onJoin} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+          <motion.button onClick={onJoin} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
             免費加入會員
           </motion.button>
           <button onClick={() => openLine(LINE_BOOK_URL)} className="relative z-10 mt-2 w-full py-3 text-[13px] tracking-[0.15em] text-white/75 hover:text-white transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full">

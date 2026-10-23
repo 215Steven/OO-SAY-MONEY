@@ -13,10 +13,10 @@ export const RoleHome = ({ role, onSelect, onLogout }: any) => {
       </div>
 
       <header className="px-6 pt-14 pb-10">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
+        <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
           <Eyebrow className="mb-6">{ROLE_META[role].label} · 已登入</Eyebrow>
         </motion.div>
-        <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.1 }} className="font-serif text-[40px] leading-[1.15] font-semibold text-warm-gray-800 tracking-[-0.01em]">
+        <motion.h1 initial={false} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.1 }} className="font-serif text-[40px] leading-[1.15] font-semibold text-warm-gray-800 tracking-[-0.01em]">
           {config.title}
         </motion.h1>
       </header>
@@ -27,7 +27,7 @@ export const RoleHome = ({ role, onSelect, onLogout }: any) => {
             <motion.button
               key={item.key}
               onClick={() => onSelect(item.key, role)}
-              initial={{ opacity: 0, y: 14 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ ...SPRING, delay: 0.2 + i * 0.05 }}
               whileTap={{ scale: 0.96 }}

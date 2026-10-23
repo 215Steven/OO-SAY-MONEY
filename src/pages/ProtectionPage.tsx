@@ -131,7 +131,7 @@ export const ProtectionPage = ({ onBack }: { onBack: () => void }) => {
         )}
 
         {!loading && !loadFailed && members && members.length === 0 && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="border-t border-warm-gray-800/80 pt-8">
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} className="border-t border-warm-gray-800/80 pt-8">
             <h2 className="font-serif text-[24px] font-semibold text-warm-gray-800">查不到你的保障資料</h2>
             <p className="mt-3 text-[14px] text-warm-gray-600 leading-[1.9]">填入以下資訊核對身份，我們會比對顧問建檔的資料。</p>
 

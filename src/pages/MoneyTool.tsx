@@ -757,7 +757,7 @@ export const MoneyTool = ({ onBack, onBook }: MoneyToolProps) => {
           <div className="text-[15px] font-medium leading-loose tracking-wide mb-8">
             {insightQ}
           </div>
-          <button onClick={() => openLine()} className="bg-brass hover:bg-[#A66B30] text-white transition-colors py-3.5 px-6 rounded-xl text-[13px] font-medium tracking-[0.2em] flex items-center gap-2 cursor-pointer w-full justify-center">
+          <button onClick={() => openLine()} className="bg-brass hover:bg-[#9A3412] text-white transition-colors py-3.5 px-6 rounded-xl text-[13px] font-medium tracking-[0.2em] flex items-center gap-2 cursor-pointer w-full justify-center">
             {insightCta} <Ic n="arrowRight" size={16} color="currentColor" />
           </button>
         </div>

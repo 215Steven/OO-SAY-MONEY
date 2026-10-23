@@ -17,12 +17,12 @@ export const MoneyLanding = ({ onBack, onLogin }: any) => {
       </div>
 
       <header className="px-6 pt-14 pb-10">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
+        <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
           <Eyebrow className="mb-6">Free · about 90 seconds</Eyebrow>
         </motion.div>
         <h1 className="font-serif leading-[1.14] tracking-[-0.01em]">
-          <motion.span className="block text-[44px] font-semibold text-warm-gray-800" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.08 }}>你的錢，</motion.span>
-          <motion.span className="block text-[44px] font-light italic text-brass" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.18 }}>都去哪了？</motion.span>
+          <motion.span className="block text-[44px] font-semibold text-warm-gray-800" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.08 }}>你的錢，</motion.span>
+          <motion.span className="block text-[44px] font-medium text-brass" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.18 }}>都去哪了？</motion.span>
         </h1>
         <p className="mt-6 text-[15px] leading-[1.95] text-warm-gray-600 max-w-[19rem]">先了解你的財務心理類型，<br />再看清你的財務真實數字。</p>
       </header>
@@ -82,7 +82,7 @@ export const MoneyLanding = ({ onBack, onLogin }: any) => {
           <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
           <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">解鎖完整財務工具</h2>
           <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">免費加入會員，即可使用財管家，<br />用數字看清自己的財務狀況。</p>
-          <motion.button onClick={onLogin} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors flex items-center justify-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+          <motion.button onClick={onLogin} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] transition-colors flex items-center justify-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
             加入會員，立即開始 <Ic n="arrow" size={16} color="currentColor" />
           </motion.button>
         </section>

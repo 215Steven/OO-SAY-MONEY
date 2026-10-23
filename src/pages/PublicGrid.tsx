@@ -1,108 +1,75 @@
-import { Ic } from "@/src/components/Icons";
-import { motion } from "motion/react";
-import { MoneyLine, Eyebrow, SPRING } from "@/src/components/ui";
+import { ReactNode } from "react";
+import { CountUp } from "@/src/components/ui";
+import { LINE_BOOK_URL, openLine } from "@/src/constants/links";
 
-// 順序：先痛點（測驗）、後信任（故事）、再轉換（解鎖更多）
-const items = [
-  { key: "quiz",   no: "01", label: "錢去哪了",  sub: "90 秒財務性格測驗，看見你和錢的關係", tag: "免費" },
-  { key: "story",  no: "02", label: "故事起點",  sub: "認識 Steven & Annie，以及我們做事的方式" },
-  { key: "unlock", no: "03", label: "解鎖更多",  sub: "會員專屬工具與一對一諮詢" },
-];
+/** 對方的訊息泡泡 */
+const Bubble = ({ children, className = "" }: { children: ReactNode; className?: string }) => (
+  <div className={`self-start max-w-[88%] bg-white border border-warm-gray-200 rounded-[18px_18px_18px_4px] px-4 py-3 text-[15px] leading-[1.75] text-warm-gray-800 ${className}`}>
+    {children}
+  </div>
+);
+
+/** 你的回覆（按鈕） */
+const Reply = ({ children, onClick, primary = false }: { children: ReactNode; onClick: () => void; primary?: boolean }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={`self-end rounded-[18px_18px_4px_18px] px-5 py-3 text-[15px] font-medium cursor-pointer transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/60 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50 active:scale-[0.96] ${
+      primary
+        ? "bg-brass text-white hover:bg-[#9A3412]"
+        : "bg-transparent text-forest border border-forest hover:bg-forest hover:text-white"
+    }`}
+  >
+    {children}
+  </button>
+);
 
 export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
   return (
     <div className="min-h-[100dvh] bg-warm-gray-50 flex flex-col">
-      {/* 頂列 */}
-      <div className="px-6 pt-8 flex items-center justify-between">
-        <div className="font-display text-[13px] font-semibold tracking-[0.12em] text-warm-gray-800">OO SAY MONEY</div>
+      <header className="px-6 pt-8 flex items-center justify-between">
+        <div className="font-display text-[13px] font-medium tracking-[0.08em] text-warm-gray-800">OO SAY MONEY</div>
         <button
           onClick={() => onSelect("login")}
-          className="text-[13px] tracking-[0.18em] text-warm-gray-600 border-b border-warm-gray-300 pb-0.5 hover:text-warm-gray-800 hover:border-warm-gray-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-4 focus-visible:ring-offset-warm-gray-50"
+          className="text-[14px] text-warm-gray-600 border-b border-warm-gray-300 pb-0.5 hover:text-warm-gray-800 hover:border-warm-gray-800 transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-4 focus-visible:ring-offset-warm-gray-50"
         >
           會員登入
         </button>
-      </div>
+      </header>
 
-      {/* Hero：靠左、大字、一條會自己長出來的資產線 */}
-      <div className="px-6 pt-16 pb-10">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.05 }}>
-          <Eyebrow className="mb-6">Financial conversations</Eyebrow>
-        </motion.div>
-        <h1 className="font-serif text-warm-gray-800 leading-[1.12] tracking-[-0.01em]">
-          {["你好，", "歡迎來到"].map((t, i) => (
-            <motion.span key={t} className="block text-[40px] font-semibold" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.12 + i * 0.1 }}>
-              {t}
-            </motion.span>
-          ))}
-          <motion.span className="block text-[44px] font-light italic text-forest mt-1" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.34 }}>
-            OO SAY <span className="font-semibold not-italic">MONEY</span>
-          </motion.span>
-        </h1>
-        <motion.p className="mt-7 text-[15px] leading-[1.9] text-warm-gray-600 max-w-[17rem]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7, duration: 0.8 }}>
-          投資，是對自己最好的承諾。
-        </motion.p>
-        <MoneyLine className="w-full mt-9" />
-        <div className="mt-3 flex justify-between text-[12px] tracking-[0.12em] text-warm-gray-500">
-          <span>今天</span><span>有選擇的自由</span>
+      <main className="flex-1 px-6 pt-10 pb-8 flex flex-col gap-3 max-w-md w-full mx-auto">
+        {/* 第一則：整頁唯一的亮點，一個大數字 */}
+        <Bubble className="!max-w-[94%] !px-5 !py-5">
+          <div className="text-[14px] text-warm-gray-600">每個月多出來的錢</div>
+          <div className="mt-1 flex items-baseline gap-2">
+            <CountUp to={5000} className="font-display text-[56px] leading-none font-medium text-brass" />
+            <span className="text-[16px] text-warm-gray-800">元</span>
+          </div>
+          <div className="mt-2 text-[15px] text-warm-gray-800">
+            一年就是 <span className="font-display tnum">60,000</span> 元。
+          </div>
+          <p className="mt-3 text-[13px] text-warm-gray-500">示意數字，實際依個人狀況而定。</p>
+        </Bubble>
+
+        <Bubble>嗨，我們是 Steven 和 Annie。</Bubble>
+        <Bubble>薪水每個月都花完，是不是常有的事？先花 90 秒，看看錢都去哪了。</Bubble>
+
+        <div className="mt-3 flex flex-col gap-2.5">
+          <Reply onClick={() => onSelect("quiz")}>開始測驗（免費）</Reply>
+          <Reply onClick={() => onSelect("story")}>先認識你們</Reply>
+          <Reply primary onClick={() => openLine(LINE_BOOK_URL)}>想先聊聊</Reply>
         </div>
-      </div>
 
-      {/* 索引式清單：用細線分隔，不用卡片 */}
-      <nav className="px-6 mt-2" aria-label="主要入口">
-        <div className="border-t border-warm-gray-800/80">
-          {items.map((item, i) => (
-            <motion.button
-              key={item.key}
-              onClick={() => onSelect(item.key)}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ ...SPRING, delay: 0.9 + i * 0.08 }}
-              whileTap={{ scale: 0.96 }}
-              className="group relative w-full text-left flex items-start gap-5 py-7 border-b border-warm-gray-300 outline-none focus-visible:bg-warm-gray-100 overflow-hidden cursor-pointer"
-            >
-              <span className="absolute inset-0 bg-warm-gray-100 origin-left scale-x-0 group-hover:scale-x-100 group-active:scale-x-100 transition-transform duration-500 ease-out" aria-hidden="true" />
-              <span className="relative flex-1">
-                <span className="flex items-center gap-3">
-                  <span className="font-serif text-[24px] font-semibold text-warm-gray-800 tracking-wide">{item.label}</span>
-                  {item.tag && <span className="text-[12px] tracking-[0.2em] text-brass border border-brass/40 px-2 py-0.5 rounded-full">{item.tag}</span>}
-                </span>
-                <span className="block mt-1.5 text-[13px] leading-relaxed text-warm-gray-600">{item.sub}</span>
-              </span>
-              <span className="relative pt-2 text-warm-gray-800 group-hover:translate-x-1.5 transition-transform duration-300">
-                <Ic n="arrow" size={22} color="currentColor" />
-              </span>
-            </motion.button>
-          ))}
+        <Bubble className="mt-6">
+          想用更多工具，可以免費加入會員，之後也能直接在 LINE 跟我們說。
+        </Bubble>
+        <div className="flex flex-col gap-2.5">
+          <Reply onClick={() => onSelect("unlock")}>會員有什麼</Reply>
+          <Reply onClick={() => onSelect("login")}>免費加入會員</Reply>
         </div>
-      </nav>
+      </main>
 
-      {/* 轉換區塊：深色、顆粒、銅金按鈕 */}
-      <motion.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={SPRING}
-        className="grain relative mx-6 mt-14 rounded-[28px] bg-forest text-white overflow-hidden px-7 pt-10 pb-8"
-      >
-        <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
-        <Eyebrow className="!text-brass-soft/80 mb-5 relative z-10">Start here</Eyebrow>
-        <h2 className="relative z-10 font-serif text-[28px] leading-[1.3] font-semibold">
-          開始屬於你的<br />理財旅程
-        </h2>
-        <p className="relative z-10 mt-4 text-[14px] leading-[1.9] text-white/70">
-          記錄財務、預約顧問，<br />取得屬於你的理財藍圖。
-        </p>
-        <motion.button
-          onClick={() => onSelect("login")}
-          whileTap={{ scale: 0.96 }}
-          className="relative z-10 mt-8 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest"
-        >
-          免費加入會員
-        </motion.button>
-        <p className="relative z-10 mt-4 text-[12px] text-white/45 tracking-wide text-center">已有帳號？同一個按鈕登入即可</p>
-      </motion.section>
-
-      <p className="px-8 mt-10 pb-12 text-[12px] text-warm-gray-500 text-center tracking-wide leading-relaxed">
+      <p className="px-8 pb-12 text-[13px] text-warm-gray-500 text-center leading-relaxed">
         本站內容僅供參考，不構成投資建議。
       </p>
     </div>

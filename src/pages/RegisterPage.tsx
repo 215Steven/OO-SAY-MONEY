@@ -275,7 +275,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
 
         <div>
           <motion.button type="button" onClick={handleSubmit} disabled={submitting} whileTap={{ scale: canSubmit ? 0.96 : 1 }}
-            className={`w-full py-4 rounded-full text-[14px] font-medium tracking-[0.2em] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/60 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50 ${canSubmit ? "bg-brass text-white hover:bg-[#A66B30] cursor-pointer" : "bg-warm-gray-200 text-warm-gray-500 cursor-not-allowed"}`}>
+            className={`w-full py-4 rounded-full text-[14px] font-medium tracking-[0.2em] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/60 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50 ${canSubmit ? "bg-brass text-white hover:bg-[#9A3412] cursor-pointer" : "bg-warm-gray-200 text-warm-gray-500 cursor-not-allowed"}`}>
             {submitting ? "處理中…" : "完成加入"}
           </motion.button>
           <p className="mt-5 text-[13px] text-warm-gray-500 tracking-wide leading-[1.9] text-center">送出後專屬圖文選單即開通，聯絡資料可日後補填。</p>

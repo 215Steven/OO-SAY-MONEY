@@ -360,16 +360,16 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
   };
 
   const renderWelcome = () => (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -30 }} className="px-6 pt-10 pb-8 relative z-10 flex flex-col min-h-[100dvh]">
+    <motion.div initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -30 }} className="px-6 pt-10 pb-8 relative z-10 flex flex-col min-h-[100dvh]">
       <div className="font-display text-[13px] font-semibold tracking-[0.12em] text-warm-gray-800">OO SAY MONEY</div>
 
       <div className="flex-1 flex flex-col justify-center py-10">
         <Eyebrow className="mb-6">Money personality · 8 questions</Eyebrow>
         <h1 className="font-serif text-warm-gray-800 leading-[1.18] tracking-[-0.01em]">
           {["看見你", "和錢的"].map((t, i) => (
-            <motion.span key={t} className="block text-[44px] font-semibold" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.05 + i * 0.1 }}>{t}</motion.span>
+            <motion.span key={t} className="block text-[44px] font-semibold" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.05 + i * 0.1 }}>{t}</motion.span>
           ))}
-          <motion.span className="block text-[44px] font-light italic text-brass" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.27 }}>關係。</motion.span>
+          <motion.span className="block text-[44px] font-medium text-brass" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.27 }}>關係。</motion.span>
         </h1>
         <p className="mt-7 text-[15px] leading-[1.95] text-warm-gray-600 max-w-[19rem]">
           每個人適合的節奏不同。透過 8 個簡單情境，快速看清你的財務輪廓。
@@ -394,7 +394,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
       <motion.button
         onClick={() => setStep(1)}
         whileTap={{ scale: 0.96 }}
-        className="w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors flex items-center justify-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-forest focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50"
+        className="w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] transition-colors flex items-center justify-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-forest focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50"
       >
         開始測驗 <Ic n="arrow" size={16} color="currentColor" />
       </motion.button>
@@ -434,7 +434,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
           </h2>
 
           <AnimatePresence mode="wait">
-            <motion.div key={step} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }} className="flex flex-col gap-3 pb-6">
+            <motion.div key={step} initial={false} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }} className="flex flex-col gap-3 pb-6">
               {q.opts.map((o, i) => {
                 const isSelected = answers[qIdx] === o.type;
                 return (
@@ -459,13 +459,13 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
   };
 
   const renderLoading = () => (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col justify-center px-8 min-h-[100dvh] relative z-10">
+    <motion.div initial={false} animate={{ opacity: 1 }} className="flex-1 flex flex-col justify-center px-8 min-h-[100dvh] relative z-10">
       <Eyebrow className="mb-8">Analyzing</Eyebrow>
       <svg viewBox="0 0 320 60" fill="none" className="w-full mb-10" style={{ overflow: "visible" }} aria-hidden="true">
         <motion.path d="M2 48 C 50 46, 70 40, 104 34 S 160 30, 190 22 S 260 18, 318 6" stroke="var(--color-brass)" strokeWidth="1.5" strokeLinecap="round" initial={{ pathLength: 0 }} animate={{ pathLength: [0, 1, 1] }} transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }} />
       </svg>
-      <motion.h2 key={"t" + loadMsg} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="font-serif text-[26px] font-semibold text-warm-gray-800 leading-snug mb-3">{MSGS[loadMsg].t}</motion.h2>
-      <motion.p key={"s" + loadMsg} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[14px] text-warm-gray-600 leading-[1.9] whitespace-pre-line">{MSGS[loadMsg].s}</motion.p>
+      <motion.h2 key={"t" + loadMsg} initial={false} animate={{ opacity: 1, y: 0 }} className="font-serif text-[26px] font-semibold text-warm-gray-800 leading-snug mb-3">{MSGS[loadMsg].t}</motion.h2>
+      <motion.p key={"s" + loadMsg} initial={false} animate={{ opacity: 1 }} className="text-[14px] text-warm-gray-600 leading-[1.9] whitespace-pre-line">{MSGS[loadMsg].s}</motion.p>
     </motion.div>
   );
 
@@ -493,7 +493,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
       <div className="min-h-[100dvh] relative z-10 flex flex-col items-center bg-warm-gray-50">
         <Confetti colors={['#B8793A', '#E9D6BC', '#0F3D33']} />
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={SPRING} className="w-full max-w-[480px]">
+        <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={SPRING} className="w-full max-w-[480px]">
           {/* Header：名字當主視覺，靠左 */}
           <div className="pt-10 px-6 pb-8">
             <div className="flex items-center justify-between mb-10">
@@ -600,7 +600,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
                   color: m.color
                 }));
                 onComplete();
-              }} className="w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] active:scale-[0.98] transition-colors flex justify-center items-center gap-2 relative z-10">
+              }} className="w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] active:scale-[0.98] transition-colors flex justify-center items-center gap-2 relative z-10">
                  免費加入會員
               </button>
 

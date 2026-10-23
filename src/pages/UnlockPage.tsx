@@ -22,12 +22,12 @@ export const UnlockPage = ({ onBack, onJoin }: any) => {
       </div>
 
       <header className="px-6 pt-14 pb-10">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
+        <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
           <Eyebrow className="mb-6">Members only</Eyebrow>
         </motion.div>
         <h1 className="font-serif leading-[1.12] tracking-[-0.01em]">
-          <motion.span className="block text-[46px] font-semibold text-warm-gray-800" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.08 }}>解鎖</motion.span>
-          <motion.span className="block text-[46px] font-light italic text-brass" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.18 }}>更多。</motion.span>
+          <motion.span className="block text-[46px] font-semibold text-warm-gray-800" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.08 }}>解鎖</motion.span>
+          <motion.span className="block text-[46px] font-medium text-brass" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.18 }}>更多。</motion.span>
         </h1>
         <p className="mt-6 text-[15px] leading-[1.9] text-warm-gray-600 max-w-[18rem]">加入會員，使用專屬工具、閱讀精選內容、預約顧問。</p>
       </header>
@@ -53,7 +53,7 @@ export const UnlockPage = ({ onBack, onJoin }: any) => {
           <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
           <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">免費加入會員</h2>
           <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">加入後即可使用以上功能。</p>
-          <motion.button onClick={onJoin} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+          <motion.button onClick={onJoin} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
             加入會員
           </motion.button>
           <button onClick={() => openLine(LINE_BOOK_URL)} className="relative z-10 mt-2 w-full py-3 text-[13px] tracking-[0.15em] text-white/75 hover:text-white transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full">
