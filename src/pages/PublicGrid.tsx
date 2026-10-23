@@ -42,7 +42,7 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
         <Bubble className="!max-w-[94%] !px-5 !py-5">
           <div className="text-[14px] text-warm-gray-600">每個月多出來的錢</div>
           <div className="mt-1 flex items-baseline gap-2">
-            <CountUp to={5000} className="font-display text-[56px] leading-none font-medium text-brass" />
+            <CountUp to={5000} className="inline-block min-w-[4ch] font-display text-[56px] leading-none font-medium text-brass" />
             <span className="text-[16px] text-warm-gray-800">元</span>
           </div>
           <div className="mt-2 text-[15px] text-warm-gray-800">
