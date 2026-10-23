@@ -39,10 +39,10 @@ export const TermsPage = ({ onBack }: { onBack: () => void }) => (
       <Reveal><SectionLabel>隱私權政策（含第三方條款）</SectionLabel><List items={PRIVACY} /></Reveal>
     </section>
     <div className="px-6 pt-12">
-      <motion.button onClick={onBack} whileTap={{ scale: 0.97 }} className="w-full bg-forest text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-cyan-base transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/60 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50">
+      <motion.button onClick={onBack} whileTap={{ scale: 0.96 }} className="w-full bg-forest text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-cyan-base transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/60 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50">
         關閉條款
       </motion.button>
     </div>
-    <p className="mt-10 pb-10 text-center text-[11px] text-warm-gray-500 tracking-[0.2em]">© 2026 OO SAY MONEY</p>
+    <p className="mt-10 pb-10 text-center text-[12px] text-warm-gray-500 tracking-[0.2em]">© 2026 OO SAY MONEY</p>
   </div>
 );

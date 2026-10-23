@@ -110,7 +110,6 @@ export const DefensePage = ({ onBack }: { onBack: () => void }) => {
                   aria-expanded={isOpen}
                   className="w-full flex items-start gap-5 py-6 text-left cursor-pointer outline-none focus-visible:bg-warm-gray-100"
                 >
-                  <span className="font-display text-[13px] tnum text-brass pt-1.5 w-6 shrink-0">0{i + 1}</span>
                   <span className="flex-1">
                     <span className="block font-serif text-[21px] font-semibold text-warm-gray-800 tracking-wide">{section.title}</span>
                     <span className="block mt-1 text-[13px] text-warm-gray-600">{section.desc}</span>
@@ -132,7 +131,7 @@ export const DefensePage = ({ onBack }: { onBack: () => void }) => {
                           ))}
                         </ul>
                         <div className="mt-6 border-l-2 border-brass pl-4">
-                          <div className="text-[11px] tracking-[0.2em] text-brass mb-2">{section.highlightLabel}</div>
+                          <div className="text-[12px] tracking-[0.2em] text-brass mb-2">{section.highlightLabel}</div>
                           <p className="text-[14px] text-warm-gray-800 leading-[1.9]">{section.highlight}</p>
                         </div>
                       </div>
@@ -152,7 +151,7 @@ export const DefensePage = ({ onBack }: { onBack: () => void }) => {
         onPrimary={() => openLine(LINE_BOOK_URL)}
         note="免費諮詢 · 無推銷壓力"
       />
-      <p className="px-8 mt-8 pb-10 text-[11px] text-warm-gray-500 text-center tracking-wide leading-relaxed">內容為一般性保險說明，不構成購買建議，實際保障以保單條款為準。</p>
+      <p className="px-8 mt-8 pb-10 text-[12px] text-warm-gray-500 text-center tracking-wide leading-relaxed">內容為一般性保險說明，不構成購買建議，實際保障以保單條款為準。</p>
     </div>
   );
 };

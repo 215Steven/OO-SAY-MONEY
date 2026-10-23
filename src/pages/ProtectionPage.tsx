@@ -20,7 +20,7 @@ function statusStyle(status: string) {
 // 一般文字輸入欄位（姓名／生日／手機都是文字，不能用財管家那種只收數字的 InputBox）
 const TextField = ({ label, hint, value, onChange }: { label: string; hint?: string; value: string; onChange: (e: any) => void }) => (
   <label className="block border-b border-warm-gray-300 focus-within:border-forest transition-colors pb-2">
-    <span className="block text-[11px] font-medium tracking-[0.2em] text-warm-gray-600">{label}</span>
+    <span className="block text-[12px] font-medium tracking-[0.2em] text-warm-gray-600">{label}</span>
     <input
       type="text"
       value={value}
@@ -119,7 +119,7 @@ export const ProtectionPage = ({ onBack }: { onBack: () => void }) => {
             <div className="w-24 h-px bg-warm-gray-200 relative overflow-hidden mb-4">
               <motion.span className="absolute inset-y-0 w-10 bg-brass" initial={{ x: -40 }} animate={{ x: 96 }} transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }} />
             </div>
-            <div className="text-[12px] text-warm-gray-500 tracking-[0.2em]">讀取保單資料中</div>
+            <div className="text-[13px] text-warm-gray-500 tracking-[0.2em]">讀取保單資料中</div>
           </div>
         )}
 
@@ -155,7 +155,7 @@ export const ProtectionPage = ({ onBack }: { onBack: () => void }) => {
             >
               {verifying ? "核對中…" : "核對身份"}
             </motion.button>
-            <p className="mt-4 text-[11px] text-warm-gray-500 tracking-wide leading-[1.9] text-center">核對成功後，之後登入會自動顯示你的保障資料，不需要再次核對。</p>
+            <p className="mt-4 text-[12px] text-warm-gray-500 tracking-wide leading-[1.9] text-center">核對成功後，之後登入會自動顯示你的保障資料，不需要再次核對。</p>
             <button onClick={bookConsult} className="mt-6 w-full text-[13px] tracking-[0.15em] text-warm-gray-600 hover:text-warm-gray-800 border-b border-warm-gray-300 pb-1 cursor-pointer">找不到資料？直接聯繫顧問</button>
           </motion.div>
         )}
@@ -169,8 +169,8 @@ export const ProtectionPage = ({ onBack }: { onBack: () => void }) => {
                   <div className="py-8 border-b border-warm-gray-300">
                     <div className="flex items-baseline gap-3 mb-5">
                       <span className="font-serif text-[26px] font-semibold text-warm-gray-800">{m.name || "未命名"}</span>
-                      {m.relation && <span className="text-[11px] tracking-[0.18em] text-brass border border-brass/40 px-2 py-0.5 rounded-full">{m.relation}</span>}
-                      {m.age !== null && <span className="ml-auto text-[12px] text-warm-gray-500 tnum">{m.age} 歲</span>}
+                      {m.relation && <span className="text-[12px] tracking-[0.18em] text-brass border border-brass/40 px-2 py-0.5 rounded-full">{m.relation}</span>}
+                      {m.age !== null && <span className="ml-auto text-[13px] text-warm-gray-500 tnum">{m.age} 歲</span>}
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
@@ -178,17 +178,17 @@ export const ProtectionPage = ({ onBack }: { onBack: () => void }) => {
                         const st = statusStyle(c.status);
                         return (
                           <div key={j} className={`p-4 rounded-2xl border ${st.border} ${st.bg}`}>
-                            <div className="text-[12px] font-medium text-warm-gray-800 tracking-wide">{c.label}</div>
-                            <div className={`mt-1 text-[12px] font-medium tracking-wide ${st.textColor}`}>{st.label}</div>
-                            {c.desc && <div className="mt-2 text-[12px] text-warm-gray-600 leading-[1.7]">{c.desc}</div>}
-                            {c.note && <div className="mt-1 text-[11px] text-warm-gray-500 leading-[1.7]">{c.note}</div>}
+                            <div className="text-[13px] font-medium text-warm-gray-800 tracking-wide">{c.label}</div>
+                            <div className={`mt-1 text-[13px] font-medium tracking-wide ${st.textColor}`}>{st.label}</div>
+                            {c.desc && <div className="mt-2 text-[13px] text-warm-gray-600 leading-[1.7]">{c.desc}</div>}
+                            {c.note && <div className="mt-1 text-[12px] text-warm-gray-500 leading-[1.7]">{c.note}</div>}
                           </div>
                         );
                       })}
                     </div>
 
                     {(m.advisor || m.lastUpdated) && (
-                      <div className="flex justify-between text-[11px] text-warm-gray-500 tracking-wide mt-5">
+                      <div className="flex justify-between text-[12px] text-warm-gray-500 tracking-wide mt-5">
                         {m.advisor && <span>負責顧問：{m.advisor}</span>}
                         {m.lastUpdated && <span>更新於 {m.lastUpdated}</span>}
                       </div>
@@ -208,7 +208,7 @@ export const ProtectionPage = ({ onBack }: { onBack: () => void }) => {
         onPrimary={bookConsult}
         note="免費諮詢 · 無推銷壓力"
       />
-      <p className="px-8 mt-8 pb-10 text-[11px] text-warm-gray-500 text-center tracking-wide leading-relaxed">保障內容以保單條款與保險公司核定為準。</p>
+      <p className="px-8 mt-8 pb-10 text-[12px] text-warm-gray-500 text-center tracking-wide leading-relaxed">保障內容以保單條款與保險公司核定為準。</p>
     </div>
   );
 };

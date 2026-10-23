@@ -361,7 +361,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
 
   const renderWelcome = () => (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -30 }} className="px-6 pt-10 pb-8 relative z-10 flex flex-col min-h-[100dvh]">
-      <div className="font-display text-[12px] font-semibold tracking-[0.22em] text-warm-gray-800">OO SAY MONEY</div>
+      <div className="font-display text-[13px] font-semibold tracking-[0.12em] text-warm-gray-800">OO SAY MONEY</div>
 
       <div className="flex-1 flex flex-col justify-center py-10">
         <Eyebrow className="mb-6">Money personality · 8 questions</Eyebrow>
@@ -393,7 +393,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
 
       <motion.button
         onClick={() => setStep(1)}
-        whileTap={{ scale: 0.97 }}
+        whileTap={{ scale: 0.96 }}
         className="w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors flex items-center justify-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-forest focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50"
       >
         開始測驗 <Ic n="arrow" size={16} color="currentColor" />
@@ -412,7 +412,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
             <span className="text-[44px] font-light tnum">{String(step).padStart(2, "0")}</span>
             <span className="text-[14px] text-warm-gray-500 ml-1.5 tnum">/ 08</span>
           </div>
-          <div className="font-display text-[12px] font-semibold tracking-[0.22em] text-warm-gray-800 pb-1.5">OO SAY MONEY</div>
+          <div className="font-display text-[13px] font-semibold tracking-[0.12em] text-warm-gray-800 pb-1.5">OO SAY MONEY</div>
         </div>
 
         <div className="flex gap-1.5 mb-10 w-full" role="progressbar" aria-valuemin={1} aria-valuemax={8} aria-valuenow={step}>
@@ -425,7 +425,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
 
         <div className="flex-1 flex flex-col justify-center w-full">
           {q.hint && (
-            <div className="text-[12px] tracking-[0.12em] text-brass mb-4 flex items-center gap-3">
+            <div className="text-[13px] tracking-[0.12em] text-brass mb-4 flex items-center gap-3">
               <span className="w-6 h-px bg-brass" />{q.hint}
             </div>
           )}
@@ -441,7 +441,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
                   <motion.button
                     key={i}
                     onClick={() => handleSelect(qIdx, o.type)}
-                    whileTap={{ scale: 0.985 }}
+                    whileTap={{ scale: 0.96 }}
                     aria-pressed={isSelected}
                     className={`group text-left flex items-start gap-4 px-5 py-5 text-[15px] leading-[1.7] cursor-pointer tracking-wide border rounded-2xl transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-brass/60
                       ${isSelected ? "border-forest bg-forest text-white" : "border-warm-gray-300 bg-transparent text-warm-gray-800 hover:border-warm-gray-800/50 hover:bg-warm-gray-100"}`}
@@ -498,7 +498,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
           <div className="pt-10 px-6 pb-8">
             <div className="flex items-center justify-between mb-10">
               <Eyebrow>Your money personality</Eyebrow>
-              <div className="font-display text-[12px] font-semibold tracking-[0.22em] text-warm-gray-800">OO SAY MONEY</div>
+              <div className="font-display text-[13px] font-semibold tracking-[0.12em] text-warm-gray-800">OO SAY MONEY</div>
             </div>
             <div className="w-14 h-14 rounded-full flex items-center justify-center border border-warm-gray-300 bg-white mb-6" style={{ color: main.color }}>
               <Ic n={main.icon} size={26} color="currentColor" />
@@ -531,7 +531,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
                   <div className={`py-7 border-b border-warm-gray-300 ${sec.accent ? "bg-warm-gray-100/70 -mx-6 px-6" : ""}`}>
                     <div className="flex items-baseline gap-4 mb-3">
                       <span className="font-display text-[13px] tnum text-brass">{sec.k}</span>
-                      <span className="text-[11px] font-medium tracking-[0.24em] uppercase text-warm-gray-600">{sec.label}</span>
+                      <span className="text-[12px] font-medium tracking-[0.12em] text-warm-gray-600">{sec.label}</span>
                     </div>
                     <div className="text-[15px] leading-[1.95] text-warm-gray-800 pl-[2.1rem]">{sec.body}</div>
                   </div>
@@ -547,7 +547,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
                   <div className="flex flex-col gap-4">
                     {Object.keys(barColors).map(k => (
                       <div key={k} className="flex items-center gap-3">
-                        <div className={`text-[12px] w-[64px] shrink-0 tracking-wide ${k === winner ? "text-warm-gray-800 font-medium" : "text-warm-gray-500"}`}>{barLabels[k]}</div>
+                        <div className={`text-[13px] w-[64px] shrink-0 tracking-wide ${k === winner ? "text-warm-gray-800 font-medium" : "text-warm-gray-500"}`}>{barLabels[k]}</div>
                         <div className="flex-1 h-px bg-warm-gray-300 relative">
                           <motion.div
                             initial={{ scaleX: 0 }}
@@ -577,7 +577,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
                 {main.ctaNote}
               </p>
               {!resultOverride && (
-                <p className="text-[12px] text-teal-soft/80 font-normal mb-5 leading-relaxed relative z-10 flex items-center gap-1.5">
+                <p className="text-[13px] text-teal-soft/80 font-normal mb-5 leading-relaxed relative z-10 flex items-center gap-1.5">
                   <Ic n="check" size={12} color="currentColor" /> 結果已同步傳送到你與我們的 LINE 對話
                 </p>
               )}
@@ -600,7 +600,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
                   color: m.color
                 }));
                 onComplete();
-              }} className="w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] active:scale-[0.98] transition-all flex justify-center items-center gap-2 relative z-10">
+              }} className="w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] active:scale-[0.98] transition-colors flex justify-center items-center gap-2 relative z-10">
                  免費加入會員
               </button>
 
@@ -609,7 +609,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
                 const m = TYPES[res.winner] || {};
                 const s = res.subType ? TYPES[res.subType] : null;
                 shareQuizResult(m.name || '', s ? s.name : '', m.color || '');
-              }} className="w-full mt-3 bg-transparent text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer border border-white/30 hover:bg-white/10 transition-all flex justify-center items-center gap-2 relative z-10">
+              }} className="w-full mt-3 bg-transparent text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer border border-white/30 hover:bg-white/10 transition-colors flex justify-center items-center gap-2 relative z-10">
                  分享結果給朋友
               </button>
             </div>
@@ -622,7 +622,7 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
                 setAnswers([]);
                 window.history.replaceState({}, "", window.location.pathname);
                 setStep(0);
-              }} className="text-warm-gray-400 text-[12px] underline font-normal hover:text-warm-gray-600 transition-colors">
+              }} className="text-warm-gray-400 text-[13px] underline font-normal hover:text-warm-gray-600 transition-colors">
                 重新測驗
               </button>
             </div>

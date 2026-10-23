@@ -14,10 +14,10 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
     <div className="min-h-[100dvh] bg-warm-gray-50 flex flex-col">
       {/* 頂列 */}
       <div className="px-6 pt-8 flex items-center justify-between">
-        <div className="font-display text-[13px] font-semibold tracking-[0.22em] text-warm-gray-800">OO SAY MONEY</div>
+        <div className="font-display text-[13px] font-semibold tracking-[0.12em] text-warm-gray-800">OO SAY MONEY</div>
         <button
           onClick={() => onSelect("login")}
-          className="text-[12px] tracking-[0.18em] text-warm-gray-600 border-b border-warm-gray-300 pb-0.5 hover:text-warm-gray-800 hover:border-warm-gray-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-4 focus-visible:ring-offset-warm-gray-50"
+          className="text-[13px] tracking-[0.18em] text-warm-gray-600 border-b border-warm-gray-300 pb-0.5 hover:text-warm-gray-800 hover:border-warm-gray-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-4 focus-visible:ring-offset-warm-gray-50"
         >
           會員登入
         </button>
@@ -42,7 +42,7 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
           投資，是對自己最好的承諾。
         </motion.p>
         <MoneyLine className="w-full mt-9" />
-        <div className="mt-3 flex justify-between text-[10px] tracking-[0.22em] text-warm-gray-500 uppercase">
+        <div className="mt-3 flex justify-between text-[12px] tracking-[0.12em] text-warm-gray-500">
           <span>今天</span><span>有選擇的自由</span>
         </div>
       </div>
@@ -57,15 +57,14 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ ...SPRING, delay: 0.9 + i * 0.08 }}
-              whileTap={{ scale: 0.985 }}
+              whileTap={{ scale: 0.96 }}
               className="group relative w-full text-left flex items-start gap-5 py-7 border-b border-warm-gray-300 outline-none focus-visible:bg-warm-gray-100 overflow-hidden cursor-pointer"
             >
               <span className="absolute inset-0 bg-warm-gray-100 origin-left scale-x-0 group-hover:scale-x-100 group-active:scale-x-100 transition-transform duration-500 ease-out" aria-hidden="true" />
-              <span className="relative font-display text-[13px] tnum text-brass pt-2 w-6 shrink-0">{item.no}</span>
               <span className="relative flex-1">
                 <span className="flex items-center gap-3">
                   <span className="font-serif text-[24px] font-semibold text-warm-gray-800 tracking-wide">{item.label}</span>
-                  {item.tag && <span className="text-[10px] tracking-[0.2em] text-brass border border-brass/40 px-2 py-0.5 rounded-full">{item.tag}</span>}
+                  {item.tag && <span className="text-[12px] tracking-[0.2em] text-brass border border-brass/40 px-2 py-0.5 rounded-full">{item.tag}</span>}
                 </span>
                 <span className="block mt-1.5 text-[13px] leading-relaxed text-warm-gray-600">{item.sub}</span>
               </span>
@@ -95,15 +94,15 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
         </p>
         <motion.button
           onClick={() => onSelect("login")}
-          whileTap={{ scale: 0.97 }}
+          whileTap={{ scale: 0.96 }}
           className="relative z-10 mt-8 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest"
         >
           免費加入會員
         </motion.button>
-        <p className="relative z-10 mt-4 text-[11px] text-white/45 tracking-wide text-center">已有帳號？同一個按鈕登入即可</p>
+        <p className="relative z-10 mt-4 text-[12px] text-white/45 tracking-wide text-center">已有帳號？同一個按鈕登入即可</p>
       </motion.section>
 
-      <p className="px-8 mt-10 pb-12 text-[11px] text-warm-gray-500 text-center tracking-wide leading-relaxed">
+      <p className="px-8 mt-10 pb-12 text-[12px] text-warm-gray-500 text-center tracking-wide leading-relaxed">
         本站內容僅供參考，不構成投資建議。
       </p>
     </div>

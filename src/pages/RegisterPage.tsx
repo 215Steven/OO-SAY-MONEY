@@ -215,7 +215,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
 
       <div className="px-6 flex flex-col gap-12">
         {/* LINE 帳號 */}
-        <div onClick={handleLineLogin} className="flex items-center gap-4 border-y border-warm-gray-300 py-5">
+        <button type="button" onClick={handleLineLogin} className="w-full text-left flex items-center gap-4 border-y border-warm-gray-300 py-5 cursor-pointer outline-none focus-visible:bg-warm-gray-100">
           <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 border border-warm-gray-300 bg-warm-gray-100">
             {formData.linePictureUrl ? (
               <img src={formData.linePictureUrl} alt="LINE 大頭貼" className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={() => setFormData({ ...formData, linePictureUrl: "" })} />
@@ -224,14 +224,14 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
             )}
           </div>
           <div>
-            <div className="text-[11px] tracking-[0.2em] text-warm-gray-500 mb-1">LINE 帳號</div>
+            <div className="text-[12px] tracking-[0.2em] text-warm-gray-500 mb-1">LINE 帳號</div>
             {formData.lineUserId ? (
               <div className="font-serif text-[18px] font-semibold text-warm-gray-800">{formData.lineDisplayName}</div>
             ) : (
               <div className="text-[14px] text-warm-gray-500 animate-pulse">{isReady ? "請稍候，驗證中…" : "與 LINE 連線中…"}</div>
             )}
           </div>
-        </div>
+        </button>
 
         {/* 身分 */}
         <fieldset className="border-0 p-0 m-0">
@@ -258,7 +258,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
           </button>
           {formData.newsletter && (
             <label className="block py-4 border-b border-warm-gray-300 focus-within:border-forest transition-colors">
-              <span className="block text-[11px] font-medium tracking-[0.2em] text-warm-gray-600">Email</span>
+              <span className="block text-[12px] font-medium tracking-[0.2em] text-warm-gray-600">Email</span>
               <input type="email" inputMode="email" autoComplete="email" placeholder="接收電子報用" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-transparent border-none outline-none text-[17px] text-warm-gray-800 placeholder-warm-gray-400 tracking-wide mt-1.5 py-1" />
             </label>
           )}
@@ -266,7 +266,7 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
             <button type="button" role="checkbox" aria-checked={formData.terms} aria-label="同意服務約定與隱私政策" onClick={() => setFormData({ ...formData, terms: !formData.terms })} className="mt-0.5 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brass/60 rounded-full"><Check on={formData.terms} /></button>
             <div>
               <span className="text-[15px] text-warm-gray-800 tracking-wide">同意服務約定與隱私政策<span className="text-alert-red ml-1">*</span></span>
-              <div className="mt-1.5 text-[12px] text-warm-gray-500">
+              <div className="mt-1.5 text-[13px] text-warm-gray-500">
                 <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); onTerms(); }} className="text-forest border-b border-forest/40 hover:border-forest cursor-pointer bg-transparent p-0">查看條款內容</button>
               </div>
             </div>
@@ -274,11 +274,11 @@ export const RegisterPage = ({ onBack, onTerms, onSubmitSuccess }: { onBack: () 
         </div>
 
         <div>
-          <motion.button type="button" onClick={handleSubmit} disabled={submitting} whileTap={{ scale: canSubmit ? 0.97 : 1 }}
+          <motion.button type="button" onClick={handleSubmit} disabled={submitting} whileTap={{ scale: canSubmit ? 0.96 : 1 }}
             className={`w-full py-4 rounded-full text-[14px] font-medium tracking-[0.2em] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/60 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50 ${canSubmit ? "bg-brass text-white hover:bg-[#A66B30] cursor-pointer" : "bg-warm-gray-200 text-warm-gray-500 cursor-not-allowed"}`}>
             {submitting ? "處理中…" : "完成加入"}
           </motion.button>
-          <p className="mt-5 text-[12px] text-warm-gray-500 tracking-wide leading-[1.9] text-center">送出後專屬圖文選單即開通，聯絡資料可日後補填。</p>
+          <p className="mt-5 text-[13px] text-warm-gray-500 tracking-wide leading-[1.9] text-center">送出後專屬圖文選單即開通，聯絡資料可日後補填。</p>
         </div>
       </div>
       <div className="pb-10" />

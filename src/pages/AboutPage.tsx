@@ -15,10 +15,10 @@ export const AboutPage = ({ onBack, onJoin }: any) => {
     <div className="min-h-[100dvh] bg-warm-gray-50 pb-6">
       {/* 頂列 */}
       <div className="px-6 pt-8 flex items-center justify-between">
-        <button onClick={onBack} aria-label="返回" className="flex items-center gap-1 text-[12px] tracking-[0.18em] text-warm-gray-600 hover:text-warm-gray-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-4 focus-visible:ring-offset-warm-gray-50">
+        <button onClick={onBack} aria-label="返回" className="flex items-center gap-1 text-[13px] tracking-[0.18em] text-warm-gray-600 hover:text-warm-gray-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-4 focus-visible:ring-offset-warm-gray-50">
           <Ic n="back" size={16} /> 返回
         </button>
-        <div className="font-display text-[12px] font-semibold tracking-[0.22em] text-warm-gray-800">OO SAY MONEY</div>
+        <div className="font-display text-[13px] font-semibold tracking-[0.12em] text-warm-gray-800">OO SAY MONEY</div>
       </div>
 
       {/* 名字當主視覺 */}
@@ -44,7 +44,7 @@ export const AboutPage = ({ onBack, onJoin }: any) => {
           ].map((s, i) => (
             <div key={i} className="py-6 px-3 first:pl-0">
               <div className="font-display text-[28px] font-medium text-forest leading-none">{s.node}</div>
-              <div className="mt-2 text-[11px] tracking-[0.12em] text-warm-gray-600">{s.label}</div>
+              <div className="mt-2 text-[12px] tracking-[0.12em] text-warm-gray-600">{s.label}</div>
             </div>
           ))}
         </div>
@@ -73,7 +73,6 @@ export const AboutPage = ({ onBack, onJoin }: any) => {
           {principles.map((p, i) => (
             <Fragment key={p.title}><Reveal delay={i * 0.05}>
               <div className="flex gap-5 py-7 border-b border-warm-gray-300">
-                <span className="font-display text-[13px] tnum text-brass pt-1.5 w-6 shrink-0">0{i + 1}</span>
                 <div>
                   <div className="font-serif text-[21px] font-semibold text-warm-gray-800 tracking-wide">{p.title}</div>
                   <p className="mt-2 text-[14px] leading-[1.9] text-warm-gray-600">{p.desc}</p>
@@ -106,7 +105,7 @@ export const AboutPage = ({ onBack, onJoin }: any) => {
           <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
           <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">想了解更多？</h2>
           <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">加入會員，了解讓錢替你工作的做法。</p>
-          <motion.button onClick={onJoin} whileTap={{ scale: 0.97 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+          <motion.button onClick={onJoin} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
             免費加入會員
           </motion.button>
           <button onClick={() => openLine(LINE_BOOK_URL)} className="relative z-10 mt-2 w-full py-3 text-[13px] tracking-[0.15em] text-white/75 hover:text-white transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full">
@@ -115,7 +114,7 @@ export const AboutPage = ({ onBack, onJoin }: any) => {
         </section>
       </Reveal>
 
-      <p className="px-8 mt-10 pb-10 text-[11px] text-warm-gray-500 text-center tracking-wide leading-relaxed">
+      <p className="px-8 mt-10 pb-10 text-[12px] text-warm-gray-500 text-center tracking-wide leading-relaxed">
         以上為過往服務經驗，不代表未來結果，內容不構成投資建議。
       </p>
     </div>

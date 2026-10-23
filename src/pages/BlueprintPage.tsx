@@ -70,7 +70,7 @@ function fmtFull(n: number) {
 const Slider = ({ label, value, display, min, max, step, onChange }: { label: string; value: number; display: string; min: number; max: number; step: number; onChange: (v: number) => void }) => (
   <label className="block">
     <span className="flex items-baseline justify-between mb-3">
-      <span className="text-[12px] tracking-[0.18em] text-warm-gray-600">{label}</span>
+      <span className="text-[13px] tracking-[0.18em] text-warm-gray-600">{label}</span>
       <span className="font-display text-[22px] font-medium text-forest tnum">{display}</span>
     </span>
     <input type="range" min={min} max={max} step={step} value={value} onChange={e => onChange(Number(e.target.value))} className="w-full accent-[#B8793A]" />
@@ -132,7 +132,7 @@ export const BlueprintPage = ({ onBack, role }: { onBack: () => void, role?: str
           <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
             {presets.map((pr, i) => (
               <button key={i} onClick={() => { applyPreset(pr); setActivePreset(i); }} aria-pressed={activePreset === i}
-                className={`shrink-0 px-4 py-2 rounded-full text-[12px] tracking-[0.12em] cursor-pointer border transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/60 ${activePreset === i ? "bg-forest text-white border-forest" : "border-warm-gray-300 text-warm-gray-800 hover:bg-warm-gray-100"}`}>
+                className={`shrink-0 px-4 py-2 rounded-full text-[13px] tracking-[0.12em] cursor-pointer border transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/60 ${activePreset === i ? "bg-forest text-white border-forest" : "border-warm-gray-300 text-warm-gray-800 hover:bg-warm-gray-100"}`}>
                 {pr.label}
               </button>
             ))}
@@ -150,11 +150,11 @@ export const BlueprintPage = ({ onBack, role }: { onBack: () => void, role?: str
 
           <div className="grain relative mt-9 rounded-[24px] bg-forest text-white overflow-hidden px-6 py-7 grid grid-cols-2 gap-6">
             <div className="relative z-10">
-              <div className="text-[11px] tracking-[0.2em] text-white/55 mb-2">總投入本金</div>
+              <div className="text-[12px] tracking-[0.2em] text-white/55 mb-2">總投入本金</div>
               <div className="font-display text-[26px] font-medium tnum">{fmtFull(totalInvest)}</div>
             </div>
             <div className="relative z-10">
-              <div className="text-[11px] tracking-[0.2em] text-white/55 mb-2">首月配息預估</div>
+              <div className="text-[12px] tracking-[0.2em] text-white/55 mb-2">首月配息預估</div>
               <div className="font-display text-[26px] font-medium tnum text-brass-soft">{fmtFull(firstMonth)}</div>
             </div>
           </div>
@@ -171,7 +171,7 @@ export const BlueprintPage = ({ onBack, role }: { onBack: () => void, role?: str
       <Reveal className="px-6 pt-14">
         <SectionLabel no="02">20 年月配息成長曲線</SectionLabel>
         <div className="border-t border-warm-gray-800/80 pt-5">
-          <div className="flex flex-wrap gap-x-5 gap-y-2 mb-5 text-[11px] text-warm-gray-600 tracking-[0.1em]">
+          <div className="flex flex-wrap gap-x-5 gap-y-2 mb-5 text-[12px] text-warm-gray-600 tracking-[0.1em]">
             <span className="flex items-center gap-2"><span className="w-4 h-0.5 bg-forest" />100% 投入</span>
             <span className="flex items-center gap-2"><span className="w-4 h-0.5 bg-brass" />50%</span>
             <span className="flex items-center gap-2"><span className="w-4 h-0.5 bg-warm-gray-400" />30%</span>
@@ -205,12 +205,12 @@ export const BlueprintPage = ({ onBack, role }: { onBack: () => void, role?: str
               { l: "30% 投入", v: finalVals.p30, c: "text-warm-gray-600" },
             ].map((x, i) => (
               <div key={x.l} className={`py-4 ${i === 0 ? "pr-3" : "px-3"}`}>
-                <div className="text-[11px] text-warm-gray-500 tracking-[0.1em] mb-1.5">{x.l}</div>
+                <div className="text-[12px] text-warm-gray-500 tracking-[0.1em] mb-1.5">{x.l}</div>
                 <div className={`font-display text-[18px] font-medium tnum ${x.c}`}>{fmtFull(x.v)}</div>
               </div>
             ))}
           </div>
-          <p className="mt-4 text-[11px] text-warm-gray-500 leading-[1.9]">以上為依你設定的假設所做的試算，並非對未來報酬的預測或保證。</p>
+          <p className="mt-4 text-[12px] text-warm-gray-500 leading-[1.9]">以上為依你設定的假設所做的試算，並非對未來報酬的預測或保證。</p>
         </div>
       </Reveal>
 
@@ -228,7 +228,7 @@ export const BlueprintPage = ({ onBack, role }: { onBack: () => void, role?: str
           ].map((x, i) => (
             <Reveal key={x.k} delay={i * 0.05}>
               <div className="py-7 border-b border-warm-gray-300">
-                <div className="flex items-baseline gap-4 mb-2"><span className="font-display text-[13px] tnum text-brass">{x.k}</span><span className="text-[11px] tracking-[0.24em] text-warm-gray-600">{x.t}</span></div>
+                <div className="flex items-baseline gap-4 mb-2"><span className="font-display text-[13px] tnum text-brass">{x.k}</span><span className="text-[12px] tracking-[0.12em] text-warm-gray-600">{x.t}</span></div>
                 <div className="font-serif text-[20px] font-semibold text-warm-gray-800 pl-[2.1rem]">{x.h}</div>
                 <p className="mt-2 text-[14px] text-warm-gray-600 leading-[1.9] pl-[2.1rem]">{x.d}</p>
               </div>
@@ -250,14 +250,14 @@ export const BlueprintPage = ({ onBack, role }: { onBack: () => void, role?: str
           ].map((x, i) => (
             <Reveal key={x.t} delay={i * 0.05}>
               <div className="rounded-3xl border border-warm-gray-300 p-6">
-                <div className="text-[11px] tracking-[0.22em] text-brass mb-2">{x.t}</div>
+                <div className="text-[12px] tracking-[0.12em] text-brass mb-2">{x.t}</div>
                 <div className="font-display text-[24px] font-medium text-forest mb-2">{x.h}</div>
                 <p className="text-[13px] text-warm-gray-600 leading-[1.9]">{x.d}</p>
               </div>
             </Reveal>
           ))}
         </div>
-        <p className="mt-4 text-[11px] text-warm-gray-500 leading-[1.9]">殖利率為情境舉例，實際配息會變動且可能來自本金，投資前請詳閱公開說明書。</p>
+        <p className="mt-4 text-[12px] text-warm-gray-500 leading-[1.9]">殖利率為情境舉例，實際配息會變動且可能來自本金，投資前請詳閱公開說明書。</p>
       </section>
 
       {/* 雪球公式 */}
@@ -274,7 +274,7 @@ export const BlueprintPage = ({ onBack, role }: { onBack: () => void, role?: str
             { n: "30%", t: "部分滾入", d: "兼顧當下與未來，部分改善生活，部分把雪球做大。" },
           ].map((x) => (
             <div key={x.n} className="flex items-start gap-5 py-6 border-t border-warm-gray-300">
-              <div className="font-display text-[28px] font-light text-brass tnum w-[84px] shrink-0 leading-none">{x.n}</div>
+              <div className="font-display text-[28px] font-light text-brass-light tnum w-[84px] shrink-0 leading-none">{x.n}</div>
               <p className="text-[14px] text-warm-gray-600 leading-[1.9]"><span className="text-warm-gray-800 font-medium">{x.t}：</span>{x.d}</p>
             </div>
           ))}
@@ -313,7 +313,7 @@ export const BlueprintPage = ({ onBack, role }: { onBack: () => void, role?: str
         onPrimary={() => openLine(LINE_BOOK_URL)}
         note="免費諮詢 · 無推銷壓力"
       />
-      <p className="px-8 mt-8 pb-10 text-[11px] text-warm-gray-500 text-center tracking-wide leading-relaxed">本頁為教育性質的情境試算，不構成投資建議。投資有風險，過去績效不代表未來表現。</p>
+      <p className="px-8 mt-8 pb-10 text-[12px] text-warm-gray-500 text-center tracking-wide leading-relaxed">本頁為教育性質的情境試算，不構成投資建議。投資有風險，過去績效不代表未來表現。</p>
     </div>
   );
 };

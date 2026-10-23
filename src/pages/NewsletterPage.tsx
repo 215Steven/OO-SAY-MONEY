@@ -59,7 +59,7 @@ export const NewsletterPage = ({ onBack }: { onBack: () => void }) => {
             <Eyebrow className="mb-6">Almost there</Eyebrow>
             <h1 className="font-serif text-[40px] leading-[1.15] font-semibold text-warm-gray-800">請到信箱<br /><span className="font-light italic text-brass">確認訂閱。</span></h1>
             <p className="mt-6 text-[15px] leading-[1.95] text-warm-gray-600">我們寄了一封確認信到 <span className="text-warm-gray-800 font-medium break-all">{email}</span>。點擊信中的確認連結後，就會開始收到電子報。若沒看到，請檢查垃圾郵件匣。</p>
-            <motion.button type="button" onClick={onBack} whileTap={{ scale: 0.97 }} className="mt-10 w-full bg-forest text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-cyan-base transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/60 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50">回上一頁</motion.button>
+            <motion.button type="button" onClick={onBack} whileTap={{ scale: 0.96 }} className="mt-10 w-full bg-forest text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-cyan-base transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/60 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50">回上一頁</motion.button>
           </motion.div>
         </div>
       ) : (
@@ -67,20 +67,20 @@ export const NewsletterPage = ({ onBack }: { onBack: () => void }) => {
           <PageHeader eyebrow="Newsletter" line1="加入" line2="電子報。" desc="留下 Email，訂閱理財快訊與電子報。" />
           <div className="px-6 flex flex-col gap-7">
             <label className="block border-b border-warm-gray-300 focus-within:border-forest transition-colors pb-2">
-              <span className="block text-[11px] font-medium tracking-[0.2em] text-warm-gray-600">稱呼（選填）</span>
+              <span className="block text-[12px] font-medium tracking-[0.2em] text-warm-gray-600">稱呼（選填）</span>
               <input type="text" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="怎麼稱呼你" className="w-full bg-transparent border-none outline-none text-[17px] text-warm-gray-800 placeholder-warm-gray-400 tracking-wide mt-1.5 py-1" />
             </label>
             <label className="block border-b border-warm-gray-300 focus-within:border-forest transition-colors pb-2">
-              <span className="block text-[11px] font-medium tracking-[0.2em] text-warm-gray-600">Email</span>
+              <span className="block text-[12px] font-medium tracking-[0.2em] text-warm-gray-600">Email</span>
               <input type="email" autoComplete="email" inputMode="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="接收電子報用" className="w-full bg-transparent border-none outline-none text-[17px] text-warm-gray-800 placeholder-warm-gray-400 tracking-wide mt-1.5 py-1" />
             </label>
           </div>
           <div className="px-6 pt-10">
-            <motion.button type="submit" disabled={!canSubmit} whileTap={{ scale: canSubmit ? 0.97 : 1 }}
+            <motion.button type="submit" disabled={!canSubmit} whileTap={{ scale: canSubmit ? 0.96 : 1 }}
               className={`w-full py-4 rounded-full text-[14px] font-medium tracking-[0.2em] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/60 focus-visible:ring-offset-2 focus-visible:ring-offset-warm-gray-50 ${canSubmit ? "bg-brass text-white hover:bg-[#A66B30] cursor-pointer" : "bg-warm-gray-200 text-warm-gray-500 cursor-not-allowed"}`}>
               {submitting ? "處理中…" : "訂閱電子報"}
             </motion.button>
-            <p className="mt-5 text-[12px] text-warm-gray-500 tracking-wide leading-[1.9] text-center">送出後會收到確認信，點擊信中連結才算完成訂閱。<br />Email 只用於寄送電子報，可隨時退訂。</p>
+            <p className="mt-5 text-[13px] text-warm-gray-500 tracking-wide leading-[1.9] text-center">送出後會收到確認信，點擊信中連結才算完成訂閱。<br />Email 只用於寄送電子報，可隨時退訂。</p>
           </div>
         </form>
       )}

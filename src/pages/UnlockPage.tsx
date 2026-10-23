@@ -15,10 +15,10 @@ export const UnlockPage = ({ onBack, onJoin }: any) => {
   return (
     <div className="min-h-[100dvh] bg-warm-gray-50 pb-6">
       <div className="px-6 pt-8 flex items-center justify-between">
-        <button onClick={onBack} aria-label="返回" className="flex items-center gap-1 text-[12px] tracking-[0.18em] text-warm-gray-600 hover:text-warm-gray-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-4 focus-visible:ring-offset-warm-gray-50">
+        <button onClick={onBack} aria-label="返回" className="flex items-center gap-1 text-[13px] tracking-[0.18em] text-warm-gray-600 hover:text-warm-gray-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-4 focus-visible:ring-offset-warm-gray-50">
           <Ic n="back" size={16} /> 返回
         </button>
-        <div className="font-display text-[12px] font-semibold tracking-[0.22em] text-warm-gray-800">OO SAY MONEY</div>
+        <div className="font-display text-[13px] font-semibold tracking-[0.12em] text-warm-gray-800">OO SAY MONEY</div>
       </div>
 
       <header className="px-6 pt-14 pb-10">
@@ -37,7 +37,6 @@ export const UnlockPage = ({ onBack, onJoin }: any) => {
           {features.map((f, i) => (
             <Reveal key={f.title} delay={i * 0.04}>
               <div className="flex items-start gap-5 py-6 border-b border-warm-gray-300">
-                <span className="font-display text-[13px] tnum text-brass pt-1 w-6 shrink-0">0{i + 1}</span>
                 <div className="flex-1">
                   <div className="font-serif text-[21px] font-semibold text-warm-gray-800 tracking-wide">{f.title}</div>
                   <p className="mt-1.5 text-[13px] leading-[1.8] text-warm-gray-600">{f.desc}</p>
@@ -54,7 +53,7 @@ export const UnlockPage = ({ onBack, onJoin }: any) => {
           <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
           <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">免費加入會員</h2>
           <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">加入後即可使用以上功能。</p>
-          <motion.button onClick={onJoin} whileTap={{ scale: 0.97 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+          <motion.button onClick={onJoin} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
             加入會員
           </motion.button>
           <button onClick={() => openLine(LINE_BOOK_URL)} className="relative z-10 mt-2 w-full py-3 text-[13px] tracking-[0.15em] text-white/75 hover:text-white transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full">

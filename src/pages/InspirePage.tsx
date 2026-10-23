@@ -82,7 +82,7 @@ export const InspirePage = ({ onBack }: { onBack: () => void }) => {
   return (
     <div className="min-h-[100dvh] bg-warm-gray-50 pb-6">
       <div className="px-6 pt-8 flex items-center justify-between">
-        <div className="font-display text-[12px] font-semibold tracking-[0.22em] text-warm-gray-800">OO SAY MONEY</div>
+        <div className="font-display text-[13px] font-semibold tracking-[0.12em] text-warm-gray-800">OO SAY MONEY</div>
         <Eyebrow>Inspiration</Eyebrow>
       </div>
 
@@ -116,7 +116,7 @@ export const InspirePage = ({ onBack }: { onBack: () => void }) => {
             <div className="mx-auto w-24 h-px bg-warm-gray-200 relative overflow-hidden mb-4">
               <motion.span className="absolute inset-y-0 w-10 bg-brass" initial={{ x: -40 }} animate={{ x: 96 }} transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }} />
             </div>
-            <div className="text-[12px] text-warm-gray-500 tracking-[0.2em]">讀取排行榜資料中</div>
+            <div className="text-[13px] text-warm-gray-500 tracking-[0.2em]">讀取排行榜資料中</div>
           </div>
         )}
 
@@ -149,20 +149,20 @@ export const InspirePage = ({ onBack }: { onBack: () => void }) => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-[14px] font-medium text-warm-gray-800 leading-[1.6]">{clean}</div>
-                        <div className="mt-2 text-[11px] text-warm-gray-500 tracking-[0.08em]">{row.cur} · {row.rr} · {row.freq}</div>
+                        <div className="mt-2 text-[12px] text-warm-gray-500 tracking-[0.08em]">{row.cur} · {row.rr} · {row.freq}</div>
                       </div>
                       <div className="text-right shrink-0">
                         <div className="font-display text-[22px] font-medium text-forest tnum leading-none">{fmtPct(metric)}</div>
-                        <div className="mt-1.5 text-[10px] text-warm-gray-500 tracking-[0.14em]">{activeTabMeta.metricLabel}</div>
+                        <div className="mt-1.5 text-[12px] text-warm-gray-500 tracking-[0.14em]">{activeTabMeta.metricLabel}</div>
                       </div>
                     </div>
-                    <div className="mt-4 ml-14 flex gap-5 text-[11px] text-warm-gray-500 tnum">
+                    <div className="mt-4 ml-14 flex gap-5 text-[12px] text-warm-gray-500 tnum">
                       <span>六月 {fmtPct(row.ret6m)}</span>
                       <span>一年 {fmtPct(row.ret1y)}</span>
                       <span>三年 {fmtPct(row.ret3y)}</span>
                     </div>
                     {warning && (
-                      <div className="mt-3 ml-14 text-[11px] text-alert-orange border-l-2 border-alert-orange/50 pl-3 leading-[1.8]">注意：{warning}</div>
+                      <div className="mt-3 ml-14 text-[12px] text-alert-orange border-l-2 border-alert-orange/50 pl-3 leading-[1.8]">注意：{warning}</div>
                     )}
                   </li>
                 );
@@ -172,10 +172,10 @@ export const InspirePage = ({ onBack }: { onBack: () => void }) => {
         )}
 
         {data && (
-          <div className="mt-6 text-[11px] text-warm-gray-500 tracking-wide">資料來源：VCCT 配息工具 · 更新於 {data.generatedAt || data.fetchedAt}</div>
+          <div className="mt-6 text-[12px] text-warm-gray-500 tracking-wide">資料來源：VCCT 配息工具 · 更新於 {data.generatedAt || data.fetchedAt}</div>
         )}
 
-        <p className="mt-6 text-[11px] text-warm-gray-500 leading-[1.9] tracking-wide">
+        <p className="mt-6 text-[12px] text-warm-gray-500 leading-[1.9] tracking-wide">
           以上排行僅供參考，過去績效不代表未來表現，投資前請詳閱公開說明書。配息可能來自本金，投資人於獲配息時應注意基金淨值同時降低之可能性。
         </p>
       </div>
@@ -185,10 +185,10 @@ export const InspirePage = ({ onBack }: { onBack: () => void }) => {
           <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
           <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">想聊聊怎麼配置？</h2>
           <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">排行榜只是參考起點，適合你的配置需要專屬分析。</p>
-          <motion.button onClick={() => window.open("https://line.me/R/ti/p/@oosaymoney", "_blank")} whileTap={{ scale: 0.97 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+          <motion.button onClick={() => window.open("https://line.me/R/ti/p/@oosaymoney", "_blank")} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
             加入 LINE 聯繫顧問
           </motion.button>
-          <p className="relative z-10 mt-4 text-[11px] text-white/45 tracking-wide text-center">免費諮詢 · 無推銷壓力</p>
+          <p className="relative z-10 mt-4 text-[12px] text-white/45 tracking-wide text-center">免費諮詢 · 無推銷壓力</p>
         </section>
       </Reveal>
       <div className="pb-10" />
