@@ -1,38 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@500;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
 @import "tailwindcss";
 
-/* 設計系統 v2：紙張米白 × 深森林綠 × 單一銅金強調色。
+/* 設計系統 v2：冷灰白紙 × 藍黑墨水 × 單一暖橘強調色（帳本風）。
    沿用原本的 token 名稱（warm-gray-* / teal-* / cyan-*），
    這樣所有既有頁面會一次套用新色彩，不用逐頁改 class。 */
 @theme {
-  --font-serif: "Fraunces", "Noto Serif TC", ui-serif, Georgia, serif;
-  --font-display: "Fraunces", "Noto Serif TC", ui-serif, Georgia, serif;
+  --font-serif: "Noto Sans TC", system-ui, -apple-system, sans-serif;
+  --font-display: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --font-sans: "Noto Sans TC", system-ui, -apple-system, sans-serif;
 
   /* 紙張與墨色 */
-  --color-warm-gray-50: #F4EFE5;
-  --color-warm-gray-100: #ECE5D6;
-  --color-warm-gray-200: #DDD4C1;
-  --color-warm-gray-300: #C9BEA7;
-  --color-warm-gray-400: #8A8070;
-  --color-warm-gray-500: #6B6455;
-  --color-warm-gray-600: #5E574A;
-  --color-warm-gray-800: #14231E;
-  --color-warm-gold: #B8793A;
+  --color-warm-gray-50: #F7F8FA;
+  --color-warm-gray-100: #EEF0F4;
+  --color-warm-gray-200: #DDE1E8;
+  --color-warm-gray-300: #C5CBD6;
+  --color-warm-gray-400: #656E81;
+  --color-warm-gray-500: #5B6577;
+  --color-warm-gray-600: #46506A;
+  --color-warm-gray-800: #14213D;
+  --color-warm-gold: #C2410C;
 
   /* 品牌：深森林綠（取代原本的青綠） */
-  --color-teal-base: #0F3D33;
-  --color-teal-soft: #DCE6DA;
-  --color-cyan-base: #1D5A49;
-  --color-cyan-soft: #E6EDE2;
-  --color-alert-red: #B4452A;
-  --color-alert-orange: #B8793A;
+  --color-teal-base: #14213D;
+  --color-teal-soft: #DDE3F0;
+  --color-cyan-base: #24365F;
+  --color-cyan-soft: #E8ECF5;
+  --color-alert-red: #B42318;
+  --color-alert-orange: #C2410C;
 
-  --color-brass: #94591F;
-  --color-brass-light: #D9A465;
-  --color-brass-soft: #E9D6BC;
-  --color-ink: #14231E;
-  --color-forest: #0F3D33;
+  --color-brass: #C2410C;
+  --color-brass-light: #FB923C;
+  --color-brass-soft: #FDE7D6;
+  --color-ink: #14213D;
+  --color-forest: #14213D;
 }
 
 @layer base {
@@ -58,6 +58,7 @@
   }
   /* 顆粒雜訊：打破數位平整感，只加在深色大區塊上 */
   .grain::after {
+    display: none;
     content: "";
     position: absolute;
     inset: 0;

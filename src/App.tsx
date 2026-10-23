@@ -79,7 +79,7 @@ const RedirectToLine = () => {
 
 const PageTransition = ({ children }: { children: ReactNode }) => (
   <motion.div
-    initial={{ opacity: 0, y: 10 }}
+    initial={false}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0 }}
     transition={{ duration: 0.2 }}
@@ -94,7 +94,7 @@ const RouteWithRegister = ({ component: Component, goBack, navigate, handleLogin
 
   if (showReg) {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="min-h-[100dvh]">
+      <motion.div initial={false} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="min-h-[100dvh]">
         <RegisterPage
           onBack={() => { window.scrollTo(0, 0); setShowReg(false); }}
           onTerms={() => navigate("/terms")}
@@ -105,7 +105,7 @@ const RouteWithRegister = ({ component: Component, goBack, navigate, handleLogin
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="min-h-[100dvh]">
+    <motion.div initial={false} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="min-h-[100dvh]">
        <Component
          onBack={goBack}
          {...props}
