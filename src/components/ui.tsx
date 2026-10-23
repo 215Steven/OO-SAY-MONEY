@@ -47,15 +47,13 @@ export const MoneyLine = ({ className = "", stroke = "var(--color-brass)" }: { c
     />
     <motion.circle
       cx="318" cy="6" r="3.5" fill={stroke}
-      initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
+      initial={false} animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 2.4, ...SPRING }}
     />
   </svg>
 );
 
-export const Eyebrow = ({ children, className = "" }: { children: ReactNode; className?: string }) => (
-  <div className={`text-[13px] font-medium tracking-[0.12em] text-warm-gray-600 ${className}`}>{children}</div>
-);
+export const Eyebrow = (_: { children: ReactNode; className?: string }) => null;
 
 /** 載入畫面：品牌字樣加一條緩緩移動的細線 */
 export const Loading = () => (
@@ -82,14 +80,11 @@ export const TopBar = ({ onBack, right }: { onBack?: () => void; right?: ReactNo
 );
 
 /** 頁面主標：兩行，第二行為銅金斜體 */
-export const PageHeader = ({ eyebrow, line1, line2, desc }: { eyebrow: string; line1: string; line2?: string; desc?: ReactNode }) => (
+export const PageHeader = ({ eyebrow, line1, line2, desc }: { eyebrow?: string; line1: string; line2?: string; desc?: ReactNode }) => (
   <header className="px-6 pt-14 pb-10">
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
-      <Eyebrow className="mb-6">{eyebrow}</Eyebrow>
-    </motion.div>
     <h1 className="font-serif leading-[1.12] tracking-[-0.01em]">
-      <motion.span className="block text-[44px] font-semibold text-warm-gray-800" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.08 }}>{line1}</motion.span>
-      {line2 && <motion.span className="block text-[44px] font-normal text-brass" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.18 }}>{line2}</motion.span>}
+      <motion.span className="block text-[44px] font-semibold text-warm-gray-800" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.08 }}>{line1}</motion.span>
+      {line2 && <motion.span className="block text-[44px] font-normal text-brass" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.18 }}>{line2}</motion.span>}
     </h1>
     {desc && <p className="mt-6 text-[15px] leading-[1.95] text-warm-gray-600 max-w-[19rem]">{desc}</p>}
   </header>
@@ -112,7 +107,7 @@ export const CtaBlock = ({ title, desc, primary, onPrimary, secondary, onSeconda
       <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
       <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">{title}</h2>
       {desc && <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">{desc}</p>}
-      <motion.button onClick={onPrimary} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#A66B30] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+      <motion.button onClick={onPrimary} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
         {primary}
       </motion.button>
       {secondary && onSecondary && (
