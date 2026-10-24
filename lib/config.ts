@@ -9,6 +9,8 @@ export const CONFIG = {
   lineRichMenuMemberId: process.env.LINE_RICH_MENU_ID_6 || "",
   // 管理端點（/api/admin/*）的存取密鑰；未設定時管理端點一律拒絕
   adminToken: process.env.ADMIN_TOKEN || "",
+  // 「我的保障」保單查詢 API；未設定或不是 "true" 時一律關閉（回 404）
+  protectionEnabled: process.env.PROTECTION_ENABLED === "true",
   // MailerLite 電子報整合（未設定時自動略過，不影響註冊）
   mailerliteApiKey: process.env.MAILERLITE_API_KEY || "",
   mailerliteGroupId: process.env.MAILERLITE_GROUP_ID || "",

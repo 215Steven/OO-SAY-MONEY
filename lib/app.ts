@@ -44,6 +44,15 @@ async function requireUser(req: Request, res: Response): Promise<string | null> 
   return userId;
 }
 
+/** 「我的保障」尚未開放時，保單相關端點一律回 404 */
+function requireProtectionEnabled(res: Response): boolean {
+  if (!CONFIG.protectionEnabled) {
+    res.status(404).json({ error: "Not found" });
+    return false;
+  }
+  return true;
+}
+
 /** 管理端點共用前置：驗證 ADMIN_TOKEN，失敗回 403 */
 function requireAdmin(req: Request, res: Response): boolean {
   const token = (req.query.token as string) || req.get("x-admin-token") || "";
@@ -409,6 +418,7 @@ function mapInsuranceRow(page: any) {
 
 app.get("/api/insurance", async (req: Request, res: Response) => {
   try {
+    if (!requireProtectionEnabled(res)) return;
     const userId = await requireUser(req, res);
     if (!userId) return;
 
@@ -457,6 +467,7 @@ function normalizePhone(v: string): string {
 // ---------------------------------------------------------------------------
 app.post("/api/insurance/verify", async (req: Request, res: Response) => {
   try {
+    if (!requireProtectionEnabled(res)) return;
     const userId = await requireUser(req, res);
     if (!userId) return;
 
