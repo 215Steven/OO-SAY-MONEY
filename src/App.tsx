@@ -6,6 +6,7 @@ import { LoginModal } from "@/src/components/LoginModal";
 import { useLiff } from "@/src/hooks/useLiff";
 import { Loading } from "@/src/components/ui";
 import { LINE_BOOK_URL, openLine } from "@/src/constants/links";
+import { FEATURES } from "@/src/constants/features";
 // 修法：RegisterPage 改為「直接」引入（不再 lazy load）。
 // 從 故事起點／解鎖更多／錢去哪了 等子頁面點擊「加入會員」時，是透過
 // RouteWithRegister 內部的 showReg state 切換顯示 RegisterPage，
@@ -282,7 +283,15 @@ export default function MainApp() {
             <Route path="/plan"><PageTransition><TemplatePage title="啟富計劃" desc="我的財務規劃" onBack={goBack} /></PageTransition></Route>
             <Route path="/notes"><PageTransition><TemplatePage title="理財筆記" desc="文章與資源" onBack={goBack} /></PageTransition></Route>
             <Route path="/value"><PageTransition><TemplatePage title="核心價值" desc="服務理念" onBack={goBack} /></PageTransition></Route>
-            <Route path="/protection"><PageTransition><ProtectionPage onBack={goBack} /></PageTransition></Route>
+            <Route path="/protection">
+              <PageTransition>
+                {FEATURES.protection ? (
+                  <ProtectionPage onBack={goBack} />
+                ) : (
+                  <TemplatePage title="我的保障" desc="這個功能還在規劃中。想了解自己的保單，直接在 LINE 跟我們說就可以。" onBack={goBack} />
+                )}
+              </PageTransition>
+            </Route>
             <Route path="/demo"><PageTransition><TemplatePage title="範例操作" desc="示範流程" onBack={goBack} /></PageTransition></Route>
             <Route path="/config"><PageTransition><TemplatePage title="多重配置" desc="資產配置方案" onBack={goBack} /></PageTransition></Route>
             <Route path="/about-us"><PageTransition><TemplatePage title="認識我們" desc="品牌介紹" onBack={goBack} /></PageTransition></Route>
