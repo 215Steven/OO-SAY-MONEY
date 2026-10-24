@@ -5,6 +5,8 @@ import { useLocation } from "wouter";
 import { Eyebrow, Reveal, SPRING } from "@/src/components/ui";
 import liff from "@line/liff";
 import { authHeaders } from "@/src/constants/liff";
+import { FEATURES } from "@/src/constants/features";
+import { lineMessageUrl, openLine } from "@/src/constants/links";
 
 // 測驗的 LIFF 永久連結（分享給朋友用）
 const QUIZ_LIFF_URL = "https://liff.line.me/2007659354-EofSbRGu";
@@ -234,6 +236,7 @@ const Confetti = ({ colors }: { colors: string[] }) => {
 };
 
 export const QuizPage = ({ onBack, onComplete }: any) => {
+  const [, navigate] = useLocation();
   const [step, setStep] = useState(0); // 0: welcome, 1-8: questions, 9: loading, 10: result
   const [answers, setAnswers] = useState<string[]>([]);
   const [loadMsg, setLoadMsg] = useState(0);
@@ -584,25 +587,43 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
               
               <div className="w-16 h-[1px] bg-white/20 mb-8 relative z-10" />
 
-              <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide relative z-10">想了解更多？</h3>
-              <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">
-                加入會員，解鎖更多理財工具與案例解析
-              </p>
-
-              <button onClick={() => {
-                const res = calculateResult();
-                const m = TYPES[res.winner] || {};
-                const s = res.subType ? TYPES[res.subType] : null;
-                localStorage.setItem('pendingQuizResult', JSON.stringify({
-                  mainName: m.name,
-                  mainIcon: m.icon,
-                  subName: s ? s.name : '',
-                  color: m.color
-                }));
-                onComplete();
-              }} className="w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] active:scale-[0.98] transition-colors flex justify-center items-center gap-2 relative z-10">
-                 免費加入會員
-              </button>
+              {FEATURES.membership ? (
+                <>
+                <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide relative z-10">想了解更多？</h3>
+                <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">
+                  加入會員，解鎖更多理財工具與案例解析
+                </p>
+  
+                <button onClick={() => {
+                  const res = calculateResult();
+                  const m = TYPES[res.winner] || {};
+                  const s = res.subType ? TYPES[res.subType] : null;
+                  localStorage.setItem('pendingQuizResult', JSON.stringify({
+                    mainName: m.name,
+                    mainIcon: m.icon,
+                    subName: s ? s.name : '',
+                    color: m.color
+                  }));
+                  onComplete();
+                }} className="w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] active:scale-[0.98] transition-colors flex justify-center items-center gap-2 relative z-10">
+                   免費加入會員
+                </button>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-[20px] font-serif font-bold text-white mb-3 tracking-wide relative z-10">想聊聊你的結果？</h3>
+                  <p className="text-[14px] text-teal-soft/90 font-normal mb-8 leading-relaxed relative z-10">
+                    在 LINE 跟我們說一聲，我們會依你的類型，跟你聊下一步可以怎麼做。
+                  </p>
+                  <button onClick={() => {
+                    const res = calculateResult();
+                    const m = TYPES[res.winner] || {};
+                    openLine(lineMessageUrl(`我做完測驗了，結果是「${m.name || ""}」，想聊聊`));
+                  }} className="w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] active:scale-[0.96] transition-colors flex justify-center items-center gap-2 relative z-10">
+                    在 LINE 聊聊我的結果
+                  </button>
+                </>
+              )}
 
               <button onClick={() => {
                 const res = calculateResult();
@@ -612,6 +633,11 @@ export const QuizPage = ({ onBack, onComplete }: any) => {
               }} className="w-full mt-3 bg-transparent text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer border border-white/30 hover:bg-white/10 transition-colors flex justify-center items-center gap-2 relative z-10">
                  分享結果給朋友
               </button>
+              {!FEATURES.membership && (
+                <button onClick={() => navigate("/tool")} className="mt-4 text-[14px] text-white/80 underline underline-offset-4 hover:text-white transition-colors cursor-pointer relative z-10">
+                  用財管家算算你的實際數字
+                </button>
+              )}
             </div>
 
             <div className="text-center mt-6">

@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { CountUp } from "@/src/components/ui";
 import { LINE_BOOK_URL, openLine } from "@/src/constants/links";
+import { FEATURES } from "@/src/constants/features";
 
 /** 對方的訊息泡泡 */
 const Bubble = ({ children, className = "" }: { children: ReactNode; className?: string }) => (
@@ -29,12 +30,14 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
     <div className="min-h-[100dvh] bg-warm-gray-50 flex flex-col">
       <header className="px-6 pt-8 flex items-center justify-between">
         <div className="font-display text-[13px] font-medium tracking-[0.08em] text-warm-gray-800">OO SAY MONEY</div>
-        <button
-          onClick={() => onSelect("login")}
-          className="text-[14px] text-warm-gray-600 border-b border-warm-gray-300 pb-0.5 hover:text-warm-gray-800 hover:border-warm-gray-800 transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-4 focus-visible:ring-offset-warm-gray-50"
-        >
-          會員登入
-        </button>
+        {FEATURES.membership && (
+          <button
+            onClick={() => onSelect("login")}
+            className="text-[14px] text-warm-gray-600 border-b border-warm-gray-300 pb-0.5 hover:text-warm-gray-800 hover:border-warm-gray-800 transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brass/50 focus-visible:ring-offset-4 focus-visible:ring-offset-warm-gray-50"
+          >
+            會員登入
+          </button>
+        )}
       </header>
 
       <main className="flex-1 px-6 pt-10 pb-8 flex flex-col gap-3 max-w-md w-full mx-auto">
@@ -60,13 +63,26 @@ export const PublicGrid = ({ onSelect }: { onSelect: (k: string) => void }) => {
           <Reply primary onClick={() => openLine(LINE_BOOK_URL)}>想先聊聊</Reply>
         </div>
 
-        <Bubble className="mt-6">
-          想用更多工具，可以免費加入會員，之後也能直接在 LINE 跟我們說。
-        </Bubble>
-        <div className="flex flex-col gap-2.5">
-          <Reply onClick={() => onSelect("unlock")}>會員有什麼</Reply>
-          <Reply onClick={() => onSelect("login")}>免費加入會員</Reply>
-        </div>
+        {FEATURES.membership ? (
+          <>
+            <Bubble className="mt-6">
+              想用更多工具，可以免費加入會員，之後也能直接在 LINE 跟我們說。
+            </Bubble>
+            <div className="flex flex-col gap-2.5">
+              <Reply onClick={() => onSelect("unlock")}>會員有什麼</Reply>
+              <Reply onClick={() => onSelect("login")}>免費加入會員</Reply>
+            </div>
+          </>
+        ) : (
+          <>
+            <Bubble className="mt-6">
+              還不急著聊也沒關係，可以先訂閱電子報，我們會定期整理理財觀念寄給你。
+            </Bubble>
+            <div className="flex flex-col gap-2.5">
+              <Reply onClick={() => onSelect("newsletter")}>訂閱電子報</Reply>
+            </div>
+          </>
+        )}
       </main>
 
       <p className="px-8 pb-12 text-[13px] text-warm-gray-500 text-center leading-relaxed">

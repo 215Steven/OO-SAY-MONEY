@@ -2,6 +2,8 @@ import { Ic } from "@/src/components/Icons";
 import { useLocation } from "wouter";
 import { motion } from "motion/react";
 import { Reveal, Eyebrow, SPRING } from "@/src/components/ui";
+import { FEATURES } from "@/src/constants/features";
+import { LINE_BOOK_URL, openLine } from "@/src/constants/links";
 
 const types = ["穩健累積型", "成長放大型", "起步探索型", "策略進化型"];
 
@@ -54,7 +56,7 @@ export const MoneyLanding = ({ onBack, onLogin }: any) => {
               <div className="flex items-baseline gap-4 mb-4">
                 <span className="font-display text-[13px] tnum text-brass">02</span>
                 <h2 className="font-serif text-[24px] font-semibold text-warm-gray-800">看清真實數字</h2>
-                <span className="ml-auto text-[12px] tracking-[0.2em] text-brass border border-brass/40 px-2 py-0.5 rounded-full">需登入</span>
+                <span className="ml-auto text-[12px] tracking-[0.2em] text-brass border border-brass/40 px-2 py-0.5 rounded-full">{FEATURES.membership ? "需登入" : "免費"}</span>
               </div>
               <div className="pl-[2.1rem]">
                 <div className="text-[12px] text-warm-gray-500 tracking-wide mb-3">報告範例（示意數字）</div>
@@ -80,11 +82,26 @@ export const MoneyLanding = ({ onBack, onLogin }: any) => {
       <Reveal className="px-6 pt-14">
         <section className="grain relative rounded-[28px] bg-forest text-white overflow-hidden px-7 pt-10 pb-8">
           <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
-          <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">解鎖完整財務工具</h2>
-          <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">免費加入會員，即可使用財管家，<br />用數字看清自己的財務狀況。</p>
-          <motion.button onClick={onLogin} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] transition-colors flex items-center justify-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
-            加入會員，立即開始 <Ic n="arrow" size={16} color="currentColor" />
-          </motion.button>
+          {FEATURES.membership ? (
+            <>
+            <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">解鎖完整財務工具</h2>
+            <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">免費加入會員，即可使用財管家，<br />用數字看清自己的財務狀況。</p>
+            <motion.button onClick={onLogin} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] transition-colors flex items-center justify-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+              加入會員，立即開始 <Ic n="arrow" size={16} color="currentColor" />
+            </motion.button>
+            </>
+          ) : (
+            <>
+              <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">看清自己的數字</h2>
+              <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">財管家免費使用，填完就有一份財務健檢報告。</p>
+              <motion.button onClick={() => navigate("/tool")} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] transition-colors flex items-center justify-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+                開始財務健檢 <Ic n="arrow" size={16} color="currentColor" />
+              </motion.button>
+              <button onClick={() => openLine(LINE_BOOK_URL)} className="relative z-10 mt-2 w-full py-3 text-[14px] text-white/80 hover:text-white transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full">
+                想直接聊聊？在 LINE 跟我們說
+              </button>
+            </>
+          )}
         </section>
       </Reveal>
     </div>

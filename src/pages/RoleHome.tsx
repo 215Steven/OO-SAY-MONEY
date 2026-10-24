@@ -2,6 +2,7 @@ import { Ic } from "@/src/components/Icons";
 import { GRIDS, ROLE_META } from "@/src/constants/roles";
 import { motion } from "motion/react";
 import { Eyebrow, SPRING } from "@/src/components/ui";
+import { FEATURES } from "@/src/constants/features";
 
 export const RoleHome = ({ role, onSelect, onLogout }: any) => {
   const config = GRIDS[role];
@@ -23,7 +24,7 @@ export const RoleHome = ({ role, onSelect, onLogout }: any) => {
 
       <nav className="px-6" aria-label="會員功能">
         <div className="border-t border-warm-gray-800/80">
-          {config.items.map((item: any, i: number) => (
+          {config.items.filter((item: any) => item.key !== "protection" || FEATURES.protection).map((item: any, i: number) => (
             <motion.button
               key={item.key}
               onClick={() => onSelect(item.key, role)}

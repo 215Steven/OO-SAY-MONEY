@@ -2,6 +2,8 @@ import { Ic } from "@/src/components/Icons";
 import { motion } from "motion/react";
 import { Fragment } from "react";
 import { LINE_BOOK_URL, openLine } from "@/src/constants/links";
+import { FEATURES } from "@/src/constants/features";
+import { useLocation } from "wouter";
 import { Reveal, CountUp, Eyebrow, SPRING } from "@/src/components/ui";
 
 const principles = [
@@ -11,6 +13,7 @@ const principles = [
 ];
 
 export const AboutPage = ({ onBack, onJoin }: any) => {
+  const [, navigate] = useLocation();
   return (
     <div className="min-h-[100dvh] bg-warm-gray-50 pb-6">
       {/* 頂列 */}
@@ -104,13 +107,27 @@ export const AboutPage = ({ onBack, onJoin }: any) => {
         <section className="grain relative rounded-[28px] bg-forest text-white overflow-hidden px-7 pt-10 pb-8">
           <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-brass/20 blur-3xl" aria-hidden="true" />
           <h2 className="relative z-10 font-serif text-[26px] leading-[1.3] font-semibold">想了解更多？</h2>
-          <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">加入會員，了解讓錢替你工作的做法。</p>
-          <motion.button onClick={onJoin} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
-            免費加入會員
-          </motion.button>
-          <button onClick={() => openLine(LINE_BOOK_URL)} className="relative z-10 mt-2 w-full py-3 text-[13px] tracking-[0.15em] text-white/75 hover:text-white transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full">
-            想先聊聊？直接在 LINE 跟我們說
-          </button>
+          {FEATURES.membership ? (
+            <>
+            <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">加入會員，了解讓錢替你工作的做法。</p>
+            <motion.button onClick={onJoin} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+              免費加入會員
+            </motion.button>
+            <button onClick={() => openLine(LINE_BOOK_URL)} className="relative z-10 mt-2 w-full py-3 text-[13px] tracking-[0.15em] text-white/75 hover:text-white transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full">
+              想先聊聊？直接在 LINE 跟我們說
+            </button>
+            </>
+          ) : (
+            <>
+              <p className="relative z-10 mt-3 text-[14px] leading-[1.9] text-white/70">直接在 LINE 跟我們說你的狀況，一句話就能開始。</p>
+              <motion.button onClick={() => openLine(LINE_BOOK_URL)} whileTap={{ scale: 0.96 }} className="relative z-10 mt-7 w-full bg-brass text-white py-4 rounded-full text-[14px] font-medium tracking-[0.2em] cursor-pointer hover:bg-[#9A3412] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest">
+                在 LINE 聊聊
+              </motion.button>
+              <button onClick={() => navigate("/newsletter")} className="relative z-10 mt-2 w-full py-3 text-[14px] text-white/80 hover:text-white transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full">
+                還不急，先訂閱電子報
+              </button>
+            </>
+          )}
         </section>
       </Reveal>
 
